@@ -161,7 +161,7 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
 
     driveSim = new LinearSystemSim<>(LinearSystemId.identifyVelocitySystem(DRIVE_KV, DRIVE_KA));
     rotationSim =
-        new LinearSystemSim<>(LinearSystemId.identifyPositionSystem.get(ROTATION_KV, ROTATION_KA));
+        new LinearSystemSim(LinearSystemId.identifyPositionSystem(ROTATION_KV, ROTATION_KA));
 
     registerHardware("Drive Motor", driveMotor);
     registerHardware("Rotation Motor", rotationMotor);
