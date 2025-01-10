@@ -4,6 +4,13 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.*;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -18,14 +25,6 @@ import frc.lib.pid.TunablePID;
 import frc.lib.pid.TunableSparkPIDController;
 import frc.lib.subsystem.AdvancedSubsystem;
 import com.revrobotics.*;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 /**
  * Implementation for an SDS Mk4 swerve module using RevNeo Vortex with
@@ -85,9 +84,11 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
   // private final LinearSystemSim<N1, N1, N1> driveSim;
   // private final LinearSystemSim<N2, N1, N1> rotationSim;
 
+  private final SparkMaxConfig driveMotorConfig = new SparkMaxConfig();
   private final SparkFlex driveMotor;
   // private final REVPhysicsSim driveSimState;
 
+  private final SparkMaxConfig rotationMotorConfig = new SparkMaxConfig();
   private final SparkFlex rotationMotor;
   // private final REVPhysicsSim rotationSimState;
 
@@ -124,53 +125,44 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
 
     rotationEncoder = new CANcoder(encoderCanID, canBus);
     rotationEncoderConfig = new CANcoderConfiguration();
-    rotationEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    //rotationEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; ???
     rotationEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     rotationEncoderConfig.MagnetSensor.MagnetOffset = Preferences.getDouble(getName() + "RotationOffset", 0.0) / 360.0;
     rotationEncoder.getConfigurator().apply(rotationEncoderConfig);
     // rotationEncoderSimState = rotationEncoder.getSimState();
 
-    driveMotor = new SparkFlex(driveMotorCanID, MotorType.kBrushless);
-
-    driveMotor.setInverted(false);
-    driveMotor.setIdle(IdleMode.kBrake);
-    driveMotor.getClosedLoopController().setP(DRIVE_KP, 0);
-    driveMotor.getClosedLoopController().setI(DRIVE_KI, 0);
-    driveMotor.getClosedLoopController().setIZone(DRIVE_I_ZONE, 0);
-    driveMotor.getClosedLoopController().setD(DRIVE_KD, 0);
-    driveMotor.getClosedLoopController().setFF(DRIVE_FEED_FORWARD, 0);
-    driveMotor.setSmartCurrentLimit(100, 80);
+    driveMotor = new SparkFlex(driveMotorCanID, SparkLowLevel.MotorType.kBrushless);
+    driveMotorConfig.inverted(true);
+    driveMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    driveMotorConfig.smartCurrentLimit(100,80);
+    ClosedLoopConfig driveMotorPidConfig = driveMotorConfig.closedLoop;
+    driveMotorPidConfig.pid(DRIVE_KP, DRIVE_KI, DRIVE_KD);
+    driveMotorPidConfig.iZone(DRIVE_I_ZONE);
+    driveMotorPidConfig.velocityFF(DRIVE_FEED_FORWARD); // ?
+    driveMotorConfig.smartCurrentLimit(100, 80);
     // driveSimState.addSparkMax(driveMotor, 8.0f, 5500.0f);
-    
-    rotationMotor = new SparkFlex(rotationMotorCanID, MotorType.kBrushless);
-    rotationMotor.setInverted(true);
-    rotationMotor.setIdleMode(IdleMode.kBrake);
+    driveMotor.configure(driveMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-    ClosedLoopConfig pidConfig = new ClosedLoopConfig();
-    pidConfig.p(ROTATION_KP, ClosedLoopSlot.kSlot0);
-    pidConfig.i(ROTATION_KI, ClosedLoopSlot.kSlot0);
-    pidConfig.iZone(ROTATION_I_ZONE, ClosedLoopSlot.kSlot0);
-    pidConfig.d(ROTATION_KD, ClosedLoopSlot.kSlot0);
-    pidConfig.velocityFF(ROTATION_FEED_FORWARD, ClosedLoopSlot.kSlot0);
-    pidConfig.smartMotion.maxVelocity(ROTATION_MAX_VELOCITY, ClosedLoopSlot.kSlot0);
-    pidConfig.smartMotion.maxAcceleration(ROTATION_MAX_ACCELERATION, ClosedLoopSlot.kSlot0);
-    pidConfig.smartMotion.allowedClosedLoopError(ROTATION_ERROR, ClosedLoopSlot.kSlot0);
+    rotationMotor = new SparkFlex(rotationMotorCanID, SparkLowLevel.MotorType.kBrushless);
+    rotationMotorConfig.inverted(true);
+    rotationMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    ClosedLoopConfig rotationMotorPidConfig = driveMotorConfig.closedLoop;
+    ClosedLoopSlot[] rotationSlots = { ClosedLoopSlot.kSlot0, ClosedLoopSlot.kSlot1 };
+    for ( ClosedLoopSlot slot : rotationSlots ) {
+      rotationMotorPidConfig.pid(ROTATION_KP, ROTATION_KI, ROTATION_KD, slot);
+      rotationMotorPidConfig.iZone(ROTATION_I_ZONE, slot);
+      rotationMotorPidConfig.velocityFF(ROTATION_FEED_FORWARD, slot);
+      rotationMotorPidConfig.maxMotion.maxVelocity(ROTATION_MAX_VELOCITY, slot);
+      rotationMotorPidConfig.maxMotion.maxAcceleration(ROTATION_MAX_ACCELERATION, slot);
+      rotationMotorPidConfig.maxMotion.allowedClosedLoopError(ROTATION_ERROR, slot);
+    }
+    rotationMotorConfig.smartCurrentLimit(100, 80);
     // rotationSimState.addSparkMax(rotationMotor, 8.0, 5500.0);
+    rotationMotor.configure(rotationMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
     rotationAbsoluteSignal = rotationEncoder.getAbsolutePosition();
     rotationAbsoluteVelSignal = rotationEncoder.getVelocity();
 
-    pidConfig.p(ROTATION_POSITION_KP, ClosedLoopSlot.kSlot1);
-    pidConfig.i(ROTATION_POSITION_KI, ClosedLoopSlot.kSlot1);
-    pidConfig.iZone(ROTATION_POSITION_I_ZONE, ClosedLoopSlot.kSlot1);
-    pidConfig.d(ROTATION_POSITION_KD, ClosedLoopSlot.kSlot1);
-    pidConfig.velocityFF(ROTATION_POSITION_FEED_FORWARD, ClosedLoopSlot.kSlot1);
-    pidConfig.smartMotion.maxVelocity(ROTATION_POSITION_MAX_VELOCITY, ClosedLoopSlot.kSlot1);
-    pidConfig.smartMotion.maxAcceleration(ROTATION_POSITION_MAX_ACCELERATION, ClosedLoopSlot.kSlot1);
-    pidConfig.smartMotion.allowedClosedLoopError(ROTATION_POSITION_ERROR, ClosedLoopSlot.kSlot1);
-    SparkFlexConfig config = new SparkFlexConfig();
-    config.smartCurrentLimit(100, 80);
-    rotationMotor.configure(config, null, null);
     // driveSim = new
     // LinearSystemSim<>(LinearSystemId.identifyVelocitySystem(DRIVE_KV, DRIVE_KA));
     // rotationSim =
@@ -243,9 +235,9 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
    * @param desiredState Desired state of the module
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    SparkFlexConfig config = new SparkFlexConfig();
-    config.idleMode(IdleMode.kBrake);
-    driveMotor.configure(config, null, null);
+
+    driveMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    driveMotor.configure(driveMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
     this.targetState = SwerveModuleState.optimize(desiredState, getState().angle);
 
     // Don't run the motors if the desired speed is less than 5% of the max
@@ -263,24 +255,23 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
     double targetAngle = getRelativeRotationDegrees() + deltaRot;
 
     REVLibError driveError = driveMotor.getClosedLoopController()
-        .setReference(60 * targetState.speedMetersPerSecond / DRIVE_METERS_PER_ROTATION, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        .setReference(60 * targetState.speedMetersPerSecond / DRIVE_METERS_PER_ROTATION, SparkBase.ControlType.kVelocity, ClosedLoopSlot.kSlot0);
     if (driveError != REVLibError.kOk) {
       addFault(
           "[Drive Motor]: Status code: "
               + driveError.name());
     }
-if (Math.abs(deltaRot) > 0.05) {
-    REVLibError rotationError = rotationMotor.getClosedLoopController()
-        .setReference(targetAngle / ROTATION_DEGREES_PER_ROTATION, ControlType.kPosition, ClosedLoopSlot.kSlot1);
-    if (rotationError != REVLibError.kOk) {
-      addFault(
-          "[Rotation Motor]: Status code: "
-              + rotationError.name());
+    if (Math.abs(deltaRot) > 0.05) {
+      REVLibError rotationError = rotationMotor.getClosedLoopController()
+          .setReference(targetAngle / ROTATION_DEGREES_PER_ROTATION, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot1);
+      if (rotationError != REVLibError.kOk) {
+        addFault(
+            "[Rotation Motor]: Status code: "
+                + rotationError.name());
+      }
+    } else {
+      rotationMotor.stopMotor();
     }
-  }
-  else {
-    rotationMotor.stopMotor();
-  }
 }
 
   /** Stop all motors */
@@ -314,7 +305,7 @@ if (Math.abs(deltaRot) > 0.05) {
    * @return Absolute rotation
    */
   public double getAbsoluteRotationDegrees() {
-    return rotationAbsoluteSignal.getValue() * 360.0;
+    return rotationAbsoluteSignal.getValueAsDouble() * 360.0;
   }
 
   /**
@@ -369,7 +360,7 @@ if (Math.abs(deltaRot) > 0.05) {
    */
   public void updateRotationOffset() {
     double currentOffset = rotationEncoderConfig.MagnetSensor.MagnetOffset;
-    double offset = (currentOffset - rotationAbsoluteSignal.getValue()) % 1.0;
+    double offset = (currentOffset - rotationAbsoluteSignal.getValue().baseUnitMagnitude()) % 1.0;
     Preferences.setDouble(getName() + "RotationOffset", offset * 360.0);
     rotationEncoderConfig.MagnetSensor.MagnetOffset = offset;
     rotationEncoder.getConfigurator().apply(rotationEncoderConfig);
@@ -402,11 +393,10 @@ if (Math.abs(deltaRot) > 0.05) {
     double angle = getRelativeRotationDegrees() + deltaRot;
 
     // MAYBE? .setRotorControl
-    SparkFlexConfig config = new SparkFlexConfig();
-    config.idleMode(IdleMode.kBrake);
-    driveMotor.configure(config, null, null);
+    driveMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    driveMotor.configure(driveMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
     driveMotor.stopMotor();
-    rotationMotor.getClosedLoopController().setReference(angle / ROTATION_DEGREES_PER_ROTATION, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+    rotationMotor.getClosedLoopController().setReference(angle / ROTATION_DEGREES_PER_ROTATION, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot1);
   }
 
   public SwerveModuleState getTargetState() {
@@ -432,10 +422,10 @@ if (Math.abs(deltaRot) > 0.05) {
                     false,
                     true);
               }
-              if (rotationAbsoluteVelSignal.getValue() * 360 < 20) {
+              if (rotationAbsoluteVelSignal.getValueAsDouble() * 360 < 20) {
                 addFault(
                     "[System Check] Absolute encoder velocity measured too slow "
-                        + (rotationAbsoluteVelSignal.getValue() * 360),
+                        + (rotationAbsoluteVelSignal.getValueAsDouble() * 360),
                     false, true);
               }
             },
@@ -450,7 +440,7 @@ if (Math.abs(deltaRot) > 0.05) {
               }
               double angle = getRelativeRotationDegrees() + deltaRot;
               rotationMotor.getClosedLoopController().setReference(
-                  angle / ROTATION_DEGREES_PER_ROTATION, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+                  angle / ROTATION_DEGREES_PER_ROTATION, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot1);
             },
             this)
             .withTimeout(1.0),
@@ -464,9 +454,8 @@ if (Math.abs(deltaRot) > 0.05) {
             this),
         Commands.runOnce(
             () -> {
-              SparkFlexConfig config = new SparkFlexConfig();
-              config.idleMode(IdleMode.kCoast);
-              driveMotor.configure(config, null, null);
+              driveMotorConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+              driveMotor.configure(driveMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
               driveMotor.set(0.1);
               rotationMotor.stopMotor();
             },
@@ -477,9 +466,8 @@ if (Math.abs(deltaRot) > 0.05) {
               if (getDriveVelocityMetersPerSecond() < 0.25) {
                 addFault("[System Check] Drive motor encoder velocity too slow", false, true);
               }
-              SparkFlexConfig config = new SparkFlexConfig();
-              config.idleMode(IdleMode.kBrake);
-              driveMotor.configure(config, null, null);
+              driveMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+              driveMotor.configure(driveMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
               driveMotor.stopMotor();
             },
             this),
@@ -494,7 +482,7 @@ if (Math.abs(deltaRot) > 0.05) {
               }
               double angle = getRelativeRotationDegrees() + deltaRot;
               rotationMotor.getClosedLoopController().setReference(
-                  angle / ROTATION_DEGREES_PER_ROTATION, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+                  angle / ROTATION_DEGREES_PER_ROTATION, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot1);
             },
             this)
             .withTimeout(1.0),

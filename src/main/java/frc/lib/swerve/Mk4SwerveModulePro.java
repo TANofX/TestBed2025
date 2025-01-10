@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -115,8 +116,8 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
 
     rotationEncoder = new CANcoder(encoderCanID, canBus);
     rotationEncoderConfig = new CANcoderConfiguration();
-    rotationEncoderConfig.MagnetSensor.AbsoluteSensorRange =
-        AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    rotationEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint =
+        AbsoluteSensorRange.Signed_PlusMinus180.value;
     rotationEncoderConfig.MagnetSensor.SensorDirection =
         SensorDirectionValue.CounterClockwise_Positive;
     rotationEncoderConfig.MagnetSensor.MagnetOffset =
@@ -160,7 +161,7 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
 
     driveSim = new LinearSystemSim<>(LinearSystemId.identifyVelocitySystem(DRIVE_KV, DRIVE_KA));
     rotationSim =
-        new LinearSystemSim<>(LinearSystemId.identifyPositionSystem(ROTATION_KV, ROTATION_KA));
+        new LinearSystemSim<>(LinearSystemId.identifyPositionSystem.get(ROTATION_KV, ROTATION_KA));
 
     registerHardware("Drive Motor", driveMotor);
     registerHardware("Rotation Motor", rotationMotor);
