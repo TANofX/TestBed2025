@@ -5,22 +5,28 @@
 package frc.lib.pid;
 
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.ClosedLoopConfigAccessor;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 /** Add your docs here. */
 public class TunableSparkPIDController implements TunablePID {
-    private final SparkClosedLoopController pidController;
+    private final SparkBase device;
     private final ClosedLoopSlot slot;
     private final ClosedLoopConfig config;
     private final ClosedLoopConfigAccessor accessor;
+    private final SparkBaseConfig deviceConfig;
     
-    public TunableSparkPIDController(SparkClosedLoopController pid, ClosedLoopSlot pidSlot) {
-        pidController = pid;
+    public TunableSparkPIDController(SparkFlex device, ClosedLoopSlot pidSlot) {
+        this.device  = device;
         slot = pidSlot;
-        config = new ClosedLoopConfig();
+        deviceConfig = new SparkFlexConfig();
+        config = deviceConfig.closedLoop;
+        accessor = device.configAccessor.closedLoop;
         // todo
     }
 
@@ -62,31 +68,37 @@ public class TunableSparkPIDController implements TunablePID {
     @Override
     public void setD(double kD) {
         config.d(kD, slot);
+        device.configure(deviceConfig, null, null);
     }
 
     @Override
     public void setFF(double kFF) {
         config.velocityFF(kFF, slot);
+        device.configure(deviceConfig, null, null);
     }
 
     @Override
     public void setI(double kI) {
         config.i(kI, slot);
+        device.configure(deviceConfig, null, null);
     }
 
     @Override
     public void setIZone(double Izone) {
         config.iZone(Izone, slot);
+        device.configure(deviceConfig, null, null);
     }
 
     @Override
     public void setOutputRange(double minOutput, double maxOutput) {
         config.outputRange(minOutput, maxOutput, slot);
+        device.configure(deviceConfig, null, null);
     }
 
     @Override
     public void setP(double kP) {
-        config.p(kP, slot);     
+        config.p(kP, slot);
+        device.configure(deviceConfig, null, null);
     }
 }
 

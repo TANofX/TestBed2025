@@ -169,8 +169,8 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
     // new LinearSystemSim<>(LinearSystemId.identifyPositionSystem(ROTATION_KV,
     // ROTATION_KA));
 
-    steerTunable = new TunableSparkPIDController(rotationMotor.getClosedLoopController(), ClosedLoopSlot.kSlot1);
-    driveTunable = new TunableSparkPIDController(driveMotor.getClosedLoopController(), ClosedLoopSlot.kSlot0);
+    steerTunable = new TunableSparkPIDController(rotationMotor, ClosedLoopSlot.kSlot1);
+    driveTunable = new TunableSparkPIDController(driveMotor, ClosedLoopSlot.kSlot0);
 
     registerHardware("Drive Motor", driveMotor);
     registerHardware("Rotation Motor", rotationMotor);
