@@ -5,7 +5,6 @@
 package frc.lib.pid;
 
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 
@@ -78,9 +77,9 @@ public class TuneSmartMotionControl extends TuneSparkPIDController {
         maxVel = 2000; // rpm
         maxAcc = 1500;
         allowedErr = 0;
-        /**
+        /*
          * Smart Motion coefficients are set on a SparkPIDController object
-         * 
+         *
          * - setSmartMotionMaxVelocity() will limit the velocity in RPM of
          * the pid controller in Smart Motion mode
          * - setSmartMotionMinOutputVelocity() will put a lower bound in
