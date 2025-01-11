@@ -4,7 +4,9 @@
 
 package frc.lib.pid;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public class TuneSmartMotionControl extends TuneSparkPIDController {
     private double minVel, maxVel, maxAcc, allowedErr;
 
-    public TuneSmartMotionControl(String motorName, SparkBase sparkMotor, Subsystem motorOwner) {
+    public TuneSmartMotionControl(String motorName, SparkFlex sparkMotor, Subsystem motorOwner) {
         super(motorName, sparkMotor, motorOwner);
     }
 
@@ -23,24 +25,24 @@ public class TuneSmartMotionControl extends TuneSparkPIDController {
         super.execute();
 
         double maxV = SmartDashboard.getNumber(name + " Max Velocity", 0);
-        double minV = SmartDashboard.getNumber(name + " Min Velocity", 0);
+        //double minV = SmartDashboard.getNumber(name + " Min Velocity", 0);
         double maxA = SmartDashboard.getNumber(name + " Max Acceleration", 0);
         double allE = SmartDashboard.getNumber(name + " Allowed Closed Loop Error", 0);
 
         if ((maxV != maxVel)) {
-            pidController.setSmartMotionMaxVelocity(maxV, 0);
+            pidConfig.maxMotion.maxVelocity(maxV, ClosedLoopSlot.kSlot0);
             maxVel = maxV;
         }
-        if ((minV != minVel)) {
-            pidController.setSmartMotionMinOutputVelocity(minV, 0);
+        /*if ((minV != minVel)) {
+            pidConfig.maxMotion.minOutputVelocity(minV, ClosedLoopSlot.kSlot0);
             minVel = minV;
-        }
+        }*/
         if ((maxA != maxAcc)) {
-            pidController.setSmartMotionMaxAccel(maxA, 0);
+            pidConfig.maxMotion.maxAcceleration(maxA, ClosedLoopSlot.kSlot0);
             maxAcc = maxA;
         }
         if ((allE != allowedErr)) {
-            pidController.setSmartMotionAllowedClosedLoopError(allE, 0);
+            pidConfig.maxMotion.allowedClosedLoopError(allE, ClosedLoopSlot.kSlot0);
             allowedErr = allE;
         }
 
@@ -48,16 +50,16 @@ public class TuneSmartMotionControl extends TuneSparkPIDController {
         boolean mode = SmartDashboard.getBoolean(name + " Mode", false);
         if (mode) {
             setPoint = SmartDashboard.getNumber(name + " Set Velocity", 0);
-            pidController.setReference(setPoint, SparkMax.ControlType.kVelocity);
+            tuningController.getClosedLoopController().setReference(setPoint, SparkMax.ControlType.kVelocity);
             processVariable = encoder.getVelocity();
         } else {
             setPoint = SmartDashboard.getNumber(name + " Set Position", 0);
-            /**
+            /*
              * As with other PID modes, Smart Motion is set by calling the
              * setReference method on an existing pid object and setting
              * the control type to kSmartMotion
              */
-            pidController.setReference(setPoint, SparkMax.ControlType.kSmartMotion);
+            tuningController.getClosedLoopController().setReference(setPoint, SparkMax.ControlType.kMAXMotionPositionControl);
             processVariable = encoder.getPosition();
         }
 
@@ -88,11 +90,11 @@ public class TuneSmartMotionControl extends TuneSparkPIDController {
          * - setSmartMotionAllowedClosedLoopError() will set the max allowed
          * error for the pid controller in Smart Motion mode
          */
-        int smartMotionSlot = 0;
-        pidController.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
-        pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
-        pidController.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
-        pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
+        ClosedLoopSlot smartMotionSlot = ClosedLoopSlot.kSlot0;
+        pidConfig.maxMotion.maxVelocity(maxVel, smartMotionSlot);
+        //pidConfig.maxMotion.minOutputVelocity(minVel, smartMotionSlot);
+        pidConfig.maxMotion.maxAcceleration(maxAcc, smartMotionSlot);
+        pidConfig.maxMotion.allowedClosedLoopError(allowedErr, smartMotionSlot);
 
         //encoder.setPosition(0.0);
 

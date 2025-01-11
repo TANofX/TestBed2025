@@ -4,17 +4,19 @@
 
 package frc.lib.pid;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import com.revrobotics.spark.SparkFlex;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Add your docs here. */
 public class TunePositionController extends TuneSparkPIDController {
 
-    public TunePositionController(String motorName, SparkBase sparkMotor, Subsystem motorOwner) {
-        super(motorName, sparkMotor, motorOwner, 1);
+    public TunePositionController(String motorName, SparkFlex sparkMotor, Subsystem motorOwner) {
+        super(motorName, sparkMotor, motorOwner, ClosedLoopSlot.kSlot1);
     }
 
     private double targetPosition;
@@ -34,7 +36,7 @@ public class TunePositionController extends TuneSparkPIDController {
         double target = SmartDashboard.getNumber(name + " Target Position", 0.0);
     
         if (target != targetPosition) {
-            pidController.setReference(target, ControlType.kPosition, pidSlot);
+            tuningController.getClosedLoopController().setReference(target, ControlType.kPosition, pidSlot);
             targetPosition = target;
         }
         double error = (target-encoder.getPosition())/target;

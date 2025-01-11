@@ -4,38 +4,43 @@
 
 package frc.lib.pid;
 
-import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.ClosedLoopConfigAccessor;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class TuneSparkPIDController extends Command {
-  protected SparkBase tuningController;
+  protected SparkFlex tuningController;
 
   protected RelativeEncoder encoder;
-  protected SparkClosedLoopController pidController;
+  protected ClosedLoopConfig pidConfig;
+  protected SparkFlexConfig motorConfig = new SparkFlexConfig();
 
   private double kP, kI, kD, kFF, kMin, kMax, kiZ;
 
   protected String name;
 
-  protected int pidSlot = 0;
+  protected ClosedLoopSlot pidSlot = ClosedLoopSlot.kSlot0;
 
   /** Creates a new TuneSparkPIDController. */
-  public TuneSparkPIDController(String motorName, SparkBase sparkMotor, Subsystem motorOwner) {
+  public TuneSparkPIDController(String motorName, SparkFlex sparkMotor, Subsystem motorOwner) {
     tuningController = sparkMotor;
     encoder = tuningController.getEncoder();
-    pidController = tuningController.getClosedLoopController();
+    pidConfig = motorConfig.closedLoop;
 
     name = motorName;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(motorOwner);
   }
 
-  public TuneSparkPIDController(String motorName, SparkBase sparkMotor, Subsystem motorOwner, int slot) {
+  public TuneSparkPIDController(String motorName, SparkFlex sparkMotor, Subsystem motorOwner, ClosedLoopSlot slot) {
     this(motorName, sparkMotor, motorOwner);
 
     pidSlot = slot;
@@ -43,13 +48,14 @@ public class TuneSparkPIDController extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    kP = pidController.getP(pidSlot);
-    kI = pidController.getI(pidSlot);
-    kD = pidController.getD(pidSlot);
-    kFF = pidController.getFF(pidSlot);
-    kiZ = pidController.getIZone(pidSlot);
-    kMin = pidController.getOutputMin(pidSlot);
-    kMax = pidController.getOutputMax(pidSlot);
+    ClosedLoopConfigAccessor config = tuningController.configAccessor.closedLoop;
+    kP = config.getP(pidSlot);
+    kI = config.getI(pidSlot);
+    kD = config.getD(pidSlot);
+    kFF = config.getFF(pidSlot);
+    kiZ = config.getIZone(pidSlot);
+    kMin = config.getMinOutput(pidSlot);
+    kMax = config.getMaxOutput(pidSlot);
 
     SmartDashboard.putNumber(name + " P Gain", kP);
     SmartDashboard.putNumber(name + " I Gain", kI);
@@ -71,16 +77,18 @@ public class TuneSparkPIDController extends Command {
     double min = SmartDashboard.getNumber(name + " Min Output", 0);
     double max = SmartDashboard.getNumber(name + " Max Output", 0);
 
-    if (p != kP) { pidController.setP(p, pidSlot); kP = p; }
-    if (i != kI) { pidController.setI(i, pidSlot); kI = i; }
-    if (d != kD) { pidController.setD(d, pidSlot); kD = d; }
-    if (iz != kiZ) { pidController.setIZone(iz, pidSlot); kiZ = iz; }
-    if (ff != kFF) { pidController.setFF(ff, pidSlot); kFF = ff; }
+    if (p != kP) { pidConfig.p(p, pidSlot); kP = p; }
+    if (i != kI) { pidConfig.i(i, pidSlot); kI = i; }
+    if (d != kD) { pidConfig.d(d, pidSlot); kD = d; }
+    if (iz != kiZ) { pidConfig.iZone(iz, pidSlot); kiZ = iz; }
+    if (ff != kFF) { pidConfig.velocityFF(ff, pidSlot); kFF = ff; }
     if ((max != kMax) || (min != kMin)) {
-      pidController.setOutputRange(min, max, pidSlot);
+      pidConfig.outputRange(min, max, pidSlot);
       kMin = min;
       kMax = max;
     }
+
+    tuningController.configure(motorConfig, null, null);
   }
 
   // Called once the command ends or is interrupted.
