@@ -16,6 +16,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.LinearAcceleration;
 //import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -40,12 +42,12 @@ public class Swerve extends AdvancedSubsystem {
 
   protected final Pigeon2 imu;
   protected final Pigeon2SimState imuSim;
-  protected final StatusSignal<Double> imuRollSignal;
-  protected final StatusSignal<Double> imuPitchSignal;
-  protected final StatusSignal<Double> imuYawSignal;
+  protected final StatusSignal<Angle> imuRollSignal;
+  protected final StatusSignal<Angle> imuPitchSignal;
+  protected final StatusSignal<Angle> imuYawSignal;
   // protected final StatusSignalValue<Double> imuAccelXSignal;
   // protected final StatusSignalValue<Double> imuAccelYSignal;
-  protected final StatusSignal<Double> imuAccelZSignal;
+  protected final StatusSignal<LinearAcceleration> imuAccelZSignal;
 
   private final RobotPoseLookup<Pose2d> poseLookup;
 
@@ -313,15 +315,15 @@ public class Swerve extends AdvancedSubsystem {
    * @return Rotation2d representing the yaw of the robot
    */
   public Rotation2d getYaw() {
-    return Rotation2d.fromDegrees(imuYawSignal.getValue());
+    return Rotation2d.fromDegrees(imuYawSignal.getValueAsDouble());
   }
 
   public double getPitch() {
-    return imuPitchSignal.getValue();
+    return imuPitchSignal.getValueAsDouble();
   }
 
   public double getRoll() {
-    return imuRollSignal.getValue();
+    return imuRollSignal.getValueAsDouble();
   }
 
   /**
@@ -343,9 +345,9 @@ public class Swerve extends AdvancedSubsystem {
    */
   public Vector3 getAcceleration() {
     return new Vector3(
-        imu.getAccelerationX().getValue(),
-        imu.getAccelerationY().getValue(),
-        imu.getAccelerationZ().getValue());
+        imu.getAccelerationX().getValueAsDouble(),
+        imu.getAccelerationY().getValueAsDouble(),
+        imu.getAccelerationZ().getValueAsDouble());
   }
 
   /**
