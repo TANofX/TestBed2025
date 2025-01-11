@@ -4,8 +4,8 @@
 
 package frc.lib.pid;
 
-import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -15,7 +15,7 @@ public class TuneVelocitySparkPIDController extends TuneSparkPIDController {
 
     private double targetVelocity;
 
-    public TuneVelocitySparkPIDController(String motorName, CANSparkBase sparkMotor, Subsystem motorOwner) {
+    public TuneVelocitySparkPIDController(String motorName, SparkBase sparkMotor, Subsystem motorOwner) {
         super(motorName, sparkMotor, motorOwner);
     }
 
