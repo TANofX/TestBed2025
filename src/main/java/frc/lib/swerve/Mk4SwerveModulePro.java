@@ -11,14 +11,12 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -69,7 +67,7 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
 
   public final ModuleCode moduleCode;
   private final LinearSystemSim<N1, N1, N1> driveSim;
-  private final LinearSystemSim<N2, N1, N1> rotationSim;
+  private final LinearSystemSim<N1, N1, N1> rotationSim;
 
   private final TalonFX driveMotor;
   private final TalonFXSimState driveSimState;
@@ -116,8 +114,7 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
 
     rotationEncoder = new CANcoder(encoderCanID, canBus);
     rotationEncoderConfig = new CANcoderConfiguration();
-    rotationEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint =
-        AbsoluteSensorRange.Signed_PlusMinus180.value;
+    rotationEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     rotationEncoderConfig.MagnetSensor.SensorDirection =
         SensorDirectionValue.CounterClockwise_Positive;
     rotationEncoderConfig.MagnetSensor.MagnetOffset =
@@ -220,7 +217,8 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
    * @param desiredState Desired state of the module
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    this.targetState = SwerveModuleState.optimize(desiredState, getState().angle);
+    desiredState.optimize(getState().angle);
+    this.targetState = desiredState;
 
     // Don't run the motors if the desired speed is less than 5% of the max
     if (Math.abs(desiredState.speedMetersPerSecond) < DRIVE_MAX_VEL * 0.01) {
@@ -364,7 +362,7 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
     }
 
     targetState = new SwerveModuleState(0, Rotation2d.fromDegrees(targetAngle));
-    targetState = SwerveModuleState.optimize(targetState, getRotation());
+    targetState.optimize(getRotation());
 
     double deltaRot = targetState.angle.getDegrees() - getAbsoluteRotationDegrees();
     if (deltaRot > 180) {
@@ -468,7 +466,7 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
                   }
                 },
                 this))
-        .until(() -> getFaults().size() > 0)
+        .until(() -> !getFaults().isEmpty())
         .andThen(Commands.runOnce(this::stopMotors, this));
   }
 }
