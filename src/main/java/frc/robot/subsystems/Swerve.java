@@ -184,6 +184,7 @@ public class Swerve extends AdvancedSubsystem {
         modules[2].getTargetState(),
         modules[3].getTargetState()
     };
+
     targetModuleStatesPublisher.set(targetModuleStates);
 
     gyroPublisher.set(getYaw());
@@ -194,6 +195,8 @@ public class Swerve extends AdvancedSubsystem {
         new double[] {
             currentPose.getX(), currentPose.getY(), currentPose.getRotation().getDegrees()
         });
+    SmartDashboard.putNumber("Swerve/FLEncoderAngle", modules[0].getAbsoluteRotationDegrees());
+    SmartDashboard.putNumber("Swerve/FLRelativeAngle", modules[0].getRelativeRotationDegrees());
     // SmartDashboard.putNumber("OdometryX", currentPose.getX());
     // SmartDashboard.putNumber("OdometryY", currentPose.getY());
     // SmartDashboard.putNumber("OdometryR", currentPose.getRotation().getDegrees());
