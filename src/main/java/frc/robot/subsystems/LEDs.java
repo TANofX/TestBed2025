@@ -251,6 +251,9 @@ public class LEDs extends AdvancedSubsystem {
     }
 
     public void changeAnimation(AnimationTypes toChange) {
+        // Temporary disable CANdle animation
+        // Ignore the complaint
+        if(true) return;
         m_candle.clearAnimation(m_candleChannel);
         m_currentAnimation = toChange;
 
