@@ -3,15 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
-import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.SwerveDriveWithGamepad;
 import frc.robot.commands.Notifications;
 
 import frc.robot.subsystems.*;

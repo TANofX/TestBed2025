@@ -250,6 +250,7 @@ public class LEDs extends AdvancedSubsystem {
         m_candle.configStatusLedState(offWhenActive, 0);
     }
 
+    @SuppressWarnings("unused")
     public void changeAnimation(AnimationTypes toChange) {
         // Temporary disable CANdle animation
         // Ignore the complaint

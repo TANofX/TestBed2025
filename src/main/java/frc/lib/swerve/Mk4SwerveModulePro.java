@@ -102,6 +102,7 @@ public class Mk4SwerveModulePro extends AdvancedSubsystem {
    * @param encoderCanID The CAN ID of the rotation CANCoder
    * @param canBus The name of the can bus the devices are connected to.
    */
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public Mk4SwerveModulePro(
       ModuleCode moduleCode,
       int driveMotorCanID,
