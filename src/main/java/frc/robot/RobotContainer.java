@@ -6,6 +6,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
+import frc.robot.commands.Notifications;
 import frc.robot.subsystems.*;
 
 
@@ -18,7 +19,7 @@ public class RobotContainer {
 
   // Subsystems
   public static final Swerve swerve = new Swerve();// new Swerve();
-  // public static final LEDs LEDs = new LEDs();
+  public static final LEDs LEDs = new LEDs();
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
 
@@ -28,7 +29,7 @@ public class RobotContainer {
   public RobotContainer() {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
-    // LEDs.setDefaultCommand(new Notifications());
+    LEDs.setDefaultCommand(new Notifications());
    
     
 
