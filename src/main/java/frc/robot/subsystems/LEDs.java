@@ -84,7 +84,7 @@ public class LEDs extends AdvancedSubsystem {
         strip.setData(buffer);
         strip.start();
 
-        activePattern = greenPattern;
+        activePattern = rainbow;
     }
 
     @Override
