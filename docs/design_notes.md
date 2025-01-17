@@ -1,9 +1,6 @@
 > [!NOTE]
 > All information in this document are prototype based ideas and must be taken with caution...
 
-> [!WARNING]
-> Elevator Function has not been planned out yet due to insufficient information on prototype/elevator mechanism
-
 <details>
 <summary>:frog: Algae Handler Function</summary>
   
