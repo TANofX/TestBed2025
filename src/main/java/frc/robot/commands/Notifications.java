@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.input.controllers.rumble.RumbleOff;
-import frc.lib.input.controllers.rumble.RumbleSinWave;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.LEDs.AnimationTypes;
 
@@ -47,23 +45,8 @@ public class Notifications extends Command {
 
    if (priorState != currentState) {
     switch (currentState) {
-      case HAS_NOTE:
-        RobotContainer.LEDs.changeAnimation(AnimationTypes.OneColorGreen);
-        break;
-      case FC_ACTIVE:
-        RobotContainer.LEDs.changeAnimation(AnimationTypes.OneColorYellow);
-        break;
-      case FC_SHOOTER_READY:
-        RobotContainer.LEDs.changeAnimation(AnimationTypes.OneColorBlue);
-        break;
-      case FC_SPEAKER_READY:
-        RobotContainer.LEDs.changeAnimation(AnimationTypes.Empty);
-        break;
-      case AMP_READY:
-        RobotContainer.LEDs.changeAnimation(AnimationTypes.OneColorOrange);
-        break;
       default:
-        RobotContainer.LEDs.changeAnimation(AnimationTypes.OneColorRed);
+        RobotContainer.LEDs.changeAnimation(AnimationTypes.OneColorGreen);
         break;
     }
    }
@@ -75,7 +58,7 @@ public class Notifications extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.LEDs.changeAnimation(AnimationTypes.SetAll);
+    RobotContainer.LEDs.changeAnimation(AnimationTypes.Rainbow);
   }
 
   // Returns true when the command should end.

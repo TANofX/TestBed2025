@@ -51,10 +51,12 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.subsystem.AdvancedSubsystem;
@@ -64,23 +66,13 @@ public class LEDs extends AdvancedSubsystem {
     private AddressableLEDBuffer buffer;
     private LEDPattern rainbow = LEDPattern.rainbow(255, 128)
         .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(1 / 120.0));
+    private LEDPattern greenPattern = LEDPattern.solid(Color.kGreen)
+        .breathe(Seconds.of(5));
     private LEDPattern activePattern;
 
     public enum AnimationTypes {
-        ColorFlow,
-        Fire,
-        Larson,
-        Rainbow,
-        RgbFade,
-        SingleFade,
-        Strobe,
-        Twinkle,
-        TwinkleOff,
-        SetAll,
-        OneColorRed,
-        OneColorBlue,
         OneColorGreen,
-        Empty, OneColorOrange, OneColorYellow
+        Rainbow
     }
 
     public LEDs() {
@@ -92,7 +84,7 @@ public class LEDs extends AdvancedSubsystem {
         strip.setData(buffer);
         strip.start();
 
-        activePattern = rainbow;
+        activePattern = greenPattern;
     }
 
     @Override
@@ -103,6 +95,15 @@ public class LEDs extends AdvancedSubsystem {
 
     public void changeAnimation(AnimationTypes anim) {
         // TODO Auto-generated method stub
+        switch(anim) {
+            case OneColorGreen:
+                activePattern = greenPattern;
+                break;
+            default:
+            case Rainbow:
+                activePattern = rainbow;
+                break;
+        }
     }
     
     @Override
