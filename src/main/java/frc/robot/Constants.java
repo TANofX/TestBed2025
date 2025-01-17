@@ -21,6 +21,7 @@ public final class Constants {
 
   static {
     try {
+      // TODO AprilTagFields update
       apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
       apriltagLayout.getFieldLength();
       apriltagLayout.getFieldWidth();
@@ -32,22 +33,10 @@ public final class Constants {
   public static final Translation2d fieldSize = new Translation2d(16.54, 8.02);
   public static final double noteTransferMetersPerSecond = 0.5;
 
-
-   public static final class LEDs {
-   public static final int CANdleID = 4;
-    public static final int JoystickId = 0;
-    public static final int IncrementAnimButton = XboxController.Button.kRightBumper.value;
-    public static final int DecrementAnimButton = XboxController.Button.kLeftBumper.value;
-    public static final int BlockButton = XboxController.Button.kStart.value;
-    public static final int MaxBrightnessAngle = 90;
-    public static final int MidBrightnessAngle = 180;
-    public static final int ZeroBrightnessAngle = 270;
-    public static final int ChangeDirectionAngle = 0;
-    public static final int VbatButton = XboxController.Button.kA.value;
-    public static final int V5Button = XboxController.Button.kB.value;
-    public static final int CurrentButton = XboxController.Button.kX.value;
-    public static final int TemperatureButton = XboxController.Button.kY.value;
-}
+  public static final class LEDs {
+    public static final int stripPwm = 0;
+    public static final int stripLength = 150;
+  }
 
   public static final class Swerve {
     public static final int imuCanID = 3;
@@ -67,8 +56,10 @@ public final class Constants {
     }
 
     public static final class PathFollowing {
-      // public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
-      // public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(2.0, 0.0, 0.0);
+      // public static final PIDConstants TRANSLATION_CONSTANTS = new
+      // PIDConstants(5.0, 0.0, 0.0);
+      // public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(2.0,
+      // 0.0, 0.0);
     }
 
     public static final class FrontLeftModule {
@@ -105,7 +96,8 @@ public final class Constants {
   }
 
   public static final class AutoBalance {
-    // public static final PIDConstants BALANCE_CONSTANTS = new PIDConstants(0.3, 0.0, 0.1);
+    // public static final PIDConstants BALANCE_CONSTANTS = new PIDConstants(0.3,
+    // 0.0, 0.1);
     public static final double maxVelAuto = 0.4;
     public static final double maxVelTele = 0.3;
   }
@@ -128,7 +120,7 @@ public final class Constants {
     public static final Transform2d SHOOTER_OFFSET = new Transform2d(Units.inchesToMeters(-6), Units.inchesToMeters(0),
         Rotation2d.fromDegrees(180));
     public static final Rotation2d AZMUTH_OFFSET = Rotation2d.fromDegrees(5.0);
-    public static final Translation2d FEEDOFFSET = new Translation2d(0,1.5);
+    public static final Translation2d FEEDOFFSET = new Translation2d(0, 1.5);
   }
 
   public static final class Elevator {
@@ -147,18 +139,5 @@ public final class Constants {
     public static final double elevatorMotorMaxVelocity = 5500;
     public static final double elevatorMotorMaxAcceleration = 10000;
     public static final double elevatorMotorClosedLoppError = 2;
-  }
-
-  public static final class LEDStrip {
-    public static final int numLEDs = 45;
-
-    public static final int candleID = 4;
-    public static final int swerveLED = 0;
-    public static final int pinkArmLED = 1;
-    public static final int turretLED = 2;
-    public static final int intakeLED = 3;
-    public static final int jawLED = 4;
-    public static final int stealerLED = 5;
-    public static final int manhattanLED = 6;
   }
 }

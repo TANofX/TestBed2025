@@ -53,6 +53,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -60,6 +62,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.subsystem.AdvancedSubsystem;
+import frc.robot.Constants;
 
 public class LEDs extends AdvancedSubsystem {
     private AddressableLED strip;
@@ -68,17 +71,21 @@ public class LEDs extends AdvancedSubsystem {
         .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(1 / 120.0));
     private LEDPattern greenPattern = LEDPattern.solid(Color.kGreen)
         .breathe(Seconds.of(5));
+    private LEDPattern bluePattern = LEDPattern.solid(Color.kBlue);
+    private LEDPattern orangePattern = LEDPattern.solid(Color.kOrange);
     private LEDPattern activePattern;
 
     public enum AnimationTypes {
         OneColorGreen,
+        OneColorBlue,
+        OneColorOrange,
         Rainbow
     }
 
     public LEDs() {
         // TODO Move constants to Constants class
-        strip = new AddressableLED(0);
-        buffer = new AddressableLEDBuffer(150);
+        strip = new AddressableLED(Constants.LEDs.stripPwm);
+        buffer = new AddressableLEDBuffer(Constants.LEDs.stripLength);
 
         strip.setLength(buffer.getLength());
         strip.setData(buffer);
@@ -94,11 +101,16 @@ public class LEDs extends AdvancedSubsystem {
     }
 
     public void changeAnimation(AnimationTypes anim) {
-        // TODO Auto-generated method stub
         switch(anim) {
             case OneColorGreen:
                 activePattern = greenPattern;
                 break;
+            case OneColorBlue:
+                activePattern = bluePattern;
+                break;
+            case OneColorOrange:
+                // TODO Change 0.5 to (1/pigeon rotation)
+                activePattern = LEDPattern.steps(Map.of(0, Color.kBlack, 0.5, Color.kOrange));
             default:
             case Rainbow:
                 activePattern = rainbow;
