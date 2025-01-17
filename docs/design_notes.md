@@ -3,8 +3,11 @@
 
 > [!WARNING]
 > Elevator Function has not been planned out yet due to insufficient information on prototype/elevator mechanism
+
 <details>
 <summary>:frog: Algae Handler Function</summary>
+  
+  \
   Vertical Position -> in robot perimeter
   \
   Horizontal Position -> out of robot perimeter
@@ -18,7 +21,7 @@
   - Solenoid: Horizontal Position
 
 ### Has Algae
-  - Hit Beam Brake
+  - Hit Limit Switch
     - Stop Motor
     - No Motor Movement: No Spin
     - Solenoid: Vertical Position
@@ -29,56 +32,78 @@
   - Solenoid: Vertical Position
   - Hold
     - Limit and Hall Effect both switched: Stop Running
-    - Hall Effect w/o Limit: Run until Limit pressed
+    - Hall Effect w/o Limit: Run Motor until Limit pressed
 
 ### Outtake Position
-  - Motor Movement: Neg. Spin -> Timed
+  - Motor Movement: Neg. Spin -> Timed?
   - Solenoid: Vertical Position
   - End Hold
+    
 </details>
 <details>
 <summary> :shell: Coral Handler Function </summary>
+
+  >👓 Use encoders for accurate LR and Vertical Positioning?
+  >\
+  >🛑 Possible Limit Switches for protection, not guaranteed
+  
   Intake Position -> Down Position
   \
   Outtake Lvl 1 Position -> 45 Angle Outtake (+ error)
 
 ### Starting Position
-  - LR Motor: Right
   - Outtake Motor: No Spin
+    - Coral Limit Switch: not hit
+  - LR Motor: Right
   - Vertical Motor: Intake Position
-  - Elevator Height/Level?
+  - Elevator Position: Start
+
 
 ### Intake Position
+  - Outtake Motor: Neg. Spin until Coral Limit Switch hit
+    - Coral Limit Switch: hit
   - LR Motor: Right
-  - Outtake Motor: Neg. Spin
   - Vertical Motor: Intake Position
-  - Elevator Height/Level?
+  - Elevator Position: Start
+
 
 ## :fishing_pole_and_fish: Reef Positioning States
 
 ### Left Trough Position
+  - Outtake Motor: Spin
+    - Coral Limit Switch: not hit
   - LR Motor: Base off of Odom
-  - Motor: Spin
-  - Vertical Motor: Outtake Lvl 1 Position
-  - Elevator Height/Level?
+  - Vertical Motor: Outtake Level 1 Position
+  - Elevator Position: Start
 
 ### Right Trough Position
+  - Outtake Motor: Spin
+    - Coral Limit Switch: not hit
   - LR Motor: Base off of Odom
-  - Motor: Spin
-  - Vertical Motor: Outtake Lvl 1 Position
-  - Elevator Height/Level?
+  - Vertical Motor: Outtake Level 1 Position
+  - Elevator Position: Start
 
-### Reef Lvl 2/3 Position
+### Reef Level 2 Position
+  - Outtake Motor: Spin
+    - Coral Limit Switch: not hit
   - LR Motor: Base off of Odom
-  - Motor: Spin
-  - Vertical Motor: Outtake Lvl 2/3 Position
-  - Elevator Height/Level?
+  - Vertical Motor: Outtake Level 2 Position
+  - Elevator Position: Level 2
+    
+### Reef Level 3 Position
+  - Outtake Motor: Spin
+    - Coral Limit Switch: not hit
+  - LR Motor: Base off of Odom
+  - Vertical Motor: Outtake Level 3 Position
+  - Elevator Position: Level 2
 
-### Reef Lvl 4 Position
+### Reef Level 4 Position
+  - Outtake Motor: Spin
+    - Coral Limit Switch: not hit
   - LR Motor: Base off of Odom
-  - Motor: Spin
-  - Vertical Motor: Outtake Lvl 4 Position
-  - Elevator Height/Level?
+  - Vertical Motor: Outtake Level 4 Position
+  - Elevator Position: Level 4
+
   > ⚠️
   > Do not know about a possible Ending Position.
 
@@ -87,24 +112,34 @@
 <details>
 <summary> :diving_mask: Elevator Function </summary>
 
-### Intake Position
-  - 
-
-### Left/Right Trough Position
-  -
+### Start (& Intake + Trough) Position
+  - Ele. Motor: Rev. Spin until bottom limit swtich hit
+  - Bottom Limit Switch: hit
+  - Top Limit Switch: not hit
   
 ### Level 2 Position
-  -
+  - Ele. Motor: Spin until rotation/height reached (**calculate**)
+    - use encoder for rotation measurment 
+  - Bottom Limit Switch: not hit
+  - Top Limit Switch: not hit
   
 ### Level 3 Position
-  -
+  - Ele. Motor: Spin until rotation/height reached (**calculate**)
+    - use encoder for rotation measurment 
+  - Bottom Limit Switch: not hit
+  - Top Limit Switch: not hit
   
-### Level 4 Position
-  - 
+### Level 4 Position  
+  - Ele. Motor: Spin until rotation/height reached (**calculate**)
+      - use encoder for rotation measurment
+  - Bottom Limit Switch: not hit
+  - Top Limit Switch: hit
 </details>
 
 <details>
 <summary> :crab: Climber Function </summary>
+
+  ##### Posibility of using M Solenoid for sensor?
 
 ### Start Position
   - Up/Down Motor: Up Position, No Spin
@@ -123,8 +158,12 @@
   - Clamp Solenoid: Closed Position
     
 </details>
+
 <details>
 <summary> :droplet: LEDs Function </summary>
-  - Turned On & Connected: Rainbow
-  - Coral Intaked: Green
+  
+    Turned On & Connected: Rainbow
+    Coral Intaked: Green
+    Algae Intaked: Orange
+    Robot Balanced?: Blue
 </details>
