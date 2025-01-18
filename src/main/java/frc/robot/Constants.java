@@ -144,16 +144,17 @@ public final class Constants {
     public static final int outtakeMotorID = 0;
     //Do we need?
     //public static final int outtakeEncoderID = 0;
-    public static final int LRMotorID = 0;
-    public static final int LREncoderID = 0;
-    public static final double LRMotorP = 0;
-    public static final double LRMotorI = 0;
-    public static final double LRMotorD = 0;
-    public static final double LRMotorFeedForward = 0;
-    public static final double LRMotorIZone = 0;
-    public static final double LRMotorMaxAccleration = 0;
-    public static final double LRMotorMaxVelocity = 0;
-    public static final double LRMotorClosedLoopError = 0;
+    public static final int horizontalMotorID = 0;
+    public static final int horizontalEncoderID = 0;
+    public static final double horizontalMotorP = 0;
+    public static final double horizontalMotorI = 0;
+    public static final double horizontalMotorD = 0;
+    public static final double horizontalMotorFeedForward = 0;
+    public static final double horizontalMotorIZone = 0;
+    public static final double horizontalMotorMaxAccleration = 0;
+    public static final double horizontalMotorMaxVelocity = 0;
+    public static final double horizontalMotorClosedLoopError = 0;
+
     public static final int verticalMotorID = 0;
     public static final int verticalMotorEncoderID = 0;
     public static final double verticalMotorP = 0;
@@ -163,7 +164,8 @@ public final class Constants {
     public static final double verticalMotorIZone = 0;
     public static final double verticalMotorMaxAccleration = 0;
     public static final double verticalMotorMaxVelocity = 0;
-    public static final double verticalMotorClosedLoopError = 0;    
+    public static final double verticalMotorClosedLoopError = 0;
+        
   }
 
 }

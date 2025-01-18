@@ -12,56 +12,57 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.EncoderConfig;
-import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.subsystem.AdvancedSubsystem;
 import frc.robot.Constants;
 
 
-public class CoralHandler extends SubsystemBase {
+public class CoralHandler extends AdvancedSubsystem {
   /** Creates a new CoralHandler. */
   //Creation of Motors, Encoders, and Limitswitch for CoralHandler Subsystem
   private final SparkFlex outtakeMotor = new SparkFlex(Constants.CoralHandler.outtakeMotorID, MotorType.kBrushless);
-  //private final SparkClosedLoopController outtakeMotorController = outtakeMotor.getClosedLoopController();
-  private final SparkFlex LRMotor = new SparkFlex(Constants.CoralHandler.LRMotorID, MotorType.kBrushless);
-  //private final SparkClosedLoopController LRMotorController = LRMotor.getClosedLoopController();
-  private final CANcoder LREncoder = new CANcoder(Constants.CoralHandler.LREncoderID);
+  private final SparkFlex horizontalMotor = new SparkFlex(Constants.CoralHandler.horizontalMotorID, MotorType.kBrushless);
+  private final SparkClosedLoopController horizontalMotorController = horizontalMotor.getClosedLoopController();
+  private final CANcoder horizontalEncoder = new CANcoder(Constants.CoralHandler.horizontalEncoderID);
   private final SparkFlex verticalMotor = new SparkFlex(Constants.CoralHandler.verticalMotorID, MotorType.kBrushless);
-  //private final SparkClosedLoopController verticalMotorController = verticalMotor.getClosedLoopController();
-  private final CANcoder verticalMotorEncoder = new CANcoder(Constants.CoralHandler.verticalMotorEncoderID);
-  //private final SparkLimitSwitch coralLimitSwitch = outtakeMotor.getForwardLimitSwitch();
+  private final SparkClosedLoopController verticalMotorController = verticalMotor.getClosedLoopController();
+  private final CANcoder verticalEncoder = new CANcoder(Constants.CoralHandler.verticalMotorEncoderID);
+  private final SparkLimitSwitch coralLimitSwitch = outtakeMotor.getForwardLimitSwitch();
   //Type.kNormallyOpen?
   
   public CoralHandler() {
+    registerHardware("Coral Intake/Outtake Motor", outtakeMotor);
+    registerHardware("Coral Horizontal Motor", horizontalMotor);
+    registerHardware("Coral Horizontal Encoder", horizontalEncoder);
+    registerHardware("Coral Vertical Motor", verticalMotor);
+    registerHardware("Coral Vertical Encoder", verticalEncoder);
+
     //Using SparkFlexConfig, ClosedLoopConfig (also called PIDConfig), and CANcoderConfig to input the needed parameters for Coral Handler Motors
     SparkFlexConfig outtakeConfig = new SparkFlexConfig();
     outtakeConfig.inverted(false);
     outtakeConfig.idleMode(IdleMode.kBrake);
     outtakeMotor.configure(outtakeConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-    SparkFlexConfig LRMotorConfig = new SparkFlexConfig();
-    ClosedLoopConfig LRMotorPIDConfig = LRMotorConfig.closedLoop;
-    CANcoderConfiguration LREncoderConfig = new CANcoderConfiguration();
-    LRMotorConfig.inverted(false);
-    LRMotorConfig.idleMode(IdleMode.kBrake);
-    LRMotorPIDConfig.pid(Constants.CoralHandler.LRMotorP, Constants.CoralHandler.LRMotorI, Constants.CoralHandler.LRMotorD);
-    LRMotorPIDConfig.velocityFF(Constants.CoralHandler.LRMotorFeedForward);
-    LRMotorPIDConfig.iZone(Constants.CoralHandler.LRMotorIZone);
-    LRMotorPIDConfig.maxMotion.maxAcceleration(Constants.CoralHandler.LRMotorMaxAccleration);
-    LRMotorPIDConfig.maxMotion.maxVelocity(Constants.CoralHandler.LRMotorMaxVelocity);
-    LRMotorPIDConfig.maxMotion.allowedClosedLoopError(Constants.CoralHandler.LRMotorClosedLoopError);
-    LREncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    LREncoderConfig.MagnetSensor.MagnetOffset = Preferences.getDouble("horizontalRotationalOffset", 0);
-    LRMotor.configure(LRMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-    LREncoder.getConfigurator().apply(LREncoderConfig);
+    SparkFlexConfig horizontalMotorConfig = new SparkFlexConfig();
+    ClosedLoopConfig horizontalMotorPIDConfig = horizontalMotorConfig.closedLoop;
+    CANcoderConfiguration horizontalEncoderConfig = new CANcoderConfiguration();
+    horizontalMotorConfig.inverted(false);
+    horizontalMotorConfig.idleMode(IdleMode.kBrake);
+    horizontalMotorPIDConfig.pid(Constants.CoralHandler.horizontalMotorP, Constants.CoralHandler.horizontalMotorI, Constants.CoralHandler.horizontalMotorD);
+    horizontalMotorPIDConfig.velocityFF(Constants.CoralHandler.horizontalMotorFeedForward);
+    horizontalMotorPIDConfig.iZone(Constants.CoralHandler.horizontalMotorIZone);
+    horizontalMotorPIDConfig.maxMotion.maxAcceleration(Constants.CoralHandler.horizontalMotorMaxAccleration);
+    horizontalMotorPIDConfig.maxMotion.maxVelocity(Constants.CoralHandler.horizontalMotorMaxVelocity);
+    horizontalMotorPIDConfig.maxMotion.allowedClosedLoopError(Constants.CoralHandler.horizontalMotorClosedLoopError);
+    horizontalEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    horizontalEncoderConfig.MagnetSensor.MagnetOffset = Preferences.getDouble("horizontalRotationalOffset", 0);
+    horizontalMotor.configure(horizontalMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+    horizontalEncoder.getConfigurator().apply(horizontalEncoderConfig);
 
     SparkFlexConfig verticalMotorConfig = new SparkFlexConfig();
     ClosedLoopConfig verticalMotorPIDConfig = verticalMotorConfig.closedLoop;
@@ -74,14 +75,50 @@ public class CoralHandler extends SubsystemBase {
     verticalMotorPIDConfig.maxMotion.maxAcceleration(Constants.CoralHandler.verticalMotorMaxAccleration);
     verticalMotorPIDConfig.maxMotion.maxVelocity(Constants.CoralHandler.verticalMotorMaxVelocity);
     verticalMotorPIDConfig.maxMotion.allowedClosedLoopError(Constants.CoralHandler.verticalMotorClosedLoopError);
-    verticalMotor.configure(LRMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    verticalMotor.configure(verticalMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
     verticalEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     verticalEncoderConfig.MagnetSensor.MagnetOffset = Preferences.getDouble("verticalRotationalOffset", 0);
-    verticalMotorEncoder.getConfigurator().apply(verticalEncoderConfig);
+    verticalEncoder.getConfigurator().apply(verticalEncoderConfig);
+  }
+//methods for stopping specific motors
+  public void stopOuttakeMotor() {
+    outtakeMotor.stopMotor();
   }
 
+  public void stopHorizontalMotor() {
+    horizontalMotor.stopMotor();
+  }
+
+  public void stopVerticalMotor() {
+    verticalMotor.stopMotor();
+  }
+  
+  public void stopMotors() {
+    outtakeMotor.stopMotor();
+    horizontalMotor.stopMotor();
+    verticalMotor.stopMotor();
+  }
+  
+  public boolean hasCoral() {
+    return coralLimitSwitch.isPressed();
+  }
+
+  public void runOuttakeMotor(double outtakeMotorSpeed) {
+    outtakeMotor.set(outtakeMotorSpeed);
+  }
+
+  public void runIntakeMotor(double intakeMotorSpeed) {
+    outtakeMotor.set(intakeMotorSpeed);
+  }
+ 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.getBoolean("CoralHandler/Has Coral", false);
+  }
+
+  @Override
+  protected Command systemCheckCommand() {
+    throw new UnsupportedOperationException("Unimplemented method 'systemCheckCommand'");
   }
 }
