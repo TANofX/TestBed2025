@@ -21,8 +21,7 @@ public final class Constants {
 
   static {
     try {
-      // TODO AprilTagFields update
-      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
       apriltagLayout.getFieldLength();
       apriltagLayout.getFieldWidth();
     } catch (IOException e) {
@@ -140,4 +139,31 @@ public final class Constants {
     public static final double elevatorMotorMaxAcceleration = 10000;
     public static final double elevatorMotorClosedLoppError = 2;
   }
+  public static final class CoralHandler {
+    //TODO figure out actual IDs
+    public static final int outtakeMotorID = 0;
+    //Do we need?
+    //public static final int outtakeEncoderID = 0;
+    public static final int LRMotorID = 0;
+    public static final int LREncoderID = 0;
+    public static final double LRMotorP = 0;
+    public static final double LRMotorI = 0;
+    public static final double LRMotorD = 0;
+    public static final double LRMotorFeedForward = 0;
+    public static final double LRMotorIZone = 0;
+    public static final double LRMotorMaxAccleration = 0;
+    public static final double LRMotorMaxVelocity = 0;
+    public static final double LRMotorClosedLoopError = 0;
+    public static final int verticalMotorID = 0;
+    public static final int verticalMotorEncoderID = 0;
+    public static final double verticalMotorP = 0;
+    public static final double verticalMotorI = 0;
+    public static final double verticalMotorD = 0;
+    public static final double verticalMotorFeedForward = 0;
+    public static final double verticalMotorIZone = 0;
+    public static final double verticalMotorMaxAccleration = 0;
+    public static final double verticalMotorMaxVelocity = 0;
+    public static final double verticalMotorClosedLoopError = 0;    
+  }
+
 }
