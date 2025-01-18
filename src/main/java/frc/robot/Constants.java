@@ -101,42 +101,7 @@ public final class Constants {
     public static final double maxVelTele = 0.3;
   }
 
-  public static final class FireControl {
-    public static final double FINAL_Y_VELOCITY = 3;
-    public static final double ACCELERATION = 9.81;
-    public static final double HEIGHT = Units.inchesToMeters(72);
-    public static final double TARGET_VELOCITY_MPS = 15;
-    // public static final double SHOOTER_HEIGHT = 24;
-    // public static final double HEIGHT = SPEAKER_HEIGHT - SHOOTER_HEIGHT;
-    public static final Pose2d BLUE_SPEAKER_POSITION = new Pose2d(Units.inchesToMeters(-1.5),
-        Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0.0));
-    public static final Pose2d RED_SPEAKER_POSITION = new Pose2d(Units.inchesToMeters(652.73),
-        Units.inchesToMeters(218.42), Rotation2d.fromDegrees(180));
-    public static final Pose2d BLUE_AMP_CORNER_POSITION = Constants.apriltagLayout.getTagPose(6).get().toPose2d();
-    public static final Pose2d RED_AMP_CORNER_POSITION = Constants.apriltagLayout.getTagPose(5).get().toPose2d();
-    // public static final Pose2d RED_SPEAKER_POSITION = new Pose2d(8.3,4.1,
-    // Rotation2d.fromDegrees(0));
-    public static final Transform2d SHOOTER_OFFSET = new Transform2d(Units.inchesToMeters(-6), Units.inchesToMeters(0),
-        Rotation2d.fromDegrees(180));
-    public static final Rotation2d AZMUTH_OFFSET = Rotation2d.fromDegrees(5.0);
-    public static final Translation2d FEEDOFFSET = new Translation2d(0, 1.5);
-  }
+ 
 
-  public static final class Elevator {
-    public static final int ELEVATORMOTOR_ID = 30;
-    public static final double METERS_PER_REV = .180;
-    public static final int MOTOR_REV_PER_ROTATION = 100;
-    public static final double METERS_PER_MOTOR_REV = METERS_PER_REV / MOTOR_REV_PER_ROTATION;
-    public static final double MAX_HEIGHT = -89;
-    public static final double MIN_HEIGHT = 0.15;
-    public static final double elevatorMotorP = 0.00005;
-    public static final double elevatorMotorI = 0.00;
-    public static final double elevatorMotorD = 0.00;
-    public static final double elevatorMotorIZone = 5;
-    public static final double elevatorMotorFeedForward = 0.0001;
-    public static final double elevatorMotorMinVelocity = 0;
-    public static final double elevatorMotorMaxVelocity = 5500;
-    public static final double elevatorMotorMaxAcceleration = 10000;
-    public static final double elevatorMotorClosedLoppError = 2;
-  }
+  
 }
