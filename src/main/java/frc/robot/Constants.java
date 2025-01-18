@@ -31,6 +31,14 @@ public final class Constants {
 
   public static final Translation2d fieldSize = new Translation2d(16.54, 8.02);
   public static final double noteTransferMetersPerSecond = 0.5;
+  public static final class Elevator {
+    public static final double P = 0.001;
+    public static final double I = 0.00;
+    public static final double D = 0.00;
+    public static final double FF = 0.0001;
+
+    public static final double METERS_PER_MOTOR_REVOLUTION = Units.inchesToMeters(1.0 / 4.0);
+  };
 
   public static final class LEDs {
     public static final int stripPwm = 0;
