@@ -101,6 +101,11 @@ public final class Constants {
     public static final double maxVelTele = 0.3;
   }
 
+  public static final class Climber {
+    public static final double firstStageGearRatio = 90 / 60;
+    public static final double secondStageGearRatio = 18 / 58;
+    
+  }
  
 
   
