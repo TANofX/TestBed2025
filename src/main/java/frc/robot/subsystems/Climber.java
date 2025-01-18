@@ -30,7 +30,6 @@ public class Climber extends AdvancedSubsystem {
     climbercontroller =  climbermotor.getClosedLoopController();
   }
 
-
   //HEY I ALEADY PUT IN THE STAGE GEAR RATIOS IN THE CONSTANTS!! -- Shirley C. :)
 
 
