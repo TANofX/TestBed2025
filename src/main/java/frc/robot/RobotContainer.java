@@ -6,6 +6,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
+import frc.robot.commands.ElevatorJoystickControl;
 import frc.robot.commands.Notifications;
 import frc.robot.subsystems.*;
 
@@ -20,6 +21,9 @@ public class RobotContainer {
   // Subsystems
   public static final Swerve swerve = new Swerve();// new Swerve();
   public static final LEDs LEDs = new LEDs();
+  public static final Elevator elevator = new Elevator(Constants.Elevator.motorCanID);
+  public static final RobotMechanicalConfiguration robotMechanism = new RobotMechanicalConfiguration();
+
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
 
@@ -27,11 +31,11 @@ public class RobotContainer {
   // public static final JetsonClient jetson = new JetsonClient();
 
   public RobotContainer() {
+
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());
-   
-    
+    elevator.setDefaultCommand(new ElevatorJoystickControl(driver::getLeftY));
 
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
@@ -73,5 +77,10 @@ public class RobotContainer {
 
         }))))); */
   
+  }
+
+
+  public static void periodic() {
+    robotMechanism.updateMechanism();
   }
 }
