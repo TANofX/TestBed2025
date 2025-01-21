@@ -31,14 +31,14 @@ import frc.robot.Constants;
 
 public class Elevator extends AdvancedSubsystem {
   private SparkFlex elevatorMotor;
-  private SparkFlexSim elevatorSim;
+  private SparkFlexSim elevatorMotorSim;
   private SparkClosedLoopController elevatorController;
   private RelativeEncoder elevatorEncoder;
   private boolean calibrated = false;
 
   // This configures a simulated elevator system including gravity in the calculations.
   // We use this simulation in the simulatePeriodic() method to update the simulated state.
-  private final ElevatorSim m_elevatorSim = 
+  private final ElevatorSim elevatorPhysicsSim = 
     new ElevatorSim(LinearSystemId.createElevatorSystem(DCMotor.getNeoVortex(1),
                                                         Constants.Elevator.ELEVATOR_MASS,
                                                         Constants.Elevator.METERS_PER_MOTOR_REVOLUTION / (2 * Math.PI),
@@ -68,12 +68,12 @@ public class Elevator extends AdvancedSubsystem {
     elevatorController = elevatorMotor.getClosedLoopController();
 
     // Configure the motor simulation using the REV Robotics Spark Flex motor model.
-    elevatorSim = new SparkFlexSim(elevatorMotor, DCMotor.getNeoVortex(1));
-    elevatorSim.setPosition(Constants.Elevator.STARTING_HEIGHT_METERS / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION);
+    elevatorMotorSim = new SparkFlexSim(elevatorMotor, DCMotor.getNeoVortex(1));
+    elevatorMotorSim.setPosition(Constants.Elevator.STARTING_HEIGHT_METERS / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION);
     
     // Configure simulation position for limit switches
-    m_elevatorSim.wouldHitLowerLimit(Constants.Elevator.MIN_HEIGHT_METERS / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION);
-    m_elevatorSim.wouldHitUpperLimit(Constants.Elevator.MAX_HEIGHT_METERS / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION);
+    elevatorPhysicsSim.wouldHitLowerLimit(Constants.Elevator.MIN_HEIGHT_METERS / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION);
+    elevatorPhysicsSim.wouldHitUpperLimit(Constants.Elevator.MAX_HEIGHT_METERS / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION);
 
     registerHardware("Elevator/Motor", elevatorMotor);
 }
@@ -88,30 +88,30 @@ public class Elevator extends AdvancedSubsystem {
     // This method will be called once per scheduler run during simulation
     // Calculate the input voltage for the elevator simulation. The appliedVoltage is calculated by the SparkFlex simulation.
     // The RobotController battery voltage is simulated in the RoboRioSim class.
-    double inputVoltage = elevatorSim.getAppliedOutput() * RobotController.getBatteryVoltage();
+    double inputVoltage = elevatorMotorSim.getAppliedOutput() * RobotController.getBatteryVoltage();
     SmartDashboard.putNumber("Elevator Simulation/Simulated Voltage", inputVoltage);
-    SmartDashboard.putNumber("Elevator Simulation/Motor Position", elevatorSim.getPosition());
+    SmartDashboard.putNumber("Elevator Simulation/Motor Position", elevatorMotorSim.getPosition());
     SmartDashboard.putNumber("Elevator Simulation/Height", this.getElevation());
-    SmartDashboard.putNumber("Elevator Simulation/Simulated Elevator Velocity", m_elevatorSim.getVelocityMetersPerSecond());
-    SmartDashboard.putNumber("Elevator Simulation/Simulated Elevator Height", m_elevatorSim.getPositionMeters());
+    SmartDashboard.putNumber("Elevator Simulation/Simulated Elevator Velocity", elevatorPhysicsSim.getVelocityMetersPerSecond());
+    SmartDashboard.putNumber("Elevator Simulation/Simulated Elevator Height", elevatorPhysicsSim.getPositionMeters());
 
     // Update the input voltage for the elevator simulation and update the simulation.
-    m_elevatorSim.setInput(inputVoltage);
-    m_elevatorSim.update(0.020);
+    elevatorPhysicsSim.setInput(inputVoltage);
+    elevatorPhysicsSim.update(0.020);
 
     // Compute the motor velocity from the elevator simulation state. This will be used to update the SparkFlex motor simulation.
-    double motorVelocity = (m_elevatorSim.getVelocityMetersPerSecond() / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION) * 60.0;
+    double motorVelocity = (elevatorPhysicsSim.getVelocityMetersPerSecond() / Constants.Elevator.METERS_PER_MOTOR_REVOLUTION) * 60.0;
     SmartDashboard.putNumber("Elevator Simulation/Simulated Motor Velocity", motorVelocity);
 
     // Simulate limit switch behavior
-    elevatorSim.getReverseLimitSwitchSim().setPressed(m_elevatorSim.hasHitLowerLimit());
-    elevatorSim.getForwardLimitSwitchSim().setPressed(m_elevatorSim.hasHitUpperLimit());
+    elevatorMotorSim.getReverseLimitSwitchSim().setPressed(elevatorPhysicsSim.hasHitLowerLimit());
+    elevatorMotorSim.getForwardLimitSwitchSim().setPressed(elevatorPhysicsSim.hasHitUpperLimit());
 
     // Iterate the motor simulation
-    elevatorSim.iterate(motorVelocity, RobotController.getBatteryVoltage(), 0.020);
+    elevatorMotorSim.iterate(motorVelocity, RobotController.getBatteryVoltage(), 0.020);
 
     // Update the RoboRioSim voltage to the default battery voltage based on the elevator motor current.
-    RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getMotorCurrent()));
+    RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorMotorSim.getMotorCurrent()));
   }
 
   // Check to make sure that the elevator moves at the anticipated speeds up and down
