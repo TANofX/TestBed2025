@@ -71,6 +71,10 @@ public class RobotContainer {
    
     //coDriver.X().onTrue(new ElevatorToMin());
     coDriver.START();
+    SmartDashboard.putData("Calibrate Elevator", elevator.getCalibrationCommand());
+    SmartDashboard.putData("Check Elevator", elevator.getSystemCheckCommand());
+    SmartDashboard.putData("Elevator 1.25", elevator.getElevatorHeightCommand(1.25));
+    SmartDashboard.putData("Elevator 0.0", elevator.getElevatorHeightCommand(0.0));
   /*   
         }, shooter))).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           shooter.stopMotors();
