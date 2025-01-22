@@ -132,39 +132,31 @@ public class CoralHandler extends AdvancedSubsystem {
     return horizontalRotationAbsoluteSignal.getValueAsDouble() * 180;
     // get as angle or as double??? refresh? 
   }
-
-  //How to make it one method
-  // public void setVerticalPosition(Rotation2d targetVerticalPosition) {
-  //   verticalTarget = targetVerticalPosition.getDegrees();
-  //   double ajustedVerticalAngle = getVerticalAngle() - verticalTarget;
-  //   double verticalAngleOffset = ajustedVerticalAngle / Constants.CoralHandler.verticalRotationDegreesPerRotation;
-  //   double neededAngle = verticalMotor.getEncoder().getPosition() + verticalAngleOffset;
-  //   verticalMotorController.setReference(neededAngle, ControlType.kMAXMotionPositionControl);
-  // }
   
-  // public void setHorizontalPosition(Rotation2d targetHorizontalPosition) {
-  //   horizontalTarget = targetHorizontalPosition.getDegrees();
-  //   double ajustedHorizontalAngle = getVerticalAngle() - horizontalTarget;
-  //   double horizontalAngleOffset = ajustedHorizontalAngle / Constants.CoralHandler.horizontalRotationDegreesPerRotation;
-  //   double neededAngle = horizontalMotor.getEncoder().getPosition() + horizontalAngleOffset;
-  //   horizontalMotorController.setReference(neededAngle, ControlType.kMAXMotionPositionControl);
-  // }
-
-  //How to get the 2 axis positions into one method? (helper method)
+  //Supposed method that can get Angle of Absolute Encoder
   public double getAngle(StatusSignal<Angle> absoluteAngleEncoder) {
     return absoluteAngleEncoder.getValueAsDouble() * 360;
   }
-  public void setPosition (SparkFlex motor, SparkClosedLoopController motorController, Rotation2d targetPosition, StatusSignal<Angle> absoluteAngleEncoder) {
+
+  //Methods that can set Position/Angle of horizontal/vertical motors
+  private void setPosition (SparkFlex motor, SparkClosedLoopController motorController, Rotation2d targetPosition, StatusSignal<Angle> absoluteAngleEncoder) {
     target = targetPosition.getDegrees();
     double ajustedAngle = getAngle(absoluteAngleEncoder) - target;
     double angleOffset = ajustedAngle / Constants.CoralHandler.RotationDegreesPerRotation;
     double neededAngle = motor.getEncoder().getPosition() + angleOffset;
     motorController.setReference(neededAngle, ControlType.kMAXMotionPositionControl);
   }
+  public void setHorizontalAngle(Rotation2d targetAngle) {
+    setPosition(horizontalMotor, horizontalMotorController, targetAngle, horizontalRotationAbsoluteSignal);
+  }
+
+  public void setVerticalAngle (Rotation2d targetAngle) {
+    setPosition(verticalMotor, verticalMotorController, targetAngle, verticalRotationAbsoluteSignal);
+  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // Values avalible shown on SmartDashboard
     SmartDashboard.getBoolean("CoralHandler/Has Coral", false);
     SmartDashboard.getNumber("CoralHandler/Vertical Target Angle", verticalTarget);
     SmartDashboard.getNumber("CoralHandler/Horizontal Target Angle", horizontalTarget);

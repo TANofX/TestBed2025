@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.XboxController;
 
 import java.io.IOException;
 
@@ -154,7 +153,7 @@ public final class Constants {
     public static final double horizontalMotorMaxAccleration = 0;
     public static final double horizontalMotorMaxVelocity = 0;
     public static final double horizontalMotorClosedLoopError = 0;
-    public static final double horizontalRotationDegreesPerRotation = 0;
+    //public static final double horizontalRotationDegreesPerRotation = 0;
     //???? what do you do for offset for position (use gear ratio to figure out)
 
     public static final int verticalMotorID = 0;
@@ -167,7 +166,7 @@ public final class Constants {
     public static final double verticalMotorMaxAccleration = 0;
     public static final double verticalMotorMaxVelocity = 0;
     public static final double verticalMotorClosedLoopError = 0;
-    public static final double verticalRotationDegreesPerRotation = 0;
+    //public static final double verticalRotationDegreesPerRotation = 0;
     //???? what do you do for offset for position (use gear ratio to figure out)
     
     public static final double RotationDegreesPerRotation = 0;
