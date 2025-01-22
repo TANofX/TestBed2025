@@ -25,9 +25,11 @@ public class RobotMechanicalConfiguration {
     // to understand the robot's configuration.
     public RobotMechanicalConfiguration() {
         m_mechanism = new Mechanism2d(Units.inchesToMeters(15.0), Units.inchesToMeters(4) + Elevator.MAX_HEIGHT_METERS);
-        m_root = m_mechanism.getRoot("Elevator", Units.inchesToMeters(15.0 - 7.0), Units.inchesToMeters(4.0));
-        m_elevatorExtension = new MechanismLigament2d("Elavator Extension", 0, 0.0, Units.inchesToMeters(3.0), new Color8Bit(128, 128, 128));
+        m_root = m_mechanism.getRoot("Elevator", Units.inchesToMeters(15.0 - 7.5), Units.inchesToMeters(4.0));
+        MechanismLigament2d m_elevatorBase = new MechanismLigament2d("Elavator Extension", 0, 90.0, 30/*Units.inchesToMeters(3.0)*/, new Color8Bit(200, 200, 200));
+        m_elevatorExtension = new MechanismLigament2d("Elavator Base", Units.inchesToMeters(4), 90.0, 5/*Units.inchesToMeters(5.0)*/, new Color8Bit(128, 128, 128));
         m_root.append(m_elevatorExtension);
+        m_root.append(m_elevatorBase);
     }
 
     public void updateMechanism() {
