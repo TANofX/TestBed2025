@@ -47,7 +47,6 @@ public class Climber extends AdvancedSubsystem {
   public void periodic() {
     // This method will be called once per scheduler run
     climbercontroller.setReference(1, ControlType.kPosition);
-    climberpiston.
   }
 
   @Override

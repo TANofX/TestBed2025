@@ -105,6 +105,9 @@ public final class Constants {
     public static final double firstStageGearRatio = 90 / 60;
     public static final double secondStageGearRatio = 18 / 58;
     
+    public static final double MOTOR_KI = 0; // TODO
+    public static final double MOTOR_KP = 0;
+    public static final double MOTOR_KD = 0;
   }
  
 
