@@ -9,6 +9,7 @@ import frc.lib.input.controllers.XboxControllerWrapper;
 import frc.robot.commands.ElevatorJoystickControl;
 import frc.robot.commands.Notifications;
 import frc.robot.subsystems.*;
+import frc.robot.util.RobotMechanism;
 
 
 public class RobotContainer {
@@ -22,7 +23,7 @@ public class RobotContainer {
   public static final Swerve swerve = new Swerve();// new Swerve();
   public static final LEDs LEDs = new LEDs();
   public static final Elevator elevator = new Elevator(Constants.Elevator.motorCanID);
-  public static final RobotMechanicalConfiguration robotMechanism = new RobotMechanicalConfiguration();
+  public static final RobotMechanism robotMechanism = new RobotMechanism();
 
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
@@ -85,6 +86,6 @@ public class RobotContainer {
 
 
   public static void periodic() {
-    robotMechanism.updateMechanism();
+    robotMechanism.update();
   }
 }
