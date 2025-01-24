@@ -7,6 +7,7 @@ import java.nio.file.OpenOption;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -26,7 +27,9 @@ import frc.lib.pid.TuneVelocitySparkPIDController;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -54,7 +57,8 @@ private DigitalInput algaeLimitSwitch;
 private double speedInRPM;
 private  SparkClosedLoopController algaeMotorController;
 private DigitalInput algaeHallEffect;
-private SparkFlexSim algaeHandlerSim;
+private SparkFlexSim algaeHandlerMotorSim;
+private RelativeEncoder algaeEncoder;
 
 //Creating simulation for algae handler ??Need to add constants??
 private final FlywheelSim m_algaeHandlerSim = 
@@ -66,11 +70,12 @@ private final FlywheelSim m_algaeHandlerSim =
   /** Creates a new AlgaeHandler. */
   public AlgaeHandler(int algaeMotorCANID, int algaeSolenoidID, int algaeHallEffectID, int algaeLimitID) {
     //creating motor/solenoid/switches/controllers
-    algaeMotor = new SparkFlex(Constants.AlgaeHandler.algaeMotorCanID, MotorType.kBrushed);
-    algaePiston = new Solenoid(PneumaticsModuleType.REVPH, Constants.AlgaeHandler.algaeSolenoidID);
+    algaeMotor = new SparkFlex(algaeMotorCANID, MotorType.kBrushed);
+    algaePiston = new Solenoid(PneumaticsModuleType.REVPH, algaeSolenoidID);
     algaeLimitSwitch = new DigitalInput(algaeLimitID);
     algaeMotorController = algaeMotor.getClosedLoopController();
-    algaeHallEffect = new DigitalInput(Constants.AlgaeHandler.algaeHallEffectID);
+    algaeEncoder = algaeMotor.getEncoder();
+    algaeHallEffect = new DigitalInput(algaeHallEffectID);
 
 
     SparkFlexConfig algaeMotorConfig = new SparkFlexConfig();
@@ -86,13 +91,12 @@ private final FlywheelSim m_algaeHandlerSim =
   
     registerHardware("Algae Motor", algaeMotor);
   
-
-    
+   //Configure the motor simulation
+   algaeHandlerMotorSim = new SparkFlexSim(algaeMotor, DCMotor.getNeoVortex(1));
+   
   }
 
-public AlgaeHandler() {
-    //TODO Auto-generated constructor stub
-  }
+
 
 public void lowerAlgaeIntake() {
   //solenoid will lower the intake
@@ -135,7 +139,7 @@ public void hasAlgae() {
   algaeLimitSwitch.get();
 }
 
-public boolean isIntakeUp() {
+public boolean isAlgaeIntakeUp() {
   return algaeHallEffect.get();
 }
 
@@ -152,7 +156,7 @@ public Command getAlgaeIntakeCommand() {
       raiseAlgaeIntake();
     }),
     Commands.waitUntil(()-> {
-      return hallEffectSensor();
+      return isAlgaeIntakeUp();
     }),
     Commands.run(()-> {
       if((! limitSwitchTrigger() ) || (! hallEffectSensor())) 
@@ -160,9 +164,23 @@ public Command getAlgaeIntakeCommand() {
       else
       stopAlgaeMotor();    
     })
-    
-    );
-  
+    ); 
+}
+
+public Command shootAlgaeCommand() {
+   return Commands.sequence (
+    Commands.waitUntil (() -> {
+      return isAlgaeIntakeUp();
+    }),
+
+    Commands.runOnce(() -> {
+      reverseAlgaeMotor();
+    }),
+
+    Commands.waitUntil(()-> {
+       return limitSwitchTrigger();
+    }) 
+);
 }
 
   @Override
@@ -173,6 +191,21 @@ public Command getAlgaeIntakeCommand() {
   @Override
   protected Command systemCheckCommand() {
     // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'systemCheckCommand'");
+    return Commands.sequence(
+      Commands.runOnce(
+        () -> {
+          runAlgaeMotor();
+        }, this),
+        Commands.waitSeconds(0.25),
+
+        Commands.runOnce(
+          () -> {
+            if (((algaeEncoder.getVelocity() / 60.0) * Constants.AlgaeHandler.metersPerMotorRevolution) < 0.16) {
+              addFault("[System Check] Elevator velocity too slow", false, true);
+          }
+          stopAlgaeMotor();
+         }, this )
+//Gloria hey so you better finish this system check code or else your pit checks will be bad so get on
+      );
   }
 }
