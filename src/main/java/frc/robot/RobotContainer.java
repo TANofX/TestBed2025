@@ -15,8 +15,6 @@ public class RobotContainer {
   public static final XboxControllerWrapper driver = new XboxControllerWrapper(0, 0.1);
   public static final XboxControllerWrapper coDriver = new XboxControllerWrapper(1, 0.1);
 
-  
-
   // Subsystems
   public static final Swerve swerve = new Swerve();// new Swerve();
   public static final LEDs LEDs = new LEDs();
@@ -29,9 +27,7 @@ public class RobotContainer {
   public RobotContainer() {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
-    LEDs.setDefaultCommand(new Notifications());
-   
-    
+    LEDs.setDefaultCommand(new Notifications());    
 
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());

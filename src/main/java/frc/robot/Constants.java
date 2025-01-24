@@ -138,11 +138,15 @@ public final class Constants {
     public static final double elevatorMotorMaxAcceleration = 10000;
     public static final double elevatorMotorClosedLoppError = 2;
   }
+
   public static final class CoralHandler {
-    //TODO figure out actual IDs
+    // TODO figure out actual IDs
+    public static final double coralEndEffectorLength = 0;
+    public static final double coralEndEffectorMass = 0;
     public static final int outtakeMotorID = 0;
-    //Do we need?
-    //public static final int outtakeEncoderID = 0;
+    public static final double outtakeMotorGearing = 0;
+    public static final double outtakeJKgMetersSquared = 0;
+    // public static final int outtakeEncoderID = 0;
     public static final int horizontalMotorID = 0;
     public static final int horizontalEncoderID = 0;
     public static final double horizontalMotorP = 0;
@@ -153,8 +157,14 @@ public final class Constants {
     public static final double horizontalMotorMaxAccleration = 0;
     public static final double horizontalMotorMaxVelocity = 0;
     public static final double horizontalMotorClosedLoopError = 0;
-    //public static final double horizontalRotationDegreesPerRotation = 0;
-    //???? what do you do for offset for position (use gear ratio to figure out)
+    public static final double horizontalMotorGearing = 0;
+    public static final double horizontalJKgMetersSquared = 1/3 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2);
+    public static final double horizontalMinAngleInRadians = 0;
+    public static final double horizontalMaxAngleInRadians = 0;
+    public static final double horizontalStartingAngleInRadians = 0;
+    public static final double horizontalMotorStdDev = 0;
+    public static final double horizontalRotationDegreesPerRotation = 0;
+    // ???? what do you do for offset for position (use gear ratio to figure out)
 
     public static final int verticalMotorID = 0;
     public static final int verticalMotorEncoderID = 0;
@@ -166,10 +176,16 @@ public final class Constants {
     public static final double verticalMotorMaxAccleration = 0;
     public static final double verticalMotorMaxVelocity = 0;
     public static final double verticalMotorClosedLoopError = 0;
-    //public static final double verticalRotationDegreesPerRotation = 0;
-    //???? what do you do for offset for position (use gear ratio to figure out)
+    public static final double verticalMotorGearing = 0;
+    public static final double verticalJKgMetersSquared =  1/3 * coralEndEffectorLength * Math.pow(coralEndEffectorLength, 2);
+    public static final double verticalRotationDegreesPerRotation = 0;
+    // ???? what do you do for offset for position (use gear ratio to figure out)
+    public static final double verticalMinAngleInRadians = 0;
+    public static final double verticalMaxAngleInRadians = 0;
+    public static final double verticalStartingAngleInRadians = 0;
+    public static final double verticalMotorStdDev = 0;
+    // public static final double RotationDegreesPerRotation = 0;
     
-    public static final double RotationDegreesPerRotation = 0;
   }
 
 }
