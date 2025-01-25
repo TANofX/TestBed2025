@@ -112,18 +112,19 @@ public static final class AlgaeHandler {
   //all of these ID's are place holders and will need to be edited at a later date
   public static final int degreesPerRevolution = 360;
   //These values will need to be changed, just place holders
-  public static final double algaeMotorP = 0;
-  public static final double algaeMotorI = 0;
-  public static final double algaeMotorD = 0;
-  public static final double algaeFF = 0;
-  public static final double algaeIZone = 0;
-  public static final double algaeMotorMaxVelocity = 0;
-  public static final double algaeMotorMaxAcceleration = 0;
-  public static final double algaeMotorAllowedError = 0;
+  public static final double algaeMotorP = 0.05;
+  ;
+  public static final double algaeMotorI = 0.00;
+  public static final double algaeMotorD = 0.000;
+  public static final double algaeFF = 1.0/565.0;
+  public static final double algaeIZone = 0.0;
+  public static final double algaeMotorMaxVelocity = 6000.0;
+  public static final double algaeMotorMaxAcceleration = 0.0;
+  public static final double algaeMotorAllowedError = 1;
   //Calculates moment of inertia for parameter in flywheel sim for bottom wheels 
   public static final double massOfBottomIntakeWheel = Units.lbsToKilograms(0.076);
   public static final double radiusOfBottomIntakeWheel = .025;
-  public static final double momentOfInertiaOfTheBottomIntakeWheel = massOfBottomIntakeWheel * (radiusOfBottomIntakeWheel*radiusOfBottomIntakeWheel); 
+  public static final double momentOfInertiaOfTheBottomIntakeWheel = .5 * (massOfBottomIntakeWheel * (radiusOfBottomIntakeWheel*radiusOfBottomIntakeWheel)); 
 
   //Calculates moment of inertia for parameter in flywheel sim for top wheels
   public static final double massOfTopIntakeWheel = Units.lbsToKilograms(0.035);
@@ -141,7 +142,7 @@ public static final class AlgaeHandler {
 
     public static final double metersPerMotorRevolution = 0;
     public static final int amassOfAlgaeHandler = 6;
-    public static final double algaeGearRatio = 9/1;
+    public static final double algaeGearRatio = 1.0/9.0;
     
 
 

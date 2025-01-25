@@ -8,12 +8,15 @@ import java.nio.file.OpenOption;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.revrobotics.RelativeEncoder;
+
 import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -35,6 +38,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -64,7 +68,9 @@ private RelativeEncoder algaeEncoder;
 
 //Creating simulation for algae handler ??Need to add constants??
 private final FlywheelSim m_algaeHandlerSim = 
-  new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNeoVortex(1), Constants.AlgaeHandler.momentOfInertiaOfTheBottomIntakeWheel, Constants.AlgaeHandler.algaeGearRatio),
+  new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNeoVortex(1), 
+                  Constants.AlgaeHandler.momentOfInertiaOfTheBottomIntakeWheel, 
+                  Constants.AlgaeHandler.algaeGearRatio),
                   DCMotor.getNeoVortex(1));
 
 
@@ -84,17 +90,18 @@ private final FlywheelSim m_algaeHandlerSim =
     ClosedLoopConfig algaeMotorPIDConfig = algaeMotorConfig.closedLoop;
     CANcoderConfiguration algaeEncoderConfig = new CANcoderConfiguration();
     algaeMotorConfig.idleMode(IdleMode.kBrake);
-    algaeMotorPIDConfig.pid(Constants.AlgaeHandler.algaeMotorP, Constants.AlgaeHandler.algaeMotorI, Constants.AlgaeHandler.algaeMotorD);
-    algaeMotorPIDConfig.velocityFF(Constants.AlgaeHandler.algaeFF);
+    algaeMotorPIDConfig.pidf(Constants.AlgaeHandler.algaeMotorP, Constants.AlgaeHandler.algaeMotorI, Constants.AlgaeHandler.algaeMotorD, Constants.AlgaeHandler.algaeFF);
+    
     algaeMotorPIDConfig.iZone(Constants.AlgaeHandler.algaeIZone);
     algaeMotorPIDConfig.maxMotion.maxVelocity(Constants.AlgaeHandler.algaeMotorMaxVelocity);
     algaeMotorPIDConfig.maxMotion.maxAcceleration(Constants.AlgaeHandler.algaeMotorMaxAcceleration);
     algaeMotorPIDConfig.maxMotion.allowedClosedLoopError(Constants.AlgaeHandler.algaeMotorAllowedError);
-  
+    algaeMotor.configure(algaeMotorConfig,ResetMode.kResetSafeParameters,PersistMode.kNoPersistParameters);
     registerHardware("Algae Motor", algaeMotor);
   
    //Configure the motor simulation
    algaeHandlerMotorSim = new SparkFlexSim(algaeMotor, DCMotor.getNeoVortex(1));
+
 
    
   }
@@ -111,16 +118,18 @@ SmartDashboard.putBoolean("Algae Handler Intake Position", isAlgaeIntakeUp());
 SmartDashboard.putBoolean("Algae Handler Limit Switch Trigger", hasAlgae());
 
 //updates simulated voltage
-m_algaeHandlerSim.setInput(inputVoltage);
+m_algaeHandlerSim.setInputVoltage(inputVoltage);
 m_algaeHandlerSim.update(0.020);
 
- // Iterate the motor simulation
-
+ // Iterate the motor simulation9
+algaeHandlerMotorSim.iterate(m_algaeHandlerSim.getAngularVelocityRPM() * Constants.AlgaeHandler.algaeGearRatio, RobotController.getBatteryVoltage(), 0.020);
 
 
   // Update the RoboRioSim voltage to the default battery voltage based on the elevator motor current.
   RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(algaeHandlerMotorSim.getMotorCurrent()));
 }
+
+//Methods
 
 public void lowerAlgaeIntake() {
   //solenoid will lower the intake
@@ -142,11 +151,13 @@ public void stopAlgaeMotor() {
 public void runAlgaeMotor() {
   //velocity value is a place holder because I didnt know what I was doing :D do we need math for spins per motor revolution??
   algaeMotorController.setReference(577.26, ControlType.kVelocity);
+  //algaeMotor.set(.5);
 }
 
 public void reverseAlgaeMotor() {
   //velocity value is a place holder :D
   algaeMotorController.setReference(-577.26, ControlType.kVelocity);
+  //algaeMotor.set(-.5);
 }
 
 public boolean limitSwitchTrigger() {
@@ -160,10 +171,12 @@ public boolean hallEffectSensor() {
 }
 
 public boolean hasAlgae() {
+  //Will be true when algae handler has algae
   return algaeLimitSwitch.get();
 }
 
 public boolean isAlgaeIntakeUp() {
+  //returns a boolean to tell the robot whether or not algae intake is up
   return algaeHallEffect.get();
 }
 //This command intakes an algae
@@ -176,6 +189,7 @@ public Command getAlgaeIntakeCommand() {
     Commands.waitUntil(() -> {
     return limitSwitchTrigger();
     }),
+
     Commands.runOnce(() -> {
       raiseAlgaeIntake();
     }),
@@ -211,8 +225,8 @@ public Command shootAlgaeCommand() {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Algae Handler/Motor Velocity" ,algaeEncoder.getVelocity());
   }
-
   @Override
   protected Command systemCheckCommand() {
     // TODO Auto-generated method stub
@@ -221,7 +235,7 @@ public Command shootAlgaeCommand() {
         () -> {
           runAlgaeMotor();
         }, this),
-        Commands.waitSeconds(0.25),
+        Commands.waitSeconds(5),
 
         Commands.runOnce(
           () -> {
