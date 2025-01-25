@@ -227,7 +227,7 @@ public Command shootAlgaeCommand() {
           () -> {
             //Checks to make sure that motor is going at minimum speed needeed to intake algae (WAAYY slower than our maximum potential ;)
             if ((algaeEncoder.getVelocity())< 500) {
-              addFault("[System Check] Elevator velocity too slow", false, true);
+              addFault("[System Check] Algae Handler velocity too slow", false, true);
           }
           stopAlgaeMotor();
          }, this ),
