@@ -95,7 +95,9 @@ public class Climber extends AdvancedSubsystem {
   }
 
 
-  // This is a System Check to see if the motor is moving at a speed that is fast enough
+  /**
+   * A method that is used to check that the motors are moving at the right speed.
+  */
   @Override
   protected Command systemCheckCommand() {
     return Commands.sequence(
@@ -126,18 +128,28 @@ public class Climber extends AdvancedSubsystem {
           }, this)
     );
   }
-  // A method that will set the climber to the required angle
+  /**
+   * A method that moves the Climber mechanism
+   * @returns void
+   * @param angle
+   */
   public void setClimberAngle(Rotation2d angle) {
     climberAbsoluteAngle = angle;
-    double armRotation = (angle.getRadians() / (2 * Math.PI)); 
-    double motorRotation = armRotation * Constants.Climber.GEAR_RATIO;
-    climbercontroller.setReference(motorRotation, ControlType.kPosition);
+    double armRotation = (angle.getRadians() / (2 * Math.PI)); // divides the wanted angle my the full circle to get fraction in which the arm rotates
+    double motorRotation = armRotation * Constants.Climber.GEAR_RATIO; // multiplies the armRotation by the gear Ratio to get # of spins the motor must do
+    climbercontroller.setReference(motorRotation, ControlType.kPosition); // This line is what moves the climber mechanism
   }
-
+  /**
+   * This method is intended to give the user the current target loctation of the climber
+   * @returns target angle for the climber
+  */
   public Rotation2d getCurrentTarget() {
     return climberAbsoluteAngle;
   }
-  // TODO
+  /**
+   * This method will get the current angle of the Climbing mechanism
+   * @returns the current angle of the climber
+   */
   public Rotation2d getCurrentAngle() {
     return null;
   }
