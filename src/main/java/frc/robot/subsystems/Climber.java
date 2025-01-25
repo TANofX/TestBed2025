@@ -48,19 +48,26 @@ public class Climber extends AdvancedSubsystem {
   private final CANcoder climberEncoderAbsolute;
   private final CANcoderConfiguration climberEncoderConfig;
   private final CANcoderSimState climberEncoderSimState;
-  private final StatusSignal<Angle> climberEncoderSignalA; // TODO
-  private final StatusSignal<AngularVelocity> climberEncoderSignalA; //TODO
+  private final StatusSignal<Angle> climberEncoderSignalA;
+  private final StatusSignal<AngularVelocity> climberEncoderSignalAV;
   private Rotation2d climberAbsoluteAngle;
   /** Creates a new Climber. */
   public Climber(final int motor_canid, final int pcmid, final int solonoidid, int encoderCanID) {
+    // Config for motors and solenoids
     climberPiston = new Solenoid(PneumaticsModuleType.REVPH, 0);
     climberMotor = new SparkFlex(motor_canid, MotorType.kBrushless);
     climbercontroller = climberMotor.getClosedLoopController();
+
     // Encoder Config
     climberEncoder = climberMotor.getEncoder();
+
     // Absolute Encoder Config
     climberEncoderAbsolute = new CANcoder(encoderCanID);
+    climberEncoderConfig = new CANcoderConfiguration();
     climberEncoderSignalA = climberEncoderAbsolute.getAbsolutePosition();
+    climberEncoderSignalAV = climberEncoderAbsolute.getVelocity();
+    climberEncoderSimState = climberEncoderAbsolute.getSimState();
+    
     // Holds the angle that the climber starts at in comparison to position zero
     climberAbsoluteAngle = Rotation2d.fromDegrees(climberEncoderSignalA.getValueAsDouble() * 180);
 
@@ -93,11 +100,7 @@ public class Climber extends AdvancedSubsystem {
     motorSimulation.iterate(motorSpeed, RobotController.getBatteryVoltage(), 0.02);
     RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(motorSimulation.getMotorCurrent()));
   }
-
-
-  /**
-   * A method that is used to check that the motors are moving at the right speed.
-  */
+  /** A method that is used to check that the motors are moving at the right speed.*/
   @Override
   protected Command systemCheckCommand() {
     return Commands.sequence(
@@ -151,6 +154,6 @@ public class Climber extends AdvancedSubsystem {
    * @returns the current angle of the climber
    */
   public Rotation2d getCurrentAngle() {
-    return null;
+    return Rotation2d.fromDegrees(climberEncoderSignalA.getValueAsDouble() * 180);
   }
 }
