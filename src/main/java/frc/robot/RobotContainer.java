@@ -3,10 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+//NEED TO FIGURE OUT THIS IMPORT:
+//import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
 import frc.robot.commands.Notifications;
+import frc.robot.commands.SwerveDriveWithGamepad;
 import frc.robot.subsystems.*;
 
 
@@ -30,9 +33,15 @@ public class RobotContainer {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());
-   
+  
+  
+    // Register Named Commands for pathplanner
+    //ADD THESE COMMANDS ONCE WE DEVELOP THEM MORE:
+    //NamedCommands.registerCommand("Place L4", new ______());
+    //NamedCommands.registerCommand("Collect", new ______());
+  
     
-
+  
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
     //SmartDashboard.putData("Tune Elevation", shooterWrist.getElevationTunerCommand());
@@ -61,7 +70,63 @@ public class RobotContainer {
   
 
   private void configureButtonBindings() {    
+
+    
+   //ONCE WE ADD ALGAE TO MAIN THESE COMMANDS SHOULD WORK:
+   // driver.LT().onTrue(new getAlgaeIntakeCommand());
+   // driver.RT().onTrue(new shootAlgaeCommand());
+   // driver.START().onTrue(new ); //callibrate elevator
+
+   
+
+   //_________OLD CODE BELOW____________
+   /*
+     * 
+     *     
+    driver.LT().onTrue(new SafePosition());
+    driver.RB().onTrue(new ClimbPosition());
+    driver.LB().onTrue(new ElevatorToMin());
+    driver.X().whileTrue(new ReverseIntake());          
+    driver.DLeft()
+           .onTrue((new ElevateShooter(Constants.Shooter.SHOOT_IN_SPEAKER_AT_SUBWOOFER).alongWith(Commands.runOnce(() -> {
+          shooter.startMotorsForShooter(fireControl.getVelocity());
+           }, shooter))).andThen(new Shoot(false).andThen(Commands.waitSeconds(.5).andThen(Commands.runOnce(() -> {
+           shooter.stopMotors();
+
+           })))));
+
+    
+    driver.DRight().onTrue((new ElevateShooter(Constants.Shooter.SHOOT_AT_PODIUM).alongWith(Commands.runOnce(() -> {
+      shooter.startMotorsForShooter(fireControl.getVelocity());
+   }, shooter))).andThen(new Shoot(false).andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
+      shooter.stopMotors();
+    })))));
+    driver.RT().whileTrue(new ConditionalCommand(new IntakeNote(), (new IntakeNote().alongWith(new ReadyToPassNote())).andThen(new TransferNote()), shooterWrist::isStowed));
+    
+    
+    
         //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
+          //shooter.stopMotors();
+       // }, shooter))))));
+   
+    //coDriver.X().onTrue(new ElevatorToMin());
+    coDriver.RB().onTrue(new ReadyToPassNote().andThen(new TransferNote()));
+    coDriver.LB().onTrue(new CalibrateElevator());
+    coDriver.DUp().whileTrue(new ExtendElevator());
+    coDriver.DDown().whileTrue(new RetractElevator());
+    coDriver.LT().onTrue(shootInAmpCommand());
+    coDriver.RT().onTrue(shootInSpeaker());
+    coDriver.START();
+    coDriver.B().toggleOnTrue(new ManualShooterElevation(coDriver::getRightY));
+    coDriver.X().onTrue(new CancelShooter());
+   
+  /*   
+        }, shooter))).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
+          shooter.stopMotors();
+
+        }))))); */
+
+    //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           //shooter.stopMotors();
        // }, shooter))))));
    
