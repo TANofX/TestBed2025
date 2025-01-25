@@ -11,8 +11,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.measure.AngularVelocity;
 
 import java.io.IOException;
+
+import com.ctre.phoenix6.StatusSignal;
 
 public final class Constants {
   public static final String canivoreBusName = "rio";
@@ -118,7 +122,7 @@ public final class Constants {
     public static final Transform2d SHOOTER_OFFSET = new Transform2d(Units.inchesToMeters(-6), Units.inchesToMeters(0),
         Rotation2d.fromDegrees(180));
     public static final Rotation2d AZMUTH_OFFSET = Rotation2d.fromDegrees(5.0);
-    public static final Translation2d FEEDOFFSET = new Translation2d(0, 1.5);
+    public static final Translation2d FEEDOFFSET = new Translation2d(0.0, 1.5);
   }
 
   public static final class Elevator {
@@ -126,7 +130,7 @@ public final class Constants {
     public static final double METERS_PER_REV = .180;
     public static final int MOTOR_REV_PER_ROTATION = 100;
     public static final double METERS_PER_MOTOR_REV = METERS_PER_REV / MOTOR_REV_PER_ROTATION;
-    public static final double MAX_HEIGHT = -89;
+    public static final double MAX_HEIGHT = -89.0;
     public static final double MIN_HEIGHT = 0.15;
     public static final double elevatorMotorP = 0.00005;
     public static final double elevatorMotorI = 0.00;
@@ -141,51 +145,58 @@ public final class Constants {
 
   public static final class CoralHandler {
     // TODO figure out actual IDs
-    public static final double coralEndEffectorLength = 0;
-    public static final double coralEndEffectorMass = 0;
-    public static final int outtakeMotorID = 0;
-    public static final double outtakeMotorGearing = 0;
-    public static final double outtakeJKgMetersSquared = 0;
-    // public static final int outtakeEncoderID = 0;
-    public static final int horizontalMotorID = 0;
-    public static final int horizontalEncoderID = 0;
-    public static final double horizontalMotorP = 0;
-    public static final double horizontalMotorI = 0;
-    public static final double horizontalMotorD = 0;
-    public static final double horizontalMotorFeedForward = 0;
-    public static final double horizontalMotorIZone = 0;
-    public static final double horizontalMotorMaxAccleration = 0;
-    public static final double horizontalMotorMaxVelocity = 0;
-    public static final double horizontalMotorClosedLoopError = 0;
-    public static final double horizontalMotorGearing = 0;
-    public static final double horizontalJKgMetersSquared = 1/3 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2);
-    public static final double horizontalMinAngleInRadians = 0;
-    public static final double horizontalMaxAngleInRadians = 0;
-    public static final double horizontalStartingAngleInRadians = 0;
-    public static final double horizontalMotorStdDev = 0;
-    public static final double horizontalRotationDegreesPerRotation = 0;
-    // ???? what do you do for offset for position (use gear ratio to figure out)
+    public static final double MeterPerMotorRevolution = 0.0;
 
-    public static final int verticalMotorID = 0;
-    public static final int verticalMotorEncoderID = 0;
-    public static final double verticalMotorP = 0;
-    public static final double verticalMotorI = 0;
-    public static final double verticalMotorD = 0;
-    public static final double verticalMotorFeedForward = 0;
-    public static final double verticalMotorIZone = 0;
-    public static final double verticalMotorMaxAccleration = 0;
-    public static final double verticalMotorMaxVelocity = 0;
-    public static final double verticalMotorClosedLoopError = 0;
-    public static final double verticalMotorGearing = 0;
-    public static final double verticalJKgMetersSquared =  1/3 * coralEndEffectorLength * Math.pow(coralEndEffectorLength, 2);
-    public static final double verticalRotationDegreesPerRotation = 0;
-    // ???? what do you do for offset for position (use gear ratio to figure out)
-    public static final double verticalMinAngleInRadians = 0;
-    public static final double verticalMaxAngleInRadians = 0;
-    public static final double verticalStartingAngleInRadians = 0;
-    public static final double verticalMotorStdDev = 0;
-    // public static final double RotationDegreesPerRotation = 0;
+    public static final double coralEndEffectorLength = 4.0;
+    public static final double coralEndEffectorMass = 8.5;
+    public static final double outtakeWheelRadius = 2.0;
+
+    public static final int outtakeMotorID = 1;
+    public static final int horizontalMotorID = 2;
+    public static final int horizontalEncoderID = 3;
+    public static final int verticalMotorID = 4;
+    public static final int verticalMotorEncoderID = 5;
+
+    public static final double outtakeMotorGearing = 1;
+    public static final double horizontalMotorGearing = 1.0 / 100.0;
+    public static final double verticalMotorGearing = 1.0/100.0;
+
+    public static final double outtakeJKgMetersSquared = (.5 * coralEndEffectorMass * Math.pow(outtakeWheelRadius, 2));
+    public static final double outtakeMotorMinVelocity = 0.0;
+    // public static final int outtakeEncoderID = 0.0;
     
-  }
 
+    public static final double horizontalMotorP = 0.0;
+    public static final double verticalMotorP = 0.0;
+    public static final double horizontalMotorI = 0.0;
+    public static final double verticalMotorI = 0.0;
+    public static final double horizontalMotorD = 0.0;
+    public static final double verticalMotorD = 0.0;
+    public static final double horizontalMotorFeedForward = 0.0;
+    public static final double verticalMotorFeedForward = 0.0;
+    public static final double horizontalMotorIZone = 0.0;
+    public static final double verticalMotorIZone = 0.0;
+    public static final double horizontalMotorMaxAccleration = 0.0;
+    public static final double verticalMotorMaxAccleration = 0.0;
+    public static final double horizontalMotorMaxVelocity = 0.0;
+    public static final double verticalMotorMaxVelocity = 0.0;
+    public static final double horizontalMotorClosedLoopError = 0.0;
+    public static final double verticalMotorClosedLoopError = 0.0;
+    public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
+    public static final double verticalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
+    public static final double horizontalMinAngleInRadians = Units.degreesToRadians(-100.0);
+    public static final double verticalMinAngleInRadians = Units.degreesToRadians(-90.0);
+    public static final double horizontalMaxAngleInRadians = Units.degreesToRadians(100.0);
+    public static final double verticalMaxAngleInRadians = Units.degreesToRadians(90.0);
+    public static final double horizontalStartingAngleInRadians = 0.0;
+    public static final double verticalStartingAngleInRadians = Units.degreesToRadians(90);
+    public static final double horizontalMotorStdDev = 0.0;
+    public static final double verticalMotorStdDev = 0.0;
+    public static final double horizontalRotationDegreesPerRotation = 360.0 / horizontalMotorGearing;
+    public static final double verticalRotationDegreesPerRotation = 360.0 / verticalMotorGearing;
+    public static final double horizontalMotorMinVelocity = 0.0;
+    public static final double verticalMotorMinVelocity = 0.0;
+    // ???? what do you do for offset for position (use gear ratio to figure out)
+    // public static final double RotationDegreesPerRotation = 0;
+  }
 }

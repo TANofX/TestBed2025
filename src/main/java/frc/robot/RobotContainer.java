@@ -20,6 +20,7 @@ public class RobotContainer {
   public static final LEDs LEDs = new LEDs();
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
+  public static final CoralHandler coralHandler = new CoralHandler();
 
   // Vision clients
   // public static final JetsonClient jetson = new JetsonClient();
@@ -28,6 +29,7 @@ public class RobotContainer {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());    
+    SmartDashboard.putData("Coral Running Motors Test", coralHandler.getSystemCheckCommand());
 
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
