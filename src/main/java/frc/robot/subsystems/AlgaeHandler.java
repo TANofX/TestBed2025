@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.AnalogAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -58,6 +59,7 @@ private double speedInRPM;
 private  SparkClosedLoopController algaeMotorController;
 private DigitalInput algaeHallEffect;
 private SparkFlexSim algaeHandlerMotorSim;
+
 private RelativeEncoder algaeEncoder;
 
 //Creating simulation for algae handler ??Need to add constants??
@@ -93,10 +95,32 @@ private final FlywheelSim m_algaeHandlerSim =
   
    //Configure the motor simulation
    algaeHandlerMotorSim = new SparkFlexSim(algaeMotor, DCMotor.getNeoVortex(1));
+
    
   }
 
+@Override
+public void simulationPeriodic() {
 
+  //puts stuff on smart dashboard, cool stuff
+double inputVoltage = algaeHandlerMotorSim.getAppliedOutput() * RobotController.getBatteryVoltage();
+SmartDashboard.putNumber("Algae Handler Simulated Voltage", inputVoltage);
+SmartDashboard.putNumber("Algae Handler Simulated Motor Position", algaeHandlerMotorSim.getPosition());
+SmartDashboard.putNumber("Algae Handler Simulated Motor Velocity", algaeHandlerMotorSim.getVelocity());
+SmartDashboard.putBoolean("Algae Handler Intake Position", isAlgaeIntakeUp());
+SmartDashboard.putBoolean("Algae Handler Limit Switch Trigger", hasAlgae());
+
+//updates simulated voltage
+m_algaeHandlerSim.setInput(inputVoltage);
+m_algaeHandlerSim.update(0.020);
+
+ // Iterate the motor simulation
+
+
+
+  // Update the RoboRioSim voltage to the default battery voltage based on the elevator motor current.
+  RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(algaeHandlerMotorSim.getMotorCurrent()));
+}
 
 public void lowerAlgaeIntake() {
   //solenoid will lower the intake
@@ -117,12 +141,12 @@ public void stopAlgaeMotor() {
 
 public void runAlgaeMotor() {
   //velocity value is a place holder because I didnt know what I was doing :D do we need math for spins per motor revolution??
-  algaeMotorController.setReference(.4, ControlType.kVelocity);
+  algaeMotorController.setReference(577.26, ControlType.kVelocity);
 }
 
 public void reverseAlgaeMotor() {
   //velocity value is a place holder :D
-  algaeMotorController.setReference(-1.0, ControlType.kVelocity);
+  algaeMotorController.setReference(-577.26, ControlType.kVelocity);
 }
 
 public boolean limitSwitchTrigger() {
@@ -135,14 +159,14 @@ public boolean hallEffectSensor() {
   return algaeHallEffect.get();
 }
 
-public void hasAlgae() {
-  algaeLimitSwitch.get();
+public boolean hasAlgae() {
+  return algaeLimitSwitch.get();
 }
 
 public boolean isAlgaeIntakeUp() {
   return algaeHallEffect.get();
 }
-
+//This command intakes an algae
 public Command getAlgaeIntakeCommand() {
   return Commands.sequence (
     Commands.runOnce(() -> {
@@ -159,7 +183,7 @@ public Command getAlgaeIntakeCommand() {
       return isAlgaeIntakeUp();
     }),
     Commands.run(()-> {
-      if((! limitSwitchTrigger() ) || (! hallEffectSensor())) 
+      if((!limitSwitchTrigger() ) || (! hallEffectSensor())) 
       runAlgaeMotor();
       else
       stopAlgaeMotor();    
@@ -168,6 +192,7 @@ public Command getAlgaeIntakeCommand() {
 }
 
 public Command shootAlgaeCommand() {
+  //This command makes sure intake is up, and reverses algae motors until limit switch isnt triggered
    return Commands.sequence (
     Commands.waitUntil (() -> {
       return isAlgaeIntakeUp();
@@ -178,7 +203,7 @@ public Command shootAlgaeCommand() {
     }),
 
     Commands.waitUntil(()-> {
-       return limitSwitchTrigger();
+       return !limitSwitchTrigger();
     }) 
 );
 }
@@ -200,12 +225,33 @@ public Command shootAlgaeCommand() {
 
         Commands.runOnce(
           () -> {
-            if (((algaeEncoder.getVelocity() / 60.0) * Constants.AlgaeHandler.metersPerMotorRevolution) < 0.16) {
+            //Checks to make sure that motor is going at minimum speed needeed to intake algae (WAAYY slower than our maximum potential ;)
+            if ((algaeEncoder.getVelocity())< 500) {
               addFault("[System Check] Elevator velocity too slow", false, true);
           }
           stopAlgaeMotor();
-         }, this )
-//Gloria hey so you better finish this system check code or else your pit checks will be bad so get on
+         }, this ),
+
+         Commands.runOnce(
+
+         () -> {
+          raiseAlgaeIntake();
+          if (!hallEffectSensor()) {
+            addFault("Hall Effect Sensor does not know algae intake is raised", false, true);  
+         }
+        }, this ),
+        Commands.runOnce(
+        () -> {
+          lowerAlgaeIntake();
+        }, this ),
+
+        Commands.runOnce(
+          () -> {
+            if (!limitSwitchTrigger()) {
+              addFault("Limit Switch is not triggered", false, true);
+            }
+          })
+           
       );
   }
 }

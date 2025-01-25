@@ -119,9 +119,17 @@ public static final class AlgaeHandler {
   public static final double algaeIZone = 0;
   public static final double algaeMotorMaxVelocity = 0;
   public static final double algaeMotorMaxAcceleration = 0;
-  public static final double algaeMotorAllowedError = 0; 
-  public static final double momentOfInertiaOfTheBottomIntakeWheel = 0; 
-  public static final double algaeGearRatio = 1;
+  public static final double algaeMotorAllowedError = 0;
+  //Calculates moment of inertia for parameter in flywheel sim for bottom wheels 
+  public static final double massOfBottomIntakeWheel = Units.lbsToKilograms(0.076);
+  public static final double radiusOfBottomIntakeWheel = .025;
+  public static final double momentOfInertiaOfTheBottomIntakeWheel = massOfBottomIntakeWheel * (radiusOfBottomIntakeWheel*radiusOfBottomIntakeWheel); 
+
+  //Calculates moment of inertia for parameter in flywheel sim for top wheels
+  public static final double massOfTopIntakeWheel = Units.lbsToKilograms(0.035);
+  public static final double radiusOfTopIntakeWheel = 1;
+  public static final double momentOfInertiaOfTheTopIntakeWheel = massOfTopIntakeWheel * (radiusOfTopIntakeWheel*radiusOfTopIntakeWheel);
+
 
   //Creating constants for RIGHT Algae Handler :D (do not mix them up ;)
 
@@ -131,8 +139,10 @@ public static final class AlgaeHandler {
   public static final int rightAlgaeLimitID = 8;
     //all of these ID's are place holders and will need to be edited at a later date
 
-    public static final int metersPerMotorRevolution = 0;
-
+    public static final double metersPerMotorRevolution = 0;
+    public static final int amassOfAlgaeHandler = 6;
+    public static final double algaeGearRatio = 9/1;
+    
 
 
 
