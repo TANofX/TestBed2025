@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 import java.nio.file.OpenOption;
 
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.revrobotics.RelativeEncoder;
@@ -82,13 +83,12 @@ private final FlywheelSim m_algaeHandlerSim =
     algaePiston = new Solenoid(PneumaticsModuleType.REVPH, algaeSolenoidID);
     algaeLimitSwitch = new DigitalInput(algaeLimitID);
     algaeMotorController = algaeMotor.getClosedLoopController();
-    algaeEncoder = algaeMotor.getEncoder();
+    algaeEncoder = algaeMotor.getEncoder(); 
     algaeHallEffect = new DigitalInput(algaeHallEffectID);
 
 
     SparkFlexConfig algaeMotorConfig = new SparkFlexConfig();
     ClosedLoopConfig algaeMotorPIDConfig = algaeMotorConfig.closedLoop;
-    CANcoderConfiguration algaeEncoderConfig = new CANcoderConfiguration();
     algaeMotorConfig.idleMode(IdleMode.kBrake);
     algaeMotorPIDConfig.pidf(Constants.AlgaeHandler.algaeMotorP, Constants.AlgaeHandler.algaeMotorI, Constants.AlgaeHandler.algaeMotorD, Constants.AlgaeHandler.algaeFF);
     
@@ -160,15 +160,6 @@ public void reverseAlgaeMotor() {
   //algaeMotor.set(-.5);
 }
 
-public boolean limitSwitchTrigger() {
-  //When limit switch is triggered robot will know that it has an algae
-  return algaeLimitSwitch.get();
-
-}
-public boolean hallEffectSensor() {
-  //When hall effect sensor is passed, robot will know algae intake is up
-  return algaeHallEffect.get();
-}
 
 public boolean hasAlgae() {
   //Will be true when algae handler has algae
@@ -185,24 +176,27 @@ public Command getAlgaeIntakeCommand() {
     Commands.runOnce(() -> {
       runAlgaeMotor();
       lowerAlgaeIntake();
-    }),
+    }, this),
     Commands.waitUntil(() -> {
-    return limitSwitchTrigger();
+    return hasAlgae();
     }),
 
     Commands.runOnce(() -> {
       raiseAlgaeIntake();
-    }),
+    }, this),
     Commands.waitUntil(()-> {
       return isAlgaeIntakeUp();
     }),
     Commands.run(()-> {
-      if((!limitSwitchTrigger() ) || (! hallEffectSensor())) 
+      if((hasAlgae() ) || (!isAlgaeIntakeUp())) 
       runAlgaeMotor();
       else
       stopAlgaeMotor();    
-    })
-    ); 
+    }, this)
+    ).finallyDo(() -> {
+      stopAlgaeMotor();
+      raiseAlgaeIntake();
+    });
 }
 
 public Command shootAlgaeCommand() {
@@ -214,11 +208,14 @@ public Command shootAlgaeCommand() {
 
     Commands.runOnce(() -> {
       reverseAlgaeMotor();
-    }),
+    }, this),
 
     Commands.waitUntil(()-> {
-       return !limitSwitchTrigger();
-    }) 
+       return !hasAlgae();
+    }),
+    Commands.runOnce(()-> {
+      reverseAlgaeMotor();
+    })
 );
 }
 public Command runAlgaeIntakeManuallyCommand() {
@@ -270,7 +267,7 @@ public Command lowerAlgaeIntakeManually() {
         () -> {
           runAlgaeMotor();
         }, this),
-        Commands.waitSeconds(5),
+        Commands.waitSeconds(.25),
 
         Commands.runOnce(
           () -> {
@@ -282,21 +279,21 @@ public Command lowerAlgaeIntakeManually() {
          }, this ),
 
          Commands.runOnce(
-
+          () -> {
+            lowerAlgaeIntake();
+          }, this ),
+  
+         Commands.runOnce(
          () -> {
           raiseAlgaeIntake();
-          if (!hallEffectSensor()) {
+          if (!isAlgaeIntakeUp()) {
             addFault("Hall Effect Sensor does not know algae intake is raised", false, true);  
          }
         }, this ),
-        Commands.runOnce(
-        () -> {
-          lowerAlgaeIntake();
-        }, this ),
-
+       
         Commands.runOnce(
           () -> {
-            if (!limitSwitchTrigger()) {
+            if (!hasAlgae()) {
               addFault("Limit Switch is not triggered", false, true);
             }
           })
