@@ -90,6 +90,7 @@ private final FlywheelSim m_algaeHandlerSim =
     SparkFlexConfig algaeMotorConfig = new SparkFlexConfig();
     ClosedLoopConfig algaeMotorPIDConfig = algaeMotorConfig.closedLoop;
     algaeMotorConfig.idleMode(IdleMode.kBrake);
+    algaeMotorConfig.smartCurrentLimit(80);
     algaeMotorPIDConfig.pidf(Constants.AlgaeHandler.algaeMotorP, Constants.AlgaeHandler.algaeMotorI, Constants.AlgaeHandler.algaeMotorD, Constants.AlgaeHandler.algaeFF);
     
     algaeMotorPIDConfig.iZone(Constants.AlgaeHandler.algaeIZone);
