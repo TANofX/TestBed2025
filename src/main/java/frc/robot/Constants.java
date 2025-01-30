@@ -11,12 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.measure.AngularVelocity;
-
 import java.io.IOException;
-
-import com.ctre.phoenix6.StatusSignal;
 
 public final class Constants {
   public static final String canivoreBusName = "rio";
@@ -155,7 +150,7 @@ public final class Constants {
     public static final int horizontalMotorID = 2;
     public static final int horizontalEncoderID = 3;
     public static final int verticalMotorID = 4;
-    public static final int verticalMotorEncoderID = 5;
+    public static final int verticalEncoderID = 5;
 
     public static final double outtakeMotorGearing = 1;
     public static final double horizontalMotorGearing = 1.0 / 100.0;

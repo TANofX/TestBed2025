@@ -20,7 +20,7 @@ public class RobotContainer {
   public static final LEDs LEDs = new LEDs();
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
-  public static final CoralHandler coralHandler = new CoralHandler();
+  public static final CoralHandler coralHandler = new CoralHandler(Constants.CoralHandler.outtakeMotorID, Constants.CoralHandler.horizontalMotorID, Constants.CoralHandler.verticalMotorID, Constants.CoralHandler.horizontalEncoderID, Constants.CoralHandler.verticalEncoderID);
 
   // Vision clients
   // public static final JetsonClient jetson = new JetsonClient();
