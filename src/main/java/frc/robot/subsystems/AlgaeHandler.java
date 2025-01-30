@@ -3,18 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 //All my imports ;D
 package frc.robot.subsystems;
-import java.nio.file.OpenOption;
-
-
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.revrobotics.RelativeEncoder;
 
-import com.revrobotics.sim.SparkAbsoluteEncoderSim;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.sim.SparkLimitSwitchSim;
-import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -25,26 +16,16 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 
 
-import frc.lib.pid.TuneVelocitySparkPIDController;
-
-
-
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.AnalogAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
 import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 
@@ -60,7 +41,6 @@ public class AlgaeHandler extends AdvancedSubsystem {
 private SparkFlex algaeMotor;
 private Solenoid algaePiston;
 private DigitalInput algaeLimitSwitch;
-private double speedInRPM;
 private  SparkClosedLoopController algaeMotorController;
 private DigitalInput algaeHallEffect;
 private SparkFlexSim algaeHandlerMotorSim;
@@ -115,8 +95,7 @@ double inputVoltage = algaeHandlerMotorSim.getAppliedOutput() * RobotController.
 SmartDashboard.putNumber("Algae Handler Simulated Voltage", inputVoltage);
 SmartDashboard.putNumber("Algae Handler Simulated Motor Position", algaeHandlerMotorSim.getPosition());
 SmartDashboard.putNumber("Algae Handler Simulated Motor Velocity", algaeHandlerMotorSim.getVelocity());
-SmartDashboard.putBoolean("Algae Handler Intake Position", isAlgaeIntakeUp());
-SmartDashboard.putBoolean("Algae Handler Limit Switch Trigger", hasAlgae());
+
 
 //updates simulated voltage
 m_algaeHandlerSim.setInputVoltage(inputVoltage);
@@ -266,6 +245,7 @@ public Command lowerAlgaeIntakeManually() {
     SmartDashboard.putNumber("Algae Handler/Motor Velocity" ,algaeEncoder.getVelocity());
     SmartDashboard.putBoolean("Has Algae", hasAlgae());
     SmartDashboard.putBoolean("Algae Intake is Raised", isAlgaeIntakeUp());
+
   }
 
   @Override

@@ -111,20 +111,19 @@ public static final class AlgaeHandler {
   public static final int leftAlgaeLimitID = 4;
 
     //Creating constants for RIGHT Algae Handler :D
-  public static final int rightAlgaeMotorCANID = 1;
-  public static final int rightAlgaeSolenoidID = 2;
-  public static final int rightAlgaeHallEffectID = 3;
-  public static final int rightAlgaeLimitID = 4;
+  public static final int rightAlgaeMotorCANID = 5;
+  public static final int rightAlgaeSolenoidID = 6;
+  public static final int rightAlgaeHallEffectID = 7;
+  public static final int rightAlgaeLimitID = 8;
   
 
   //all of these ID's are place holders and will need to be edited at a later date
   public static final int degreesPerRevolution = 360;
   //These values will need to be changed, just place holders
-  public static final double algaeMotorP = 0.005;
-  
+  public static final double algaeMotorP = 0.001;
   public static final double algaeMotorI = 0.00;
   public static final double algaeMotorD = 0.000;
-  public static final double algaeFF = 1.0/565.0;
+  public static final double algaeFF = 1.0/(565.0*12);
   public static final double algaeIZone = 0.0;
   public static final double algaeMotorMaxVelocity = 6000.0;
   public static final double algaeMotorMaxAcceleration = 0.0;
