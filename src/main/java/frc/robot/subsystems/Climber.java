@@ -66,8 +66,8 @@ public class Climber extends AdvancedSubsystem {
     climberAbsoluteAngle = Rotation2d.fromDegrees(climberEncoderSignalA.getValueAsDouble() * 180);
 
     climberMotorConfig.inverted(false); // just incase :D
-    climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen)
-    climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen)
+    climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen);
+    climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen);
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     climberMotorConfig.smartCurrentLimit(100,80);
     final ClosedLoopConfig climberMotorPidConfig = climberMotorConfig.closedLoop;
@@ -142,19 +142,20 @@ public class Climber extends AdvancedSubsystem {
   }
   // TODO
   public Rotation2d getCurrentAngle() {
-    return null;
+    return Rotation2d.fromRotations(climberEncoderSignalA.getValueAsDouble()/2.0);
   }
 
   //methods to close and open claw, and stop
 
+
+  //close claw
   public void toggleClaw(){
     climberPiston.set(DoubleSolenoid.Value.kForward);
   }
+
+  //open claw
   public void detoggleClaw(){
     climberPiston.set(DoubleSolenoid.Value.kReverse);
-  }
-  public void off(){
-    climberPiston.set(DoubleSolenoid.Value.kOff)
   }
 }
 
