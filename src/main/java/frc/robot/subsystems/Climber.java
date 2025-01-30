@@ -57,11 +57,17 @@ public class Climber extends AdvancedSubsystem {
     climberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1,2);
     climberMotor = new SparkFlex(motor_canid, MotorType.kBrushless);
     climbercontroller = climberMotor.getClosedLoopController();
+
     // Encoder Config
     climberEncoder = climberMotor.getEncoder();
+
     // Absolute Encoder Config
     climberEncoderAbsolute = new CANcoder(encoderCanID);
+    climberEncoderConfig = new CANcoderConfiguration();
     climberEncoderSignalA = climberEncoderAbsolute.getAbsolutePosition();
+    climberEncoderSignalB = climberEncoderAbsolute.getVelocity();
+    climberEncoderSimState = climberEncoderAbsolute.getSimState();
+    
     // Holds the angle that the climber starts at in comparison to position zero
     climberAbsoluteAngle = Rotation2d.fromDegrees(climberEncoderSignalA.getValueAsDouble() * 180);
 
@@ -96,9 +102,7 @@ public class Climber extends AdvancedSubsystem {
     motorSimulation.iterate(motorSpeed, RobotController.getBatteryVoltage(), 0.02);
     RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(motorSimulation.getMotorCurrent()));
   }
-
-
-  // This is a System Check to see if the motor is moving at a speed that is fast enough
+  /** A method that is used to check that the motors are moving at the right speed.*/
   @Override
   protected Command systemCheckCommand() {
     return Commands.sequence(
@@ -129,18 +133,28 @@ public class Climber extends AdvancedSubsystem {
           }, this)
     );
   }
-  // A method that will set the climber to the required angle
+  /**
+   * A method that moves the Climber mechanism
+   * @returns void
+   * @param angle
+   */
   public void setClimberAngle(Rotation2d angle) {
     climberAbsoluteAngle = angle;
     double armRotation = (angle.getRotations()); 
     double motorRotation = armRotation * Constants.Climber.GEAR_RATIO;
     climbercontroller.setReference(motorRotation, ControlType.kPosition);
   }
-
+  /**
+   * This method is intended to give the user the current target loctation of the climber
+   * @returns target angle for the climber
+  */
   public Rotation2d getCurrentTarget() {
     return climberAbsoluteAngle;
   }
-  // TODO
+  /**
+   * This method will get the current angle of the Climbing mechanism
+   * @returns the current angle of the climber
+   */
   public Rotation2d getCurrentAngle() {
     return Rotation2d.fromRotations(climberEncoderSignalA.getValueAsDouble()/2.0);
   }
