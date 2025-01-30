@@ -22,7 +22,7 @@ public class RobotContainer {
   public static final Swerve swerve = new Swerve();// new Swerve();
   public static final LEDs LEDs = new LEDs();
    public static final AlgaeHandler leftAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.leftAlgaeMotorCANID, Constants.AlgaeHandler.leftAlgaeSolenoidID,Constants.AlgaeHandler.leftAlgaeHallEffectID,Constants.AlgaeHandler.leftAlgaeLimitID);
-   public static final AlgaeHandler rightAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.rightAlgaeMotorCANID, Constants.AlgaeHandler.rightAlgaeMotorSolenoidID, Constants.AlgaeHandler.rightAlgaeHallEffectID, Constants.AlgaeHandler.rightAlgaeLimitID);
+   public static final AlgaeHandler rightAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.rightAlgaeMotorCANID, Constants.AlgaeHandler.rightAlgaeSolenoidID, Constants.AlgaeHandler.rightAlgaeHallEffectID, Constants.AlgaeHandler.rightAlgaeLimitID);
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
 
@@ -48,8 +48,7 @@ public class RobotContainer {
     // intake.updateRotationOffset();}, intake));
 
     //SmartDashboard.putData("Tune Elevator Motor", elevator.getHeightTunerCommand());
-    //SmartDashboard.putData("Elevator Extents", new FindMotorExtents());
-
+    //SmartDashboard.putData("Elevator Extents", new FindMotorExtents())
     // SmartDashboard.putData("Robot At Center Blue Ring", Commands.runOnce(() -> {
     //   swerve.resetOdometry(new Pose2d(new Translation2d(2.9, 5.55), Rotation2d.fromDegrees(0)));
     // }, swerve));

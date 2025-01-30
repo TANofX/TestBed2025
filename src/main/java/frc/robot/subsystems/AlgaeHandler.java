@@ -130,7 +130,7 @@ algaeHandlerMotorSim.iterate(m_algaeHandlerSim.getAngularVelocityRPM() * Constan
   RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(algaeHandlerMotorSim.getMotorCurrent()));
 }
 
-//Methods
+//Methods 
 
 public void lowerAlgaeIntake() {
   //solenoid will lower the intake
@@ -171,6 +171,7 @@ public boolean isAlgaeIntakeUp() {
   //returns a boolean to tell the robot whether or not algae intake is up
   return algaeHallEffect.get();
 }
+
 //This command intakes an algae
 public Command getAlgaeIntakeCommand() {
   return Commands.sequence (
@@ -198,6 +199,10 @@ public Command getAlgaeIntakeCommand() {
       stopAlgaeMotor();
       raiseAlgaeIntake();
     });
+
+
+    //hello traveller, viewing my code I see 
+    
 }
 
 public Command shootAlgaeCommand() {
@@ -236,6 +241,7 @@ public Command reverseAlgaeIntakeManuallyCommand() {
     })
   );
 }
+
 public Command raiseAlgaeIntakeManually() {
   //this command will allow the drivers to manually raise the algae intake
   return Commands.sequence(
@@ -244,13 +250,12 @@ public Command raiseAlgaeIntakeManually() {
     })
   );
 }
+
 public Command lowerAlgaeIntakeManually() {
   //this command will allow the drivers to manually lower the algae intake
   return Commands.sequence(
     Commands.runOnce(()-> {
       lowerAlgaeIntake();
-  
-
   })
   );
 }
@@ -259,7 +264,10 @@ public Command lowerAlgaeIntakeManually() {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Algae Handler/Motor Velocity" ,algaeEncoder.getVelocity());
+    SmartDashboard.putBoolean("Has Algae", hasAlgae());
+    SmartDashboard.putBoolean("Algae Intake is Raised", isAlgaeIntakeUp());
   }
+
   @Override
   protected Command systemCheckCommand() {
     // TODO Auto-generated method stub
@@ -268,7 +276,7 @@ public Command lowerAlgaeIntakeManually() {
         () -> {
           runAlgaeMotor();
         }, this),
-        Commands.waitSeconds(.25),
+        Commands.waitSeconds(5),
 
         Commands.runOnce(
           () -> {
