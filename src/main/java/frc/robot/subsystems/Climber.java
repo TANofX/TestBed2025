@@ -8,25 +8,25 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.sim.CANcoderSimState;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -37,8 +37,8 @@ import frc.robot.Constants;
 
 public class Climber extends AdvancedSubsystem {
   private final SparkFlex climberMotor;
-  private final SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
-  private final Solenoid climberPiston; 
+  private final SparkFlexConfig climberMotorConfig = new SparkFlexConfig();
+  private final DoubleSolenoid climberPiston; 
   private final SparkClosedLoopController climbercontroller;
   private final SingleJointedArmSim physicsSimulation;
   private final SparkFlexSim motorSimulation;
@@ -49,11 +49,12 @@ public class Climber extends AdvancedSubsystem {
   private final CANcoderConfiguration climberEncoderConfig;
   private final CANcoderSimState climberEncoderSimState;
   private final StatusSignal<Angle> climberEncoderSignalA; // TODO
-  private final StatusSignal<AngularVelocity> climberEncoderSignalA; //TODO
+  private final StatusSignal<AngularVelocity> climberEncoderSignalB; //TODO
   private Rotation2d climberAbsoluteAngle;
+
   /** Creates a new Climber. */
   public Climber(final int motor_canid, final int pcmid, final int solonoidid, int encoderCanID) {
-    climberPiston = new Solenoid(PneumaticsModuleType.REVPH, 0);
+    climberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1,2);
     climberMotor = new SparkFlex(motor_canid, MotorType.kBrushless);
     climbercontroller = climberMotor.getClosedLoopController();
     // Encoder Config
@@ -65,6 +66,8 @@ public class Climber extends AdvancedSubsystem {
     climberAbsoluteAngle = Rotation2d.fromDegrees(climberEncoderSignalA.getValueAsDouble() * 180);
 
     climberMotorConfig.inverted(false); // just incase :D
+    climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen)
+    climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen)
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     climberMotorConfig.smartCurrentLimit(100,80);
     final ClosedLoopConfig climberMotorPidConfig = climberMotorConfig.closedLoop;
@@ -129,7 +132,7 @@ public class Climber extends AdvancedSubsystem {
   // A method that will set the climber to the required angle
   public void setClimberAngle(Rotation2d angle) {
     climberAbsoluteAngle = angle;
-    double armRotation = (angle.getRadians() / (2 * Math.PI)); 
+    double armRotation = (angle.getRotations()); 
     double motorRotation = armRotation * Constants.Climber.GEAR_RATIO;
     climbercontroller.setReference(motorRotation, ControlType.kPosition);
   }
@@ -141,4 +144,18 @@ public class Climber extends AdvancedSubsystem {
   public Rotation2d getCurrentAngle() {
     return null;
   }
+
+  //methods to close and open claw, and stop
+
+  public void toggleClaw(){
+    climberPiston.set(DoubleSolenoid.Value.kForward);
+  }
+  public void detoggleClaw(){
+    climberPiston.set(DoubleSolenoid.Value.kReverse);
+  }
+  public void off(){
+    climberPiston.set(DoubleSolenoid.Value.kOff)
+  }
 }
+
+//notes or todo, configure 2 limit switches, double solenoid
