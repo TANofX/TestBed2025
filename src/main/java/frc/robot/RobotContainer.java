@@ -43,11 +43,13 @@ public class RobotContainer {
   
     // Register Named Commands for pathplanner
     //ADD THESE COMMANDS ONCE WE DEVELOP THEM MORE:
-    //NamedCommands.registerCommand("Place L4", new ______());
+    //NamedCommands.registerCommand("ElevatorL4", getElevatorHeightCommand(/*double targetHeightMeters*/);
+    //NamedCommands.registerCommand("ElevatorL1", new getElevatorHeightCommand(/*double targetHeightMeters*/);
+    //NamedCommands.registerCommand("ElevatorIntake", new getElevatorHeightCommand(/*double targetHeightMeters*/);
     //NamedCommands.registerCommand("Collect", new ______());
   
     
-  
+    //Do I need this?
     elevator.setDefaultCommand(new ElevatorJoystickControl(driver::getLeftY));
 
     // SmartDashboard.putData(intake.getIntakePivotTuner());
