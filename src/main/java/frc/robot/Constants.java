@@ -116,8 +116,6 @@ public final class Constants {
     public static final int MOTOR_CANID = 0;
     public static final int PCMID = 0;
     public static final int SOLONOIDID = 0;
+    public static final int climberEncoderCanID = 0; //TODO
   }
- 
-
-  
 }

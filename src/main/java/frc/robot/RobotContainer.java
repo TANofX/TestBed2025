@@ -22,7 +22,7 @@ public class RobotContainer {
   public static final LEDs LEDs = new LEDs();
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
-  public static final Climber climber = new Climber(Constants.Climber.MOTOR_CANID, Constants.Climber.PCMID, Constants.Climber.SOLONOIDID); 
+  public static final Climber climber = new Climber(Constants.Climber.MOTOR_CANID, Constants.Climber.PCMID, Constants.Climber.SOLONOIDID, Constants.Climber.climberEncoderCanID);
   // Vision clients
   // public static final JetsonClient jetson = new JetsonClient();
 

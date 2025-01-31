@@ -132,7 +132,7 @@ public class Climber extends AdvancedSubsystem {
     );
   }
   /**
-   * A method that moves the Climber mechanism
+   * This method will move the climber to the required angle
    * @returns void
    * @param angle
    */
@@ -156,4 +156,12 @@ public class Climber extends AdvancedSubsystem {
   public Rotation2d getCurrentAngle() {
     return Rotation2d.fromDegrees(climberEncoderSignalA.getValueAsDouble() * 180);
   }
+  /**
+   * This method will set the Climber back to the default position
+   */
+  // TODO not working, need to confirm where the default position is with climbing team
+  public void setDefaultPosition() {
+    setClimberAngle(Rotation2d.fromRadians(0)); 
+  }
+
 }
