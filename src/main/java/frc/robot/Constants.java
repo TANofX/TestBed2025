@@ -102,6 +102,8 @@ public final class Constants {
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
     public static final double coralEndEffectorMass = 5;
+
+    public static final double outtakeWheelMass = Units.lbsToKilograms(0.5);
     public static final double outtakeWheelRadius = 0.02; // TODO what is the actual outtake wheel radius
     
     public static final double coralIntakeSpeed = 0;
@@ -111,7 +113,7 @@ public final class Constants {
     public static final double horizontalMotorGearing = 1.0 / 100.0;
     public static final double verticalMotorGearing = 1.0/100.0;
 
-    public static final double outtakeJKgMetersSquared = (.5 * coralEndEffectorMass * Math.pow(outtakeWheelRadius, 2));
+    public static final double outtakeJKgMetersSquared = (.5 * outtakeWheelMass * Math.pow(outtakeWheelRadius, 2));
     public static final double outtakeMotorMinVelocity = 0.0;
     // public static final int outtakeEncoderID = 0.0;
     

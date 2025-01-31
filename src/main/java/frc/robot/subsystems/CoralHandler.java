@@ -69,8 +69,11 @@ public class CoralHandler extends AdvancedSubsystem {
 
   // Creation of Flywheel Simulation for the simulation of the outtakeMotor
   private final FlywheelSim coralHandlerOuttakePhysicsSim = new FlywheelSim(
-      LinearSystemId.createFlywheelSystem(DCMotor.getNeoVortex(1), Constants.CoralHandler.outtakeJKgMetersSquared, Constants.CoralHandler.outtakeMotorGearing),
-      DCMotor.getNeoVortex(1), Constants.CoralHandler.outtakeMotorGearing);
+      LinearSystemId.createFlywheelSystem(DCMotor.getNeoVortex(1), 
+                                          Constants.CoralHandler.outtakeJKgMetersSquared, 
+                                          Constants.CoralHandler.outtakeMotorGearing),
+      DCMotor.getNeoVortex(1), 
+      Constants.CoralHandler.outtakeMotorGearing);
 
   // Creation of SingleJoinedArm Sumulatiion of the simulation of the horizontalMotor
   private final SingleJointedArmSim coralHandlerHorizontalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
@@ -439,6 +442,7 @@ public class CoralHandler extends AdvancedSubsystem {
               setHorizontalAngle(Rotation2d.fromDegrees(20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
               setVerticalAngle(Rotation2d.fromDegrees(20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
             }, this),
+        Commands.waitSeconds(1.0),
         Commands.runOnce(
             () -> {
               if ((outtakeEncoder.getVelocity()) < Constants.CoralHandler.outtakeMotorMinVelocity) {
@@ -457,6 +461,7 @@ public class CoralHandler extends AdvancedSubsystem {
               setHorizontalAngle(Rotation2d.fromDegrees(-20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
               setVerticalAngle(Rotation2d.fromDegrees(-20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
             }, this),
+        Commands.waitSeconds(1.0),
         Commands.runOnce(
             () -> {
               if ((outtakeEncoder.getVelocity()) < -Constants.CoralHandler.outtakeMotorMinVelocity) {
