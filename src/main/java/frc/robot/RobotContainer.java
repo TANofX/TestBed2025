@@ -32,6 +32,7 @@ public class RobotContainer {
   // public static final JetsonClient jetson = new JetsonClient();
 
   public RobotContainer() {
+    SmartDashboard.putData("Elevator Test", elevator.getSystemCheckCommand());
 
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();

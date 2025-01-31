@@ -31,7 +31,7 @@ public final class Constants {
     public static final double P = 0.05;
     public static final double I = 0.00;
     public static final double D = 0.00;
-    public static final double FF = 0.00015;
+    public static final double FF = 1.0/(565.0*12);
 
     public static final double METERS_PER_MOTOR_REVOLUTION = Units.inchesToMeters(1.0 / 4.0);
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(20.0);

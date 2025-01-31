@@ -76,6 +76,9 @@ public class Elevator extends AdvancedSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Elevator Motor Velocity", elevatorEncoder.getVelocity());
+    SmartDashboard.putNumber("Elevator Position", getElevation());
+    
     
   }
   
@@ -118,7 +121,7 @@ public class Elevator extends AdvancedSubsystem {
         () -> {
           elevatorMotor.set(0.25);
         }, this),
-      Commands.waitSeconds(0.25),
+      Commands.waitSeconds(5),
       Commands.runOnce(
         () -> {
           if (((elevatorEncoder.getVelocity() / 60.0) * Constants.Elevator.METERS_PER_MOTOR_REVOLUTION) < 0.16) {
