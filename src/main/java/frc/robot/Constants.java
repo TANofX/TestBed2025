@@ -19,6 +19,9 @@ public final class Constants {
   static {
     try {
       apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
+      apriltagLayout.getFieldLength();
+      apriltagLayout.getFieldWidth();
+      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
       fieldSize = new Translation2d(apriltagLayout.getFieldLength(), apriltagLayout.getFieldWidth());
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -104,5 +107,30 @@ public final class Constants {
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
+  }
+
+  public static final class AutoBalance {
+    // public static final PIDConstants BALANCE_CONSTANTS = new PIDConstants(0.3,
+    // 0.0, 0.1);
+    public static final double maxVelAuto = 0.4;
+    public static final double maxVelTele = 0.3;
+  }
+
+  public static final class Climber {
+    public static final double firstStageGearRatio = 90 / 60;
+    public static final double secondStageGearRatio = 18 / 58;
+    
+    public static final double MOTOR_KI = 0; // TODO
+    public static final double MOTOR_KP = 0.25;
+    public static final double MOTOR_KD = 0;
+    public static final double GEAR_RATIO = 0.01;
+    public static final double ARM_ANGULAR_MOMENTUM = Units.lbsToKilograms(9.963);
+    public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
+    public static final double MIN_ANGLE_RADS = 0;
+    public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
+    public static final int MOTOR_CANID = 0;
+    public static final int PCMID = 0;
+    public static final int SOLONOIDID = 0;
+    public static final int climberEncoderCanID = 0; //TODO
   }
 }
