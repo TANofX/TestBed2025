@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
@@ -46,9 +47,9 @@ public class RobotContainer {
   
     // Register Named Commands for pathplanner
     //ADD THESE COMMANDS ONCE WE DEVELOP THEM MORE:
-    NamedCommands.registerCommand("ElevatorL4", new getElevatorHeightCommand(0.00000001);
-    NamedCommands.registerCommand("ElevatorL1", new getElevatorHeightCommand(0.00000001);
-    NamedCommands.registerCommand("ElevatorIntake", new getElevatorHeightCommand(0.00001);
+    NamedCommands.registerCommand("ElevatorL4", elevator.getElevatorHeightCommand(0));
+    NamedCommands.registerCommand("ElevatorL1", elevator.getElevatorHeightCommand(0.00000001));
+    NamedCommands.registerCommand("ElevatorIntake", elevator.getElevatorHeightCommand(0.00001));
     //NamedCommands.registerCommand("Collect", new ______());
   
     
