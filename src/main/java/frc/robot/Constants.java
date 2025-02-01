@@ -106,7 +106,7 @@ public final class Constants {
     public static final double secondStageGearRatio = 18 / 58;
     
     public static final double MOTOR_KI = 0; // TODO
-    public static final double MOTOR_KP = 0.5;
+    public static final double MOTOR_KP = 0.25;
     public static final double MOTOR_KD = 0;
     public static final double GEAR_RATIO = 0.01;
     public static final double ARM_ANGULAR_MOMENTUM = Units.lbsToKilograms(9.963);

@@ -72,6 +72,10 @@ public class RobotContainer {
           shooter.stopMotors();
 
         }))))); */
-  
+    driver.B().onTrue(climber.getStowCommand());
+    driver.Y().onTrue(climber.getPrepareCommand());
+    driver.X().onTrue(climber.getCloseCommand());
+    driver.A().onTrue(climber.getClimbCommand());
+
   }
 }
