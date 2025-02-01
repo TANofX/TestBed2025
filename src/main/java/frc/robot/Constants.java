@@ -135,11 +135,11 @@ public final class Constants {
     public static final double horizontalMotorMaxAccleration = 1.0;
     public static final double verticalMotorMaxAccleration = 1.0;
 
-    public static final double horizontalMotorMaxVelocity = 1.0;
-    public static final double verticalMotorMaxVelocity = 1.0;
+    public static final double horizontalMotorMaxVelocity = 6000.0;
+    public static final double verticalMotorMaxVelocity = 6000.0;
 
-    public static final double horizontalMotorClosedLoopError = 0.0;
-    public static final double verticalMotorClosedLoopError = 0.0;
+    public static final double horizontalMotorClosedLoopError = 1.0;
+    public static final double verticalMotorClosedLoopError = 1.0;
     
     public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
     public static final double verticalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);

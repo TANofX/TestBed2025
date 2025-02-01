@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Rotation;
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -77,14 +75,16 @@ public class CoralHandler extends AdvancedSubsystem {
       Constants.CoralHandler.outtakeMotorGearing);
 
   // Creation of SingleJoinedArm Sumulatiion of the simulation of the horizontalMotor
-  private final SingleJointedArmSim coralHandlerHorizontalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
+  private final SingleJointedArmSim coralHandlerHorizontalPhysicsSim = new SingleJointedArmSim(
+      DCMotor.getNeo550(1),
       Constants.CoralHandler.horizontalMotorGearing, Constants.CoralHandler.horizontalJKgMetersSquared,
       Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.horizontalMinAngleInRadians,
-      Constants.CoralHandler.horizontalMaxAngleInRadians, true,
+      Constants.CoralHandler.horizontalMaxAngleInRadians, false,
       Constants.CoralHandler.horizontalStartingAngleInRadians); // ,Constants.CoralHandler.horizontalMotorStdDev);
 
   // Creation of SingleJoinedArm Sumulatiion of the simulation of the verticalMotor
-  private final SingleJointedArmSim coralHandlerVerticalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
+  private final SingleJointedArmSim coralHandlerVerticalPhysicsSim = new SingleJointedArmSim(
+      DCMotor.getNeo550(1),
       Constants.CoralHandler.verticalMotorGearing, Constants.CoralHandler.verticalJKgMetersSquared,
       Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.verticalMinAngleInRadians,
       Constants.CoralHandler.verticalMaxAngleInRadians, false,
@@ -115,6 +115,7 @@ public class CoralHandler extends AdvancedSubsystem {
     coralHandlerHorizontalAbsoluteEncoderSim = new SparkAbsoluteEncoderSim(horizontalMotor);
     coralHandlerVerticalAbsoluteEncoderSim = new SparkAbsoluteEncoderSim(verticalMotor);
 
+
     // Using SparkFlexConfig to create needed parameters for the outtakeMotor
     SparkFlexConfig outtakeConfig = new SparkFlexConfig();
     outtakeConfig.inverted(false);
@@ -123,8 +124,7 @@ public class CoralHandler extends AdvancedSubsystem {
         SparkBase.PersistMode.kPersistParameters);
 
     // Creation of needed settings of limitswitch for the horizontalMotor
-    LimitSwitchConfig horizontalLimitConfig = new LimitSwitchConfig(); // TODO do we need the normal limit switch
-                                                                       // config?
+    LimitSwitchConfig horizontalLimitConfig = new LimitSwitchConfig(); // TODO do we need the normal limit switch config?
     horizontalLimitConfig.forwardLimitSwitchType(Type.kNormallyOpen);
 
     // Creation of configuration for the soft limit for the horizontal motor
@@ -209,6 +209,7 @@ public class CoralHandler extends AdvancedSubsystem {
     coralHandlerHorizontalSim = new SparkMaxSim(horizontalMotor, DCMotor.getNeo550(1));
     coralHandlerVerticalSim = new SparkMaxSim(verticalMotor, DCMotor.getNeo550(1));
 
+    
     // Register Hardware
     registerHardware("Coral Intake/Outtake Motor", outtakeMotor);
     registerHardware("Coral Horizontal Motor", horizontalMotor);
@@ -258,9 +259,9 @@ public class CoralHandler extends AdvancedSubsystem {
         coralHandlerHorizontalSim.getMotorCurrent(), coralHandlerVerticalSim.getMotorCurrent()));
 
     SmartDashboard.putNumber("Horizontal Absolute Encoder Sim Angle",
-        coralHandlerHorizontalSim.getAbsoluteEncoderSim().getPosition());
+        coralHandlerHorizontalAbsoluteEncoderSim.getPosition());
     SmartDashboard.putNumber("Vertical Absolute Encoder Sim Angle",
-        coralHandlerVerticalSim.getAbsoluteEncoderSim().getPosition());
+        coralHandlerVerticalAbsoluteEncoderSim.getPosition());
   }
 
   /**
@@ -410,8 +411,6 @@ public class CoralHandler extends AdvancedSubsystem {
       SmartDashboard.putNumber("vTargetAngle in Degrees", vTargetAngle.getDegrees());
       SmartDashboard.putNumber("vTargetAngle in Radians", vTargetAngle.getRadians());
       SmartDashboard.putNumber("vTargetAngle in Rptations", vTargetAngle.getRotations());
-      SmartDashboard.putNumber("Difference in Angle", (Math.abs(vTargetAngle.getDegrees() - getAbsoluteEncoderAngle(verticalAbsoluteEncoder).getValue().in(Degrees))));
-      SmartDashboard.putNumber("Encoder Angle ", getAbsoluteEncoderAngle(verticalAbsoluteEncoder).getValue().in(Degrees));
       return Commands.sequence(
         Commands.runOnce(() -> {
           setVerticalAngle(vTargetAngle);
@@ -424,6 +423,22 @@ public class CoralHandler extends AdvancedSubsystem {
         }, this)
       );
   }
+  public Command setHorizontalAngleCommand(Rotation2d hTargetAngle) {
+    return Commands.sequence(
+      Commands.runOnce(
+        () -> {
+          setHorizontalAngle(hTargetAngle);
+        }, this),
+      Commands.waitUntil(
+        () -> {
+        return Math.abs(hTargetAngle.getDegrees() - getAbsoluteEncoderAngle(horizontalAbsoluteEncoder).getValue().in(Degrees)) < 2;
+      }),
+      Commands.runOnce(
+        () -> {
+        horizontalMotor.set(0);
+  }, this)
+    );
+  }
 
 @Override
   protected Command systemCheckCommand() {
@@ -431,7 +446,7 @@ public class CoralHandler extends AdvancedSubsystem {
         Commands.runOnce(
             () -> {
               runOuttakeMotor(1);
-              // setHorizontalAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+              setHorizontalAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because it is a rotation2d?
               setVerticalAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because it is a rotation2d?
             }, this),
         Commands.waitSeconds(1.0),
@@ -450,7 +465,7 @@ public class CoralHandler extends AdvancedSubsystem {
         Commands.runOnce(
             () -> {
               runOuttakeMotor(-1);
-              // setHorizontalAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+              setHorizontalAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because it is a rotation2d?
               setVerticalAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because it is a rotation2d?
             }, this),
         Commands.waitSeconds(1.0),

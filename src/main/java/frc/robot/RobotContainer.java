@@ -32,7 +32,7 @@ public class RobotContainer {
     LEDs.setDefaultCommand(new Notifications());    
     SmartDashboard.putData("Coral Running Motors Test", coralHandler.getSystemCheckCommand());
     SmartDashboard.putData ("vertical Angel Test", coralHandler.setVerticalAngleCommand(Rotation2d.fromDegrees(50)));
-
+    SmartDashboard.putData("horizontal", coralHandler.setHorizontalAngleCommand(Rotation2d.fromDegrees(50)));
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
     //SmartDashboard.putData("Tune Elevation", shooterWrist.getElevationTunerCommand());
