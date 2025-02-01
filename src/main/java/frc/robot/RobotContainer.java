@@ -3,8 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-//NEED TO FIGURE OUT THIS IMPORT:
-//import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
@@ -13,6 +11,11 @@ import frc.robot.commands.Notifications;
 import frc.robot.commands.SwerveDriveWithGamepad;
 import frc.robot.subsystems.*;
 import frc.robot.util.RobotMechanism;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 
 
 public class RobotContainer {
@@ -43,9 +46,9 @@ public class RobotContainer {
   
     // Register Named Commands for pathplanner
     //ADD THESE COMMANDS ONCE WE DEVELOP THEM MORE:
-    //NamedCommands.registerCommand("ElevatorL4", getElevatorHeightCommand(/*double targetHeightMeters*/);
-    //NamedCommands.registerCommand("ElevatorL1", new getElevatorHeightCommand(/*double targetHeightMeters*/);
-    //NamedCommands.registerCommand("ElevatorIntake", new getElevatorHeightCommand(/*double targetHeightMeters*/);
+    NamedCommands.registerCommand("ElevatorL4", new getElevatorHeightCommand(0.00000001);
+    NamedCommands.registerCommand("ElevatorL1", new getElevatorHeightCommand(0.00000001);
+    NamedCommands.registerCommand("ElevatorIntake", new getElevatorHeightCommand(0.00001);
     //NamedCommands.registerCommand("Collect", new ______());
   
     
