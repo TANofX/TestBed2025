@@ -109,22 +109,22 @@ public final class Constants {
     public static final double coralIntakeSpeed = 0;
     public static final double coralOuttakeSpeed = 0;
     
-    public static final double outtakeMotorGearing = 1;
+    public static final double outtakeMotorGearing = 1.0;
     public static final double horizontalMotorGearing = 1.0 / 100.0;
-    public static final double verticalMotorGearing = 1.0/100.0;
+    public static final double verticalMotorGearing = 1.0 / 100.0;
 
     public static final double outtakeJKgMetersSquared = (.5 * outtakeWheelMass * Math.pow(outtakeWheelRadius, 2));
     public static final double outtakeMotorMinVelocity = 0.0;
     // public static final int outtakeEncoderID = 0.0;
     
-    public static final double horizontalMotorP = 1.0;
-    public static final double verticalMotorP = 1.0;
+    public static final double horizontalMotorP = 0.001;
+    public static final double verticalMotorP = 0.001;
 
     public static final double horizontalMotorI = 0.0;
     public static final double verticalMotorI = 0.0;
 
-    public static final double horizontalMotorD = 1.0;
-    public static final double verticalMotorD = 1.0;
+    public static final double horizontalMotorD = 0.001;
+    public static final double verticalMotorD = 0.001;
 
     public static final double horizontalMotorFeedForward = 1.0;
     public static final double verticalMotorFeedForward = 1.0;
@@ -151,7 +151,7 @@ public final class Constants {
     public static final double verticalMaxAngleInRadians = Units.degreesToRadians(90.0);
     
     public static final double horizontalStartingAngleInRadians = 0.0;
-    public static final double verticalStartingAngleInRadians = Units.degreesToRadians(90);
+    public static final double verticalStartingAngleInRadians = 0.0;
     
     public static final double horizontalMotorStdDev = 0.0;
     public static final double verticalMotorStdDev = 0.0;

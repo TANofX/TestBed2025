@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -79,14 +80,14 @@ public class CoralHandler extends AdvancedSubsystem {
   private final SingleJointedArmSim coralHandlerHorizontalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
       Constants.CoralHandler.horizontalMotorGearing, Constants.CoralHandler.horizontalJKgMetersSquared,
       Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.horizontalMinAngleInRadians,
-      Constants.CoralHandler.horizontalMaxAngleInRadians, false,
+      Constants.CoralHandler.horizontalMaxAngleInRadians, true,
       Constants.CoralHandler.horizontalStartingAngleInRadians); // ,Constants.CoralHandler.horizontalMotorStdDev);
 
   // Creation of SingleJoinedArm Sumulatiion of the simulation of the verticalMotor
   private final SingleJointedArmSim coralHandlerVerticalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
       Constants.CoralHandler.verticalMotorGearing, Constants.CoralHandler.verticalJKgMetersSquared,
       Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.verticalMinAngleInRadians,
-      Constants.CoralHandler.verticalMaxAngleInRadians, true,
+      Constants.CoralHandler.verticalMaxAngleInRadians, false,
       Constants.CoralHandler.verticalStartingAngleInRadians); // ,Constants.CoralHandler.verticalMotorStdDev);
 
   private final SparkAbsoluteEncoderSim coralHandlerHorizontalAbsoluteEncoderSim;
@@ -149,9 +150,9 @@ public class CoralHandler extends AdvancedSubsystem {
     horizontalMotorPIDConfig.maxMotion.maxAcceleration(Constants.CoralHandler.horizontalMotorMaxAccleration);
     horizontalMotorPIDConfig.maxMotion.maxVelocity(Constants.CoralHandler.horizontalMotorMaxVelocity);
     horizontalMotorPIDConfig.maxMotion.allowedClosedLoopError(Constants.CoralHandler.horizontalMotorClosedLoopError);
+    horizontalMotorConfig.apply(horizontalMotorPIDConfig);
     horizontalMotor.configure(horizontalMotorConfig, SparkBase.ResetMode.kResetSafeParameters,
         SparkBase.PersistMode.kNoPersistParameters);
-    horizontalMotorConfig.apply(horizontalMotorPIDConfig);
 
     // Creation of encoderConfig for the horizontal motor absolute encoder
     CANcoderConfiguration horizontalEncoderConfig = new CANcoderConfiguration();
@@ -189,9 +190,10 @@ public class CoralHandler extends AdvancedSubsystem {
     verticalMotorPIDConfig.maxMotion.maxAcceleration(Constants.CoralHandler.verticalMotorMaxAccleration);
     verticalMotorPIDConfig.maxMotion.maxVelocity(Constants.CoralHandler.verticalMotorMaxVelocity);
     verticalMotorPIDConfig.maxMotion.allowedClosedLoopError(Constants.CoralHandler.verticalMotorClosedLoopError);
-    verticalMotor.configure(verticalMotorConfig, SparkBase.ResetMode.kResetSafeParameters,
-        SparkBase.PersistMode.kPersistParameters);
     verticalMotorConfig.apply(verticalMotorPIDConfig);
+    verticalMotor.configure(verticalMotorConfig, SparkBase.ResetMode.kResetSafeParameters,
+        SparkBase.PersistMode.kNoPersistParameters);
+
 
     // Creation of encoderConfig for the vertical motor absolute encoder
     CANcoderConfiguration verticalEncoderConfig = new CANcoderConfiguration();
@@ -249,8 +251,8 @@ public class CoralHandler extends AdvancedSubsystem {
     coralHandlerVerticalSim.iterate(verticalMotorVelocity, RobotController.getBatteryVoltage(), 0.02);
 
     // Creation of the absolute encoder simulations
-    coralHandlerHorizontalAbsoluteEncoderSim.iterate(coralHandlerHorizontalPhysicsSim.getVelocityRadPerSec(), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
-    coralHandlerVerticalAbsoluteEncoderSim.iterate(coralHandlerVerticalPhysicsSim.getVelocityRadPerSec(), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
+    coralHandlerHorizontalAbsoluteEncoderSim.iterate((horizontalMotorVelocity * Constants.CoralHandler.horizontalMotorGearing), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
+    coralHandlerVerticalAbsoluteEncoderSim.iterate((verticalMotorVelocity * Constants.CoralHandler.verticalMotorGearing), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
 
     RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(coralHandlerOuttakeSim.getMotorCurrent(),
         coralHandlerHorizontalSim.getMotorCurrent(), coralHandlerVerticalSim.getMotorCurrent()));
@@ -405,32 +407,22 @@ public class CoralHandler extends AdvancedSubsystem {
   }
 
   public Command setVerticalAngleCommand(Rotation2d vTargetAngle) {
-    if (vTargetAngle.getDegrees() == Units.radiansToDegrees(Constants.CoralHandler.verticalStartingAngleInRadians)) {
+      SmartDashboard.putNumber("vTargetAngle in Degrees", vTargetAngle.getDegrees());
+      SmartDashboard.putNumber("vTargetAngle in Radians", vTargetAngle.getRadians());
+      SmartDashboard.putNumber("vTargetAngle in Rptations", vTargetAngle.getRotations());
+      SmartDashboard.putNumber("Difference in Angle", (Math.abs(vTargetAngle.getDegrees() - getAbsoluteEncoderAngle(verticalAbsoluteEncoder).getValue().in(Degrees))));
+      SmartDashboard.putNumber("Encoder Angle ", getAbsoluteEncoderAngle(verticalAbsoluteEncoder).getValue().in(Degrees));
       return Commands.sequence(
         Commands.runOnce(() -> {
           setVerticalAngle(vTargetAngle);
         }, this),
         Commands.waitUntil(()->{
-          return Math.abs(vTargetAngle.getDegrees() - getAbsoluteEncoderAngle(verticalAbsoluteEncoder).getValue().in(Degrees)) < 0.0025;
+          return Math.abs(vTargetAngle.getDegrees() - getAbsoluteEncoderAngle(verticalAbsoluteEncoder).getValue().in(Degrees)) < 2;
         }),
         Commands.runOnce(() -> {
-          stopVerticalMotor();
+          verticalMotor.set(0);
         }, this)
-      
       );
-    }
-   
-    else {
-      return Commands.sequence(
-        Commands.runOnce(() -> {
-          setVerticalAngle(vTargetAngle);
-        }, this),
-        Commands.waitUntil(() -> {
-          return Math.abs(vTargetAngle.getDegrees() - getAbsoluteEncoderAngle(verticalAbsoluteEncoder).getValue().in(Degrees)) < 0.0025;
-        })
-      
-      );
-    }
   }
 
 @Override
@@ -438,9 +430,9 @@ public class CoralHandler extends AdvancedSubsystem {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              runOuttakeMotor(0.25);
-              setHorizontalAngle(Rotation2d.fromDegrees(20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
-              setVerticalAngle(Rotation2d.fromDegrees(20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+              runOuttakeMotor(1);
+              // setHorizontalAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+              setVerticalAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because it is a rotation2d?
             }, this),
         Commands.waitSeconds(1.0),
         Commands.runOnce(
@@ -458,8 +450,8 @@ public class CoralHandler extends AdvancedSubsystem {
         Commands.runOnce(
             () -> {
               runOuttakeMotor(-1);
-              setHorizontalAngle(Rotation2d.fromDegrees(-20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
-              setVerticalAngle(Rotation2d.fromDegrees(-20)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+              // setHorizontalAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+              setVerticalAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because it is a rotation2d?
             }, this),
         Commands.waitSeconds(1.0),
         Commands.runOnce(
@@ -473,7 +465,7 @@ public class CoralHandler extends AdvancedSubsystem {
               if ((verticalEncoder.getVelocity()) < -Constants.CoralHandler.verticalMotorMinVelocity) {
                 addFault("[System Check] Vertical Coral Motor too slow (backwards direction)", false, true);
               }
-              stopMotors();
+              horizontalMotor.set(0);
             }, this));
   }
 }

@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
@@ -30,6 +31,7 @@ public class RobotContainer {
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());    
     SmartDashboard.putData("Coral Running Motors Test", coralHandler.getSystemCheckCommand());
+    SmartDashboard.putData ("vertical Angel Test", coralHandler.setVerticalAngleCommand(Rotation2d.fromDegrees(50)));
 
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
