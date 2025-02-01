@@ -12,6 +12,7 @@ import frc.robot.subsystems.*;
 import frc.robot.util.RobotMechanism;
 
 
+
 public class RobotContainer {
   // Controllers
   public static final XboxControllerWrapper driver = new XboxControllerWrapper(0, 0.1);
@@ -26,6 +27,8 @@ public class RobotContainer {
   public static final Elevator elevator = new Elevator(Constants.Elevator.motorCanID);
   public static final RobotMechanism robotMechanism = new RobotMechanism();
 
+   public static final AlgaeHandler leftAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.leftAlgaeMotorCANID, Constants.AlgaeHandler.leftAlgaeSolenoidID,Constants.AlgaeHandler.leftAlgaeHallEffectID,Constants.AlgaeHandler.leftAlgaeLimitID);
+   public static final AlgaeHandler rightAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.rightAlgaeMotorCANID, Constants.AlgaeHandler.rightAlgaeSolenoidID, Constants.AlgaeHandler.rightAlgaeHallEffectID, Constants.AlgaeHandler.rightAlgaeLimitID);
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
   public static final Climber climber = new Climber(Constants.Climber.MOTOR_CANID, Constants.Climber.PCMID, Constants.Climber.SOLONOIDID, Constants.Climber.climberEncoderCanID);
@@ -39,6 +42,10 @@ public class RobotContainer {
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());
     elevator.setDefaultCommand(new ElevatorJoystickControl(driver::getLeftY));
+    SmartDashboard.putData("Left Algae Handler Test", leftAlgaeHandler.getSystemCheckCommand());
+    SmartDashboard.putData("Right Algae Handler Test", rightAlgaeHandler.getSystemCheckCommand());
+   
+  
 
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
@@ -50,8 +57,7 @@ public class RobotContainer {
     // intake.updateRotationOffset();}, intake));
 
     //SmartDashboard.putData("Tune Elevator Motor", elevator.getHeightTunerCommand());
-    //SmartDashboard.putData("Elevator Extents", new FindMotorExtents());
-
+    //SmartDashboard.putData("Elevator Extents", new FindMotorExtents())
     // SmartDashboard.putData("Robot At Center Blue Ring", Commands.runOnce(() -> {
     //   swerve.resetOdometry(new Pose2d(new Translation2d(2.9, 5.55), Rotation2d.fromDegrees(0)));
     // }, swerve));
