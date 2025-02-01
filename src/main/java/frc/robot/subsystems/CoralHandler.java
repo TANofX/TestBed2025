@@ -81,8 +81,8 @@ public class CoralHandler extends AdvancedSubsystem {
             Constants.CoralHandler.horizontalMotorMaxAccleration,
             Constants.CoralHandler.horizontalMotorClosedLoopError,
             Type.kNormallyOpen,
-            Constants.CoralHandler.horizontalMinAngle.getDegrees(),
-            Constants.CoralHandler.horizontalMaxAngle.getDegrees()
+            Constants.CoralHandler.horizontalMinAngle,
+            Constants.CoralHandler.horizontalMaxAngle
     );
     horizontalWrist.registerSystemCheckWithSmartDashboard();
     verticalWrist = new CoralHandlerWrist(
@@ -100,8 +100,8 @@ public class CoralHandler extends AdvancedSubsystem {
             Constants.CoralHandler.verticalMotorMaxAccleration,
             Constants.CoralHandler.verticalMotorClosedLoopError,
             Type.kNormallyOpen,
-            Constants.CoralHandler.verticalMinAngle.getDegrees(),
-            Constants.CoralHandler.verticalMaxAngle.getDegrees()
+            Constants.CoralHandler.verticalMinAngle,
+            Constants.CoralHandler.verticalMaxAngle
     );
     verticalWrist.registerSystemCheckWithSmartDashboard();
 

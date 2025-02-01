@@ -15,7 +15,6 @@ import com.revrobotics.spark.config.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.wpilibj.Preferences;
@@ -28,8 +27,8 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
 
     private final String name;
     private final double gearRatio;
-    private final double clampMin;
-    private final double clampMax;
+    private final Rotation2d armMinRotation;
+    private final Rotation2d armMaxRotation;
     private final double minVelocity;
 
     private final SparkMax motor;
@@ -57,15 +56,15 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
             double maxAcceleration,
             double allowedError,
             LimitSwitchConfig.Type limitSwitchType,
-            double clampMin, // min rotation of the arm in degrees
-            double clampMax // max rotation of the arm in degrees
+            Rotation2d armMinRotation, // min rotation of the arm
+            Rotation2d armMaxRotation // max rotation of the arm
     ) {
         super("CoralHandlerWrist" + name);
         this.name = name;
         this.gearRatio = gearRatio;
         this.minVelocity = minVelocity;
-        this.clampMin = clampMin;
-        this.clampMax = clampMax;
+        this.armMinRotation = armMinRotation;
+        this.armMaxRotation = armMaxRotation;
 
         this.motor = new SparkMax(motorId, SparkLowLevel.MotorType.kBrushless);
         this.controller = motor.getClosedLoopController();
@@ -114,19 +113,18 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
     /**
      * Sets the angle.
      *
-     * @param targetAngle                The needed angle to be obtained.
+     * @param targetAngle The needed angle to be obtained.
      */
     public void setAngle(Rotation2d targetAngle) {
-        //the target rotation of the arm in degrees
-        double target = MathUtil.clamp(targetAngle.getDegrees(), clampMin, clampMax);
+        //the target rotation of the arm
+        Rotation2d target = Rotation2d.fromDegrees(MathUtil.clamp(targetAngle.getDegrees(), armMinRotation.getDegrees(), armMaxRotation.getDegrees()));
         //how much is wanted to move in degrees
-        double adjustedAngle = absoluteEncoder.getPosition().getValue().in(Degrees) - target; // TODO This is supposed to return double bc it was degrees...?
+        Rotation2d adjustedAngle = new Rotation2d(absoluteEncoder.getPosition().getValue()).minus(target);
         //how far to rotate the motor in degrees from where we are currently
-        double angleOffset = adjustedAngle * gearRatio;
+        Rotation2d angleOffset = adjustedAngle.times(gearRatio);
         //the actual target angle --> the target absolute rotation of the motor
-        double neededAngle = Units.rotationsToDegrees(motor.getEncoder().getPosition()) + angleOffset;
-        double motorRotations = neededAngle / 360.0;
-        controller.setReference(motorRotations, SparkBase.ControlType.kMAXMotionPositionControl); // TODO Is it supposed be position control?
+        Rotation2d neededAngle = Rotation2d.fromRotations(motor.getEncoder().getPosition()).plus(angleOffset);
+        controller.setReference(neededAngle.getRotations(), SparkBase.ControlType.kMAXMotionPositionControl); 
     }
 
     public void stopMotor() {
@@ -138,7 +136,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
     }
 
     public Command setAngleCommand(Rotation2d targetAngle) {
-        SmartDashboard.putNumber(name + "TargetAngle in Degrees", targetAngle.getDegrees());
+        SmartDashboard.putNumber(name + "Target Angle in Degrees", targetAngle.getDegrees());
         return Commands.sequence(
                 Commands.runOnce(() -> setAngle(targetAngle), this),
                 Commands.waitUntil(()->
