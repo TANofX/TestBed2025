@@ -27,7 +27,7 @@ import frc.lib.subsystem.AdvancedSubsystem;
 public class CoralHandlerWrist extends AdvancedSubsystem {
 
     private final String name;
-    private final double rotationDegreesPerRotation;
+    private final double gearRatio;
     private final double clampMin;
     private final double clampMax;
     private final double minVelocity;
@@ -46,7 +46,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
             String name, // "Horizontal" or "Vertical"
             int motorId,
             int encoderId,
-            double rotationDegreesPerRotation,
+            double gearRatio,
             double p,
             double i,
             double d,
@@ -57,12 +57,12 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
             double maxAcceleration,
             double allowedError,
             LimitSwitchConfig.Type limitSwitchType,
-            double clampMin,
-            double clampMax
+            double clampMin, // min rotation of the arm in degrees
+            double clampMax // max rotation of the arm in degrees
     ) {
         super("CoralHandlerWrist" + name);
         this.name = name;
-        this.rotationDegreesPerRotation = rotationDegreesPerRotation;
+        this.gearRatio = gearRatio;
         this.minVelocity = minVelocity;
         this.clampMin = clampMin;
         this.clampMax = clampMax;
@@ -76,8 +76,8 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         SoftLimitConfig softLimitConfig = new SoftLimitConfig();
         softLimitConfig.forwardSoftLimitEnabled(false);
         softLimitConfig.reverseSoftLimitEnabled(false);
-        softLimitConfig.reverseSoftLimit(clampMin / rotationDegreesPerRotation);
-        softLimitConfig.forwardSoftLimit(clampMax / rotationDegreesPerRotation);
+        //softLimitConfig.reverseSoftLimit(clampMin / rotationDegreesPerRotation);
+        //softLimitConfig.forwardSoftLimit(clampMax / rotationDegreesPerRotation);
 
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig.inverted(false);
@@ -122,10 +122,11 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         //how much is wanted to move in degrees
         double adjustedAngle = absoluteEncoder.getPosition().getValue().in(Degrees) - target; // TODO This is supposed to return double bc it was degrees...?
         //how far to rotate the motor in degrees from where we are currently
-        double angleOffset = adjustedAngle / rotationDegreesPerRotation;
+        double angleOffset = adjustedAngle * gearRatio;
         //the actual target angle --> the target absolute rotation of the motor
         double neededAngle = Units.rotationsToDegrees(motor.getEncoder().getPosition()) + angleOffset;
-        controller.setReference(neededAngle, SparkBase.ControlType.kMAXMotionPositionControl); // TODO Is it supposed be position control?
+        double motorRotations = neededAngle / 360.0;
+        controller.setReference(motorRotations, SparkBase.ControlType.kMAXMotionPositionControl); // TODO Is it supposed be position control?
     }
 
     public void stopMotor() {
@@ -159,7 +160,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
                         () -> {
                             setAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because it is a rotation2d?
                         }, this),
-                Commands.waitSeconds(1.0),
+                Commands.waitSeconds(5.0),
                 Commands.runOnce(
                         () -> {
                             if ((relativeEncoder.getVelocity()) < minVelocity) {
@@ -170,7 +171,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
                         () -> {
                             setAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because it is a rotation2d?
                         }, this),
-                Commands.waitSeconds(1.0),
+                Commands.waitSeconds(5.0),
                 Commands.runOnce(
                         () -> {
                             if ((relativeEncoder.getVelocity()) < -minVelocity) {

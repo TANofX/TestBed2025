@@ -48,16 +48,16 @@ public class CoralHandler extends AdvancedSubsystem {
 
   // Creation of SingleJoinedArm Sumulatiion of the simulation of the horizontalMotor
   private final SingleJointedArmSim coralHandlerHorizontalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
-      Constants.CoralHandler.horizontalMotorGearing, Constants.CoralHandler.horizontalJKgMetersSquared,
-      Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.horizontalMinAngleInRadians,
-      Constants.CoralHandler.horizontalMaxAngleInRadians, true,
+      Constants.CoralHandler.horizontalGearRatio, Constants.CoralHandler.horizontalJKgMetersSquared,
+      Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.horizontalMinAngle.getRadians(),
+      Constants.CoralHandler.horizontalMaxAngle.getRadians(), true,
       Constants.CoralHandler.horizontalStartingAngleInRadians); // ,Constants.CoralHandler.horizontalMotorStdDev);
 
   // Creation of SingleJoinedArm Sumulatiion of the simulation of the verticalMotor
   private final SingleJointedArmSim coralHandlerVerticalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
-      Constants.CoralHandler.verticalMotorGearing, Constants.CoralHandler.verticalJKgMetersSquared,
-      Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.verticalMinAngleInRadians,
-      Constants.CoralHandler.verticalMaxAngleInRadians, true,
+      Constants.CoralHandler.verticalGearRatio, Constants.CoralHandler.verticalJKgMetersSquared,
+      Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.verticalMinAngle.getRadians(),
+      Constants.CoralHandler.verticalMaxAngle.getRadians(), true,
       Constants.CoralHandler.verticalStartingAngleInRadians); // ,Constants.CoralHandler.verticalMotorStdDev);
 
   public CoralHandler(int outtakeMotorID, int horizontalMotorID, int verticalMotorID, int horizontalAbsoluteEncoderID,
@@ -70,7 +70,7 @@ public class CoralHandler extends AdvancedSubsystem {
             "Horizontal",
             horizontalMotorID,
             horizontalAbsoluteEncoderID,
-            Constants.CoralHandler.horizontalRotationDegreesPerRotation,
+            Constants.CoralHandler.horizontalGearRatio,
             Constants.CoralHandler.horizontalMotorP,
             Constants.CoralHandler.horizontalMotorI,
             Constants.CoralHandler.horizontalMotorD,
@@ -81,14 +81,15 @@ public class CoralHandler extends AdvancedSubsystem {
             Constants.CoralHandler.horizontalMotorMaxAccleration,
             Constants.CoralHandler.horizontalMotorClosedLoopError,
             Type.kNormallyOpen,
-            -90, 90
+            Constants.CoralHandler.horizontalMinAngle.getDegrees(),
+            Constants.CoralHandler.horizontalMaxAngle.getDegrees()
     );
     horizontalWrist.registerSystemCheckWithSmartDashboard();
     verticalWrist = new CoralHandlerWrist(
             "Vertical",
             verticalMotorID,
             verticalAbsoluteEncoderID,
-            Constants.CoralHandler.verticalRotationDegreesPerRotation,
+            Constants.CoralHandler.verticalGearRatio,
             Constants.CoralHandler.verticalMotorP,
             Constants.CoralHandler.verticalMotorI,
             Constants.CoralHandler.verticalMotorD,
@@ -99,7 +100,8 @@ public class CoralHandler extends AdvancedSubsystem {
             Constants.CoralHandler.verticalMotorMaxAccleration,
             Constants.CoralHandler.verticalMotorClosedLoopError,
             Type.kNormallyOpen,
-            -100, 100
+            Constants.CoralHandler.verticalMinAngle.getDegrees(),
+            Constants.CoralHandler.verticalMaxAngle.getDegrees()
     );
     verticalWrist.registerSystemCheckWithSmartDashboard();
 
@@ -143,10 +145,10 @@ public class CoralHandler extends AdvancedSubsystem {
     // Calculating the simulation velocity based on known values
     double outtakeMotorVelocity = coralHandlerOuttakePhysicsSim.getAngularVelocityRPM()
         / Constants.CoralHandler.outtakeMotorGearing;
-    double horizontalMotorVelocity = (coralHandlerHorizontalPhysicsSim.getVelocityRadPerSec() / (2 * Math.PI) * 60)
-        / Constants.CoralHandler.horizontalMotorGearing;
-    double verticalMotorVelocity = (coralHandlerVerticalPhysicsSim.getVelocityRadPerSec() / (2 * Math.PI) * 60)
-        / Constants.CoralHandler.verticalMotorGearing;
+    double horizontalMotorVelocity = ((coralHandlerHorizontalPhysicsSim.getVelocityRadPerSec() / (2 * Math.PI) )* 60)
+        * Constants.CoralHandler.horizontalGearRatio;
+    double verticalMotorVelocity = ((coralHandlerVerticalPhysicsSim.getVelocityRadPerSec() / (2 * Math.PI) )* 60)
+        * Constants.CoralHandler.verticalGearRatio;
 
     // Creation of the motor simulations
     coralHandlerOuttakeSim.iterate(outtakeMotorVelocity, RobotController.getBatteryVoltage(), 0.02);
@@ -154,8 +156,8 @@ public class CoralHandler extends AdvancedSubsystem {
     verticalWrist.sim.iterate(verticalMotorVelocity, RobotController.getBatteryVoltage(), 0.02);
 
     // Creation of the absolute encoder simulations
-    horizontalWrist.encoderSim.iterate((horizontalMotorVelocity * Constants.CoralHandler.horizontalMotorGearing), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
-    verticalWrist.encoderSim.iterate((verticalMotorVelocity * Constants.CoralHandler.verticalMotorGearing), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
+    horizontalWrist.encoderSim.iterate((horizontalMotorVelocity / Constants.CoralHandler.horizontalGearRatio), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
+    verticalWrist.encoderSim.iterate((verticalMotorVelocity / Constants.CoralHandler.verticalGearRatio), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
 
     RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(coralHandlerOuttakeSim.getMotorCurrent(),
         horizontalWrist.sim.getMotorCurrent(), verticalWrist.sim.getMotorCurrent()));

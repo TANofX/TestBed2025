@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -110,8 +111,8 @@ public final class Constants {
     public static final double coralOuttakeSpeed = 0;
     
     public static final double outtakeMotorGearing = 1.0;
-    public static final double horizontalMotorGearing = 1.0 / 100.0;
-    public static final double verticalMotorGearing = 1.0 / 100.0;
+    public static final double horizontalGearRatio = 100.0;
+    public static final double verticalGearRatio = 100.0;
 
     public static final double outtakeJKgMetersSquared = (.5 * outtakeWheelMass * Math.pow(outtakeWheelRadius, 2));
     public static final double outtakeMotorMinVelocity = 0.0;
@@ -144,20 +145,17 @@ public final class Constants {
     public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
     public static final double verticalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
     
-    public static final double horizontalMinAngleInRadians = Units.degreesToRadians(-100.0);
-    public static final double verticalMinAngleInRadians = Units.degreesToRadians(-90.0);
-    
-    public static final double horizontalMaxAngleInRadians = Units.degreesToRadians(100.0);
-    public static final double verticalMaxAngleInRadians = Units.degreesToRadians(90.0);
+    public static final Rotation2d horizontalMinAngle = Rotation2d.fromDegrees(-100);
+    public static final Rotation2d horizontalMaxAngle = Rotation2d.fromDegrees(100);
+
+    public static final Rotation2d verticalMinAngle = Rotation2d.fromDegrees(-90);
+    public static final Rotation2d verticalMaxAngle = Rotation2d.fromDegrees(90);
     
     public static final double horizontalStartingAngleInRadians = 0.0;
     public static final double verticalStartingAngleInRadians = 0.0;
     
     public static final double horizontalMotorStdDev = 0.0;
     public static final double verticalMotorStdDev = 0.0;
-    
-    public static final double horizontalRotationDegreesPerRotation = 360.0 / horizontalMotorGearing;
-    public static final double verticalRotationDegreesPerRotation = 360.0 / verticalMotorGearing;
     
     public static final double horizontalMotorMinVelocity = 0.0;
     public static final double verticalMotorMinVelocity = 0.0;
