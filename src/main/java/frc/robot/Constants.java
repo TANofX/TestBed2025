@@ -21,7 +21,6 @@ public final class Constants {
       apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
       apriltagLayout.getFieldLength();
       apriltagLayout.getFieldWidth();
-      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
       fieldSize = new Translation2d(apriltagLayout.getFieldLength(), apriltagLayout.getFieldWidth());
     } catch (IOException e) {
       throw new RuntimeException(e);
