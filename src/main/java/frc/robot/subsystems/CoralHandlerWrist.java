@@ -17,11 +17,19 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import static edu.wpi.first.units.Units.Degrees;
+
+import java.io.Console;
+
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.subsystem.AdvancedSubsystem;
+import frc.robot.Constants;
 
 public class CoralHandlerWrist extends AdvancedSubsystem {
 
@@ -36,6 +44,8 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
     private final CANcoder absoluteEncoder;
     private final RelativeEncoder relativeEncoder;
     private final StatusSignal<Angle> absoluteSignal;
+
+    private final SingleJointedArmSim coralHandlerPhysicsSim;
 
     // TODO: make these private and expose via methods
     public final SparkAbsoluteEncoderSim encoderSim;
@@ -57,8 +67,10 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
             double allowedError,
             LimitSwitchConfig.Type limitSwitchType,
             Rotation2d armMinRotation, // min rotation of the arm
-            Rotation2d armMaxRotation // max rotation of the arm
-    ) {
+            Rotation2d armMaxRotation, // max rotation of the arm
+            double jKgMetersSquared,
+            double coralEndEffectorLength,
+            double startingAngle) {
         super("CoralHandlerWrist" + name);
         this.name = name;
         this.gearRatio = gearRatio;
@@ -75,8 +87,8 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         SoftLimitConfig softLimitConfig = new SoftLimitConfig();
         softLimitConfig.forwardSoftLimitEnabled(false);
         softLimitConfig.reverseSoftLimitEnabled(false);
-        //softLimitConfig.reverseSoftLimit(clampMin / rotationDegreesPerRotation);
-        //softLimitConfig.forwardSoftLimit(clampMax / rotationDegreesPerRotation);
+        // softLimitConfig.reverseSoftLimit(clampMin / rotationDegreesPerRotation);
+        // softLimitConfig.forwardSoftLimit(clampMax / rotationDegreesPerRotation);
 
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig.inverted(false);
@@ -90,7 +102,8 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         pidConfig.maxMotion.maxVelocity(maxVelocity);
         pidConfig.maxMotion.allowedClosedLoopError(allowedError);
         motorConfig.apply(pidConfig);
-        motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+        motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters,
+                SparkBase.PersistMode.kNoPersistParameters);
 
         // configure encoder
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
@@ -102,12 +115,35 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         this.absoluteSignal = absoluteEncoder.getAbsolutePosition();
         absoluteSignal.refresh();
 
+        coralHandlerPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
+                gearRatio, jKgMetersSquared, coralEndEffectorLength, armMinRotation.getRadians(),
+                armMaxRotation.getRadians(), true,
+                startingAngle); // ,Constants.CoralHandler.horizontalMotorStdDev);
+
         this.sim = new SparkMaxSim(motor, DCMotor.getNeo550(1));
 
         registerHardware("Coral " + name + " Motor", motor);
         registerHardware("Coral " + name + " Encoder", absoluteEncoder);
 
         this.encoderSim = new SparkAbsoluteEncoderSim(motor);
+
+    }
+
+    public void simulationPeriodic() {
+        double inputVoltage = sim.getAppliedOutput() * RobotController.getBatteryVoltage();
+
+        coralHandlerPhysicsSim.setInput(inputVoltage);
+
+        coralHandlerPhysicsSim.update(0.02);
+
+        double motorVelocity = ((coralHandlerPhysicsSim.getVelocityRadPerSec() / (2 * Math.PI)) * 60)
+                * Constants.CoralHandler.horizontalGearRatio;
+
+        sim.iterate(motorVelocity, RobotController.getBatteryVoltage(), 0.02);
+
+        encoderSim.iterate((motorVelocity / gearRatio), 0.02);
+
+        RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(sim.getMotorCurrent()));
     }
 
     /**
@@ -116,15 +152,16 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
      * @param targetAngle The needed angle to be obtained.
      */
     public void setAngle(Rotation2d targetAngle) {
-        //the target rotation of the arm
-        Rotation2d target = Rotation2d.fromDegrees(MathUtil.clamp(targetAngle.getDegrees(), armMinRotation.getDegrees(), armMaxRotation.getDegrees()));
-        //how much is wanted to move in degrees
+        // the target rotation of the arm
+        Rotation2d target = Rotation2d.fromDegrees(
+                MathUtil.clamp(targetAngle.getDegrees(), armMinRotation.getDegrees(), armMaxRotation.getDegrees()));
+        // how much is wanted to move in degrees
         Rotation2d adjustedAngle = new Rotation2d(absoluteEncoder.getPosition().getValue()).minus(target);
-        //how far to rotate the motor in degrees from where we are currently
+        // how far to rotate the motor in degrees from where we are currently
         Rotation2d angleOffset = adjustedAngle.times(gearRatio);
-        //the actual target angle --> the target absolute rotation of the motor
+        // the actual target angle --> the target absolute rotation of the motor
         Rotation2d neededAngle = Rotation2d.fromRotations(motor.getEncoder().getPosition()).plus(angleOffset);
-        controller.setReference(neededAngle.getRotations(), SparkBase.ControlType.kMAXMotionPositionControl); 
+        controller.setReference(neededAngle.getRotations(), SparkBase.ControlType.kMAXMotionPositionControl);
     }
 
     public void stopMotor() {
@@ -139,11 +176,9 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         SmartDashboard.putNumber(name + "Target Angle in Degrees", targetAngle.getDegrees());
         return Commands.sequence(
                 Commands.runOnce(() -> setAngle(targetAngle), this),
-                Commands.waitUntil(()->
-                        Math.abs(targetAngle.getDegrees() - absoluteEncoder.getPosition().getValue().in(Degrees)) < 2
-                ),
-                Commands.runOnce(motor::stopMotor, this)
-        );
+                Commands.waitUntil(() -> Math
+                        .abs(targetAngle.getDegrees() - absoluteEncoder.getPosition().getValue().in(Degrees)) < 2),
+                Commands.runOnce(motor::stopMotor, this));
     }
 
     public void putAbsoluteEncoderSimAngle() {
@@ -156,24 +191,28 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         return Commands.sequence(
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+                            setAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because
+                                                                  // it is a rotation2d?
                         }, this),
                 Commands.waitSeconds(5.0),
                 Commands.runOnce(
                         () -> {
                             if ((relativeEncoder.getVelocity()) < minVelocity) {
-                                addFault("[System Check] " + name + " Coral Motor too slow (forward direction)", false, true);
+                                addFault("[System Check] " + name + " Coral Motor too slow (forward direction)", false,
+                                        true);
                             }
                         }, this),
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because it is a rotation2d?
+                            setAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because
+                                                                 // it is a rotation2d?
                         }, this),
                 Commands.waitSeconds(5.0),
                 Commands.runOnce(
                         () -> {
                             if ((relativeEncoder.getVelocity()) < -minVelocity) {
-                                addFault("[System Check] " + name + " Coral Motor too slow (backwards direction)", false, true);
+                                addFault("[System Check] " + name + " Coral Motor too slow (backwards direction)",
+                                        false, true);
                             }
                             motor.stopMotor();
                         }, this));

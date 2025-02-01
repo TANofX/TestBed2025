@@ -46,20 +46,6 @@ public class CoralHandler extends AdvancedSubsystem {
       DCMotor.getNeoVortex(1), 
       Constants.CoralHandler.outtakeMotorGearing);
 
-  // Creation of SingleJoinedArm Sumulatiion of the simulation of the horizontalMotor
-  private final SingleJointedArmSim coralHandlerHorizontalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
-      Constants.CoralHandler.horizontalGearRatio, Constants.CoralHandler.horizontalJKgMetersSquared,
-      Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.horizontalMinAngle.getRadians(),
-      Constants.CoralHandler.horizontalMaxAngle.getRadians(), true,
-      Constants.CoralHandler.horizontalStartingAngleInRadians); // ,Constants.CoralHandler.horizontalMotorStdDev);
-
-  // Creation of SingleJoinedArm Sumulatiion of the simulation of the verticalMotor
-  private final SingleJointedArmSim coralHandlerVerticalPhysicsSim = new SingleJointedArmSim(DCMotor.getNeo550(1),
-      Constants.CoralHandler.verticalGearRatio, Constants.CoralHandler.verticalJKgMetersSquared,
-      Constants.CoralHandler.coralEndEffectorLength, Constants.CoralHandler.verticalMinAngle.getRadians(),
-      Constants.CoralHandler.verticalMaxAngle.getRadians(), true,
-      Constants.CoralHandler.verticalStartingAngleInRadians); // ,Constants.CoralHandler.verticalMotorStdDev);
-
   public CoralHandler(int outtakeMotorID, int horizontalMotorID, int verticalMotorID, int horizontalAbsoluteEncoderID,
       int verticalAbsoluteEncoderID) {
     super("CoralHandler");
@@ -82,8 +68,11 @@ public class CoralHandler extends AdvancedSubsystem {
             Constants.CoralHandler.horizontalMotorClosedLoopError,
             Type.kNormallyOpen,
             Constants.CoralHandler.horizontalMinAngle,
-            Constants.CoralHandler.horizontalMaxAngle
-    );
+            Constants.CoralHandler.horizontalMaxAngle,
+            Constants.CoralHandler.horizontalJKgMetersSquared,
+            Constants.CoralHandler.coralEndEffectorLength,
+            Constants.CoralHandler.horizontalStartingAngleInRadians
+            );
     horizontalWrist.registerSystemCheckWithSmartDashboard();
     verticalWrist = new CoralHandlerWrist(
             "Vertical",
@@ -101,8 +90,13 @@ public class CoralHandler extends AdvancedSubsystem {
             Constants.CoralHandler.verticalMotorClosedLoopError,
             Type.kNormallyOpen,
             Constants.CoralHandler.verticalMinAngle,
-            Constants.CoralHandler.verticalMaxAngle
+            Constants.CoralHandler.verticalMaxAngle,
+            Constants.CoralHandler.verticalJKgMetersSquared,
+            Constants.CoralHandler.coralEndEffectorLength,
+            Constants.CoralHandler.verticalStartingAngleInRadians
     );
+
+
     verticalWrist.registerSystemCheckWithSmartDashboard();
 
     outtakeEncoder = outtakeMotor.getEncoder();
@@ -126,39 +120,26 @@ public class CoralHandler extends AdvancedSubsystem {
   public void simulationPeriodic() {
     // Simulates the input voltage of the motors (battery)
     double outtakeInputVoltage = coralHandlerOuttakeSim.getAppliedOutput() * RobotController.getBatteryVoltage();
-    double horizontalInputVoltage = horizontalWrist.sim.getAppliedOutput() * RobotController.getBatteryVoltage();
-    double verticalInputVoltage = verticalWrist.sim.getAppliedOutput() * RobotController.getBatteryVoltage();
-
+    
     // Simulation limit switch is set to false
     coralHandlerOuttakeSim.getForwardLimitSwitchSim().setPressed(false);
 
     // Sets the simulation input velocities based on the voltages above
     coralHandlerOuttakePhysicsSim.setInput(outtakeInputVoltage);
-    coralHandlerHorizontalPhysicsSim.setInput(horizontalInputVoltage);
-    coralHandlerVerticalPhysicsSim.setInput(verticalInputVoltage);
 
     // Simulates time by updating the time
     coralHandlerOuttakePhysicsSim.update(0.02);
-    coralHandlerHorizontalPhysicsSim.update(0.02);
-    coralHandlerVerticalPhysicsSim.update(0.02);
 
     // Calculating the simulation velocity based on known values
     double outtakeMotorVelocity = coralHandlerOuttakePhysicsSim.getAngularVelocityRPM()
         / Constants.CoralHandler.outtakeMotorGearing;
-    double horizontalMotorVelocity = ((coralHandlerHorizontalPhysicsSim.getVelocityRadPerSec() / (2 * Math.PI) )* 60)
-        * Constants.CoralHandler.horizontalGearRatio;
-    double verticalMotorVelocity = ((coralHandlerVerticalPhysicsSim.getVelocityRadPerSec() / (2 * Math.PI) )* 60)
-        * Constants.CoralHandler.verticalGearRatio;
+    
 
     // Creation of the motor simulations
     coralHandlerOuttakeSim.iterate(outtakeMotorVelocity, RobotController.getBatteryVoltage(), 0.02);
-    horizontalWrist.sim.iterate(horizontalMotorVelocity, RobotController.getBatteryVoltage(), 0.02);
-    verticalWrist.sim.iterate(verticalMotorVelocity, RobotController.getBatteryVoltage(), 0.02);
-
+    
     // Creation of the absolute encoder simulations
-    horizontalWrist.encoderSim.iterate((horizontalMotorVelocity / Constants.CoralHandler.horizontalGearRatio), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
-    verticalWrist.encoderSim.iterate((verticalMotorVelocity / Constants.CoralHandler.verticalGearRatio), 0.02); // TODO what velocity am I supposed to put here, ik its supposed to be from the physics sim itself but weh?
-
+    
     RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(coralHandlerOuttakeSim.getMotorCurrent(),
         horizontalWrist.sim.getMotorCurrent(), verticalWrist.sim.getMotorCurrent()));
   }
