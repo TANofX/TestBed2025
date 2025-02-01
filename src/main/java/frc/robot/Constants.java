@@ -4,9 +4,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -20,8 +17,7 @@ public final class Constants {
 
   static {
     try {
-      // TODO AprilTagFields update
-      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
       apriltagLayout.getFieldLength();
       apriltagLayout.getFieldWidth();
     } catch (IOException e) {
@@ -101,6 +97,23 @@ public final class Constants {
     public static final double maxVelTele = 0.3;
   }
 
+  public static final class Climber {
+    public static final double firstStageGearRatio = 90 / 60;
+    public static final double secondStageGearRatio = 18 / 58;
+    
+    public static final double MOTOR_KI = 0; // TODO
+    public static final double MOTOR_KP = 0.25;
+    public static final double MOTOR_KD = 0;
+    public static final double GEAR_RATIO = 0.01;
+    public static final double ARM_ANGULAR_MOMENTUM = Units.lbsToKilograms(9.963);
+    public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
+    public static final double MIN_ANGLE_RADS = 0;
+    public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
+    public static final int MOTOR_CANID = 0;
+    public static final int PCMID = 0;
+    public static final int SOLONOIDID = 0;
+    public static final int climberEncoderCanID = 0; //TODO
+  }
  
 public static final class AlgaeHandler {
   //Creating constants for LEFT Algae Handler :D

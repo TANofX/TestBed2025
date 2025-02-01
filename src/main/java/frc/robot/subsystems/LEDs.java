@@ -53,8 +53,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
-import java.util.Map;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -67,23 +65,24 @@ import frc.robot.Constants;
 public class LEDs extends AdvancedSubsystem {
     private AddressableLED strip;
     private AddressableLEDBuffer buffer;
-    private LEDPattern rainbow = LEDPattern.rainbow(255, 128)
+    private final LEDPattern rainbow = LEDPattern.rainbow(255, 255)
         .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(1 / 120.0));
-    private LEDPattern greenPattern = LEDPattern.solid(Color.kGreen)
+    private final LEDPattern greenPattern = LEDPattern.solid(Color.kGreen)
         .breathe(Seconds.of(5));
-    private LEDPattern bluePattern = LEDPattern.solid(Color.kBlue);
-    private LEDPattern orangePattern = LEDPattern.solid(Color.kOrange);
+    private final LEDPattern orangePattern = LEDPattern.solid(Color.kOrange);
+    // TODO Change 0.5 to IMU tilt
+    private final LEDPattern imuPattern = LEDPattern.progressMaskLayer(() -> 0.5)
+        .mask(LEDPattern.solid(Color.kBlue));
     private LEDPattern activePattern;
 
     public enum AnimationTypes {
-        OneColorGreen,
-        OneColorBlue,
-        OneColorOrange,
+        GreenBreeze,
+        BlueTilt,
+        OrangeSolid,
         Rainbow
     }
 
     public LEDs() {
-        // TODO Move constants to Constants class
         strip = new AddressableLED(Constants.LEDs.stripPwm);
         buffer = new AddressableLEDBuffer(Constants.LEDs.stripLength);
 
@@ -96,21 +95,20 @@ public class LEDs extends AdvancedSubsystem {
 
     @Override
     protected Command systemCheckCommand() {
-        // TODO Auto-generated method stub
         return Commands.none();
     }
 
     public void changeAnimation(AnimationTypes anim) {
         switch(anim) {
-            case OneColorGreen:
+            case GreenBreeze:
                 activePattern = greenPattern;
                 break;
-            case OneColorBlue:
-                activePattern = bluePattern;
+            case BlueTilt:
+                activePattern = imuPattern;
                 break;
-            case OneColorOrange:
-                // TODO Change 0.5 to (1/pigeon rotation)
-                activePattern = LEDPattern.steps(Map.of(0, Color.kBlack, 0.5, Color.kOrange));
+            case OrangeSolid:
+                activePattern = orangePattern;
+                break;
             default:
             case Rainbow:
                 activePattern = rainbow;
