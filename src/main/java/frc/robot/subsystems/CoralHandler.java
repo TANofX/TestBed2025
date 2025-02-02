@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -220,10 +219,6 @@ public class CoralHandler extends AdvancedSubsystem {
 
   @Override
   public void periodic() {
-    // Getting the fresh signal/angle from the absolute encoder
-    horizontalWrist.refreshAbsoluteSignal();
-    verticalWrist.refreshAbsoluteSignal();
-
     // Values avalible shown on SmartDashboard
     SmartDashboard.getBoolean("CoralHandler/Has Coral", false);
   }

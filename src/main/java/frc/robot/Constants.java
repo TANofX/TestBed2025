@@ -102,7 +102,7 @@ public final class Constants {
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
-    public static final double coralEndEffectorMass = 5;
+    public static final double coralEndEffectorMass = 0.5;
 
     public static final double outtakeWheelMass = Units.lbsToKilograms(0.5);
     public static final double outtakeWheelRadius = 0.02; // TODO what is the actual outtake wheel radius
@@ -119,27 +119,21 @@ public final class Constants {
     // public static final int outtakeEncoderID = 0.0;
     
     public static final double horizontalMotorP = 0.001;
-    public static final double verticalMotorP = 0.001;
-
     public static final double horizontalMotorI = 0.0;
-    public static final double verticalMotorI = 0.0;
-
     public static final double horizontalMotorD = 0.001;
-    public static final double verticalMotorD = 0.001;
-
-    public static final double horizontalMotorFeedForward = 1.0;
-    public static final double verticalMotorFeedForward = 1.0;
-
+    public static final double horizontalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double horizontalMotorIZone = 0.0;
-    public static final double verticalMotorIZone = 0.0;
-
-    public static final double horizontalMotorMaxAccleration = 1.0;
-    public static final double verticalMotorMaxAccleration = 1.0;
-
+    public static final double horizontalMotorMaxAccleration = 1000.0;
     public static final double horizontalMotorMaxVelocity = 6000.0;
-    public static final double verticalMotorMaxVelocity = 6000.0;
-
     public static final double horizontalMotorClosedLoopError = 1.0;
+
+    public static final double verticalMotorP = 0.001;
+    public static final double verticalMotorI = 0.0;
+    public static final double verticalMotorD = 0.001;
+    public static final double verticalMotorFeedForward = 1.0 / (565.0*12.0);
+    public static final double verticalMotorIZone = 0.0;
+    public static final double verticalMotorMaxAccleration = 1.0;
+    public static final double verticalMotorMaxVelocity = 6000.0;
     public static final double verticalMotorClosedLoopError = 1.0;
     
     public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
