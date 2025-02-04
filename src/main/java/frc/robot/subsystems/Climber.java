@@ -19,7 +19,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
@@ -38,12 +37,13 @@ import frc.robot.Constants;
 public class Climber extends AdvancedSubsystem {
   private final SparkFlex climberMotor;
   private final SparkFlexConfig climberMotorConfig = new SparkFlexConfig();
-  private final DoubleSolenoid climberPiston; 
+  private final DoubleSolenoid climberPiston;
   private final SparkClosedLoopController climbercontroller;
   private final SingleJointedArmSim physicsSimulation;
   private final SparkFlexSim motorSimulation;
   // Encoder variable
   private final RelativeEncoder climberEncoder;
+  
   // Absolute Encoder variables
   private final CANcoder climberEncoderAbsolute;
   private final CANcoderConfiguration climberEncoderConfig;
@@ -73,7 +73,9 @@ public class Climber extends AdvancedSubsystem {
 
     climberMotorConfig.inverted(false); // just incase :D
     climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen);
-    climberMotorConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyOpen);
+    climberMotorConfig.limitSwitch.reverseLimitSwitchType(Type.kNormallyOpen);
+    climberMotorConfig.limitSwitch.forwardLimitSwitchEnabled(true);
+    climberMotorConfig.limitSwitch.reverseLimitSwitchEnabled(true);
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     //climberMotorConfig.smartCurrentLimit(100,80);
     final ClosedLoopConfig climberMotorPidConfig = climberMotorConfig.closedLoop;
@@ -217,6 +219,8 @@ public class Climber extends AdvancedSubsystem {
   public Command getRotateCommandS(Rotation2d desiredAngle){
     return Commands.runOnce(()->{setClimberAngle(desiredAngle);},this);
   }
+
+
 }
 
 //notes or todo, configure 2 limit switches, double solenoid
