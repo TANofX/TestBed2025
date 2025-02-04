@@ -159,17 +159,18 @@ public class Climber extends AdvancedSubsystem {
    */
   public Rotation2d getCurrentAngle() {
     return Rotation2d.fromRotations(climberEncoderSignalA.getValueAsDouble()/2.0);
-  }
+  }   
 
-  //methods to close and open claw, and stop
-
-
-  //close claw
+  /**
+   * This method will open the claw
+   */
   public void toggleClaw(){
     climberPiston.set(DoubleSolenoid.Value.kForward);
   }
 
-  //open claw
+  /**
+   * This method will close the claw
+   */
   public void detoggleClaw(){
     climberPiston.set(DoubleSolenoid.Value.kReverse);
   }
@@ -180,7 +181,6 @@ public class Climber extends AdvancedSubsystem {
   public void setDefaultPosition() {
     setClimberAngle(Rotation2d.fromRadians(0)); 
   }
-
 
   //Prepare the jaw Commands 
   public Command getOpenCommand(){
@@ -196,26 +196,44 @@ public class Climber extends AdvancedSubsystem {
     return Commands.runOnce(()->{setClimberAngle(desiredAngle);},this);
   }
 
-  //Clamp jaw
+  /**
+   * A command to clamp the jaw
+   * @return
+   */ 
   public Command getCloseCommand(){
     return Commands.runOnce(()->{toggleClaw();},this);
   }
 
-  //Rotate thy clamped jaw
+  /**
+   * A command to rotate thy clamped jaw 
+   * @return
+   */ 
   public Command getClimbCommand(){
     return Commands.runOnce(()->{setClimberAngle(Rotation2d.fromDegrees(130));},this);
   }
 
-  //stow climber
+  /**
+   * A Command to stow climber
+   * @return
+   */
   public Command getStowCommand(){
     return Commands.runOnce(()->{toggleClaw();},this);
   }
+  /**
+   * This command is unclear sowwy - Jon
+   * @return
+   */
   public Command getPrepareCommandS(){
     return Commands.runOnce(()->{
       toggleClaw();
       setClimberAngle(Rotation2d.fromDegrees(130));},
       this);
   }
+  /**
+   * A command to set the angle to the desired angle
+   * @param desiredAngle
+   * @return
+   */
   public Command getRotateCommandS(Rotation2d desiredAngle){
     return Commands.runOnce(()->{setClimberAngle(desiredAngle);},this);
   }
