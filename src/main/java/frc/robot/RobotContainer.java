@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
 import frc.robot.commands.ElevatorJoystickControl;
+import frc.robot.commands.CoralHandlerAngleEstimator;
+import frc.robot.commands.ManualCoralHandlerVertical;
 import frc.robot.commands.Notifications;
 import frc.robot.subsystems.*;
 import frc.robot.util.RobotMechanism;
@@ -18,8 +20,6 @@ public class RobotContainer {
   // Controllers
   public static final XboxControllerWrapper driver = new XboxControllerWrapper(0, 0.1);
   public static final XboxControllerWrapper coDriver = new XboxControllerWrapper(1, 0.1);
-
-  
 
   // Subsystems
   public static final Vision vision = new Vision();
@@ -32,11 +32,13 @@ public class RobotContainer {
    public static final AlgaeHandler rightAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.rightAlgaeMotorCANID, Constants.AlgaeHandler.rightAlgaeSolenoidID, Constants.AlgaeHandler.rightAlgaeHallEffectID, Constants.AlgaeHandler.rightAlgaeLimitID);
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
+  public static final CoralHandler coralHandler = new CoralHandler(Constants.CoralHandler.outtakeMotorID, Constants.CoralHandler.horizontalMotorID, Constants.CoralHandler.verticalMotorID, Constants.CoralHandler.horizontalEncoderID, Constants.CoralHandler.verticalEncoderID);
   public static final Climber climber = new Climber(Constants.Climber.MOTOR_CANID, Constants.Climber.PCMID, Constants.Climber.SOLONOIDID, Constants.Climber.climberEncoderCanID);
   // Vision clients
   // public static final JetsonClient jetson = new JetsonClient();
 
   public RobotContainer() {
+    coralHandler.registerSystemCheckWithSmartDashboard();
     SmartDashboard.putData("Elevator Test", elevator.getSystemCheckCommand());
 
     SmartDashboard.putData(swerve.zeroModulesCommand());
@@ -48,6 +50,7 @@ public class RobotContainer {
    
   
 
+    coralHandler.setDefaultCommand(new ManualCoralHandlerVertical(coDriver::getLeftY));
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
     //SmartDashboard.putData("Tune Elevation", shooterWrist.getElevationTunerCommand());
@@ -74,13 +77,14 @@ public class RobotContainer {
   }
   
 
-  private void configureButtonBindings() {    
+  private void configureButtonBindings() {
+    coDriver.START();
+    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
         //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           //shooter.stopMotors();
        // }, shooter))))));
    
     //coDriver.X().onTrue(new ElevatorToMin());
-    coDriver.START();
     SmartDashboard.putData("Calibrate Elevator", elevator.getCalibrationCommand());
     SmartDashboard.putData("Check Elevator", elevator.getSystemCheckCommand());
     SmartDashboard.putData("Elevator 1.25", elevator.getElevatorHeightCommand(1.25));
