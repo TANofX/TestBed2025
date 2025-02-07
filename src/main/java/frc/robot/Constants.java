@@ -45,9 +45,6 @@ public final class Constants {
     public static final double MAX_HEIGHT_METERS = Units.inchesToMeters(56.0);
     public static final double STARTING_HEIGHT_METERS = MIN_HEIGHT_METERS + (MIN_HEIGHT_METERS + MAX_HEIGHT_METERS) / 2.0;
 
-    public static final double MAX_ACCELERATION = 10000.0;
-    public static final double MAX_VELOCITY = 5000.0;
-
     public static final double level1Height = 0;
     public static final double level2Height = 0;
     public static final double level3Height = 0;
