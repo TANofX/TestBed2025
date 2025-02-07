@@ -9,26 +9,43 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 
 import java.io.IOException;
 
 public final class Constants {
   public static final String canivoreBusName = "rio";
   public static final AprilTagFieldLayout apriltagLayout;
+  public static final Translation2d fieldSize;
 
   static {
     try {
       apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
       apriltagLayout.getFieldLength();
       apriltagLayout.getFieldWidth();
+      fieldSize = new Translation2d(apriltagLayout.getFieldLength(), apriltagLayout.getFieldWidth());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public static final Translation2d fieldSize = new Translation2d(16.54, 8.02);
-  public static final double noteTransferMetersPerSecond = 0.5;
+  public static final class Elevator {
+    public static final int motorCanID = 1;
+
+    public static final double P = 0.05;
+    public static final double I = 0.00;
+    public static final double D = 0.00;
+    public static final double FF = 0.00015;
+
+    public static final double METERS_PER_MOTOR_REVOLUTION = Units.inchesToMeters(1.0 / 4.0);
+    public static final double ELEVATOR_MASS = Units.lbsToKilograms(20.0);
+    public static final double GEAR_RATIO = 1.0;
+    public static final double MIN_HEIGHT_METERS = 0.0;
+    public static final double MAX_HEIGHT_METERS = Units.inchesToMeters(84.0);
+    public static final double STARTING_HEIGHT_METERS = MIN_HEIGHT_METERS + (MIN_HEIGHT_METERS + MAX_HEIGHT_METERS) / 2.0;
+
+    public static final double MAX_ACCELERATION = 10000.0;
+    public static final double MAX_VELOCITY = 5000.0;
+  };
 
   public static final class LEDs {
     public static final int stripPwm = 0;

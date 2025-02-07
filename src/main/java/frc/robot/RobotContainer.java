@@ -3,14 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import java.security.CodeSigner;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
+import frc.robot.commands.ElevatorJoystickControl;
 import frc.robot.commands.CoralHandlerAngleEstimator;
-import frc.robot.commands.CoralHandlerEstimator;
 import frc.robot.commands.ManualCoralHandlerVertical;
 import frc.robot.commands.Notifications;
 import frc.robot.subsystems.*;
@@ -24,6 +21,9 @@ public class RobotContainer {
   // Subsystems
   public static final Swerve swerve = new Swerve();// new Swerve();
   public static final LEDs LEDs = new LEDs();
+  public static final Elevator elevator = new Elevator(Constants.Elevator.motorCanID);
+  public static final RobotMechanicalConfiguration robotMechanism = new RobotMechanicalConfiguration();
+
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
   public static final CoralHandler coralHandler = new CoralHandler(Constants.CoralHandler.outtakeMotorID, Constants.CoralHandler.horizontalMotorID, Constants.CoralHandler.verticalMotorID, Constants.CoralHandler.horizontalEncoderID, Constants.CoralHandler.verticalEncoderID);
@@ -35,6 +35,8 @@ public class RobotContainer {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());
+    elevator.setDefaultCommand(new ElevatorJoystickControl(driver::getLeftY));
+
     coralHandler.setDefaultCommand(new ManualCoralHandlerVertical(coDriver::getLeftY));
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
@@ -71,11 +73,20 @@ public class RobotContainer {
        // }, shooter))))));
    
     //coDriver.X().onTrue(new ElevatorToMin());
+    SmartDashboard.putData("Calibrate Elevator", elevator.getCalibrationCommand());
+    SmartDashboard.putData("Check Elevator", elevator.getSystemCheckCommand());
+    SmartDashboard.putData("Elevator 1.25", elevator.getElevatorHeightCommand(1.25));
+    SmartDashboard.putData("Elevator 0.0", elevator.getElevatorHeightCommand(0.0));
   /*   
         }, shooter))).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           shooter.stopMotors();
 
         }))))); */
   
+  }
+
+
+  public static void periodic() {
+    robotMechanism.updateMechanism();
   }
 }
