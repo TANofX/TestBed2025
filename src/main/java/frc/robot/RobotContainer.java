@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
@@ -41,7 +42,7 @@ public class RobotContainer {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());
-    elevator.setDefaultCommand(new ElevatorJoystickControl(driver::getLeftY));
+    elevator.setDefaultCommand(new ElevatorJoystickControl(coDriver::getLeftY));
     SmartDashboard.putData("Left Algae Handler Test", leftAlgaeHandler.getSystemCheckCommand());
     SmartDashboard.putData("Right Algae Handler Test", rightAlgaeHandler.getSystemCheckCommand());
    
@@ -89,11 +90,14 @@ public class RobotContainer {
           shooter.stopMotors();
 
         }))))); */
-    driver.B().onTrue(climber.getStowCommand());
-    driver.Y().onTrue(climber.getPrepareCommand());
-    driver.X().onTrue(climber.getCloseCommand());
-    driver.A().onTrue(climber.getClimbCommand());
-
+    //driver.B().onTrue(climber.getStowCommand());
+    //driver.Y().onTrue(climber.getPrepareCommand());
+    //driver.X().onTrue(climber.getCloseCommand());
+    //driver.A().onTrue(climber.getClimbCommand());
+    driver.A().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MIN_HEIGHT_METERS));
+    driver.B().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(20.0)));
+    driver.Y().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(40.0)));
+    driver.X().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MAX_HEIGHT_METERS));
   }
 
 

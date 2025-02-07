@@ -28,7 +28,7 @@ public final class Constants {
   }
 
   public static final class Elevator {
-    public static final int motorCanID = 1;
+    public static final int motorCanID = 41;
 
     public static final double P = 0.05;
     public static final double I = 0.00;
@@ -39,11 +39,11 @@ public final class Constants {
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(20.0);
     public static final double GEAR_RATIO = 1.0;
     public static final double MIN_HEIGHT_METERS = 0.0;
-    public static final double MAX_HEIGHT_METERS = Units.inchesToMeters(84.0);
+    public static final double MAX_HEIGHT_METERS = Units.inchesToMeters(56.0);
     public static final double STARTING_HEIGHT_METERS = MIN_HEIGHT_METERS + (MIN_HEIGHT_METERS + MAX_HEIGHT_METERS) / 2.0;
 
-    public static final double MAX_ACCELERATION = 10000.0;
-    public static final double MAX_VELOCITY = 5000.0;
+    public static final double MAX_ACCELERATION = 24000.0;
+    public static final double MAX_VELOCITY = 6000.0;
   };
 
   public static final class LEDs {
@@ -127,25 +127,25 @@ public final class Constants {
     public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
     public static final double MIN_ANGLE_RADS = 0;
     public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
-    public static final int MOTOR_CANID = 0;
-    public static final int PCMID = 0;
-    public static final int SOLONOIDID = 0;
-    public static final int climberEncoderCanID = 0; //TODO
+    public static final int MOTOR_CANID = 51;
+    public static final int PCMID = 5;
+    public static final int SOLONOIDID = 3;
+    public static final int climberEncoderCanID = 12; //TODO
   }
  
 public static final class AlgaeHandler {
   //Creating constants for LEFT Algae Handler :D
   //CANID's
-  public static final int leftAlgaeMotorCANID = 1;
-  public static final int leftAlgaeSolenoidID = 2;
-  public static final int leftAlgaeHallEffectID = 3;
-  public static final int leftAlgaeLimitID = 4;
+  public static final int leftAlgaeMotorCANID = 21;
+  public static final int leftAlgaeSolenoidID = 3;
+  public static final int leftAlgaeHallEffectID = 23;
+  public static final int leftAlgaeLimitID = 24;
 
     //Creating constants for RIGHT Algae Handler :D
-  public static final int rightAlgaeMotorCANID = 5;
-  public static final int rightAlgaeSolenoidID = 6;
-  public static final int rightAlgaeHallEffectID = 7;
-  public static final int rightAlgaeLimitID = 8;
+  public static final int rightAlgaeMotorCANID = 25;
+  public static final int rightAlgaeSolenoidID = 4;
+  public static final int rightAlgaeHallEffectID = 27;
+  public static final int rightAlgaeLimitID = 28;
   
 
   //all of these ID's are place holders and will need to be edited at a later date
