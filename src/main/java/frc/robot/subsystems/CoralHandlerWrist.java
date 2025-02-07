@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import java.util.concurrent.TimeUnit;
 
@@ -197,6 +198,10 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         timeSinceLastLog = System.nanoTime();
     }
 
+    public Rotation2d getAngle() {
+        return Rotation2d.fromRotations(absoluteEncoder.getPosition().getValueAsDouble()).div(gearRatio);
+
+    }
     public void stopMotor() {
         motor.stopMotor();
     }

@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+
 import java.io.IOException;
 
 public final class Constants {
@@ -153,6 +155,25 @@ public final class Constants {
     
     public static final double horizontalMotorMinVelocity = 0.0;
     public static final double verticalMotorMinVelocity = 0.0;
+
+    public static final double verticalRotationDegreesPerRotation = 360 / verticalGearRatio;
+    public static final double horizontalRotationDegreesPerRotation = 360 / horizontalGearRatio;
+    
+    //Need different name, for manual coral joystick control
+    public static final double verticalAngleChangeDegreesPerSecond = verticalMotorMaxVelocity * verticalGearRatio / 60;
+    
+    //TODO change degree numbers
+    public static final Rotation2d horizontalIntakeAngle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel1AngleRight = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel1AngleLeft = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel2Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel3Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel4Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d vertialIntakeAngle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d vertialLevel1Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d verticallLevel2Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d verticallLevel3Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d verticallLevel4Angle = Rotation2d.fromDegrees(0);
     // ???? what do you do for offset for position (use gear ratio to figure out)
     // public static final double RotationDegreesPerRotation = 0;
   }

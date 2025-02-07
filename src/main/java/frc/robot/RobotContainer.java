@@ -3,10 +3,15 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import java.security.CodeSigner;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
+import frc.robot.commands.CoralHandlerAngleEstimator;
+import frc.robot.commands.CoralHandlerEstimator;
+import frc.robot.commands.ManualCoralHandlerVertical;
 import frc.robot.commands.Notifications;
 import frc.robot.subsystems.*;
 
@@ -22,7 +27,6 @@ public class RobotContainer {
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
   public static final CoralHandler coralHandler = new CoralHandler(Constants.CoralHandler.outtakeMotorID, Constants.CoralHandler.horizontalMotorID, Constants.CoralHandler.verticalMotorID, Constants.CoralHandler.horizontalEncoderID, Constants.CoralHandler.verticalEncoderID);
-
   // Vision clients
   // public static final JetsonClient jetson = new JetsonClient();
 
@@ -30,7 +34,8 @@ public class RobotContainer {
     coralHandler.registerSystemCheckWithSmartDashboard();
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
-    LEDs.setDefaultCommand(new Notifications());    
+    LEDs.setDefaultCommand(new Notifications());
+    coralHandler.setDefaultCommand(new ManualCoralHandlerVertical(coDriver::getLeftY));
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
     //SmartDashboard.putData("Tune Elevation", shooterWrist.getElevationTunerCommand());
@@ -58,13 +63,14 @@ public class RobotContainer {
   }
   
 
-  private void configureButtonBindings() {    
+  private void configureButtonBindings() {
+    coDriver.START();
+    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
         //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           //shooter.stopMotors();
        // }, shooter))))));
    
     //coDriver.X().onTrue(new ElevatorToMin());
-    coDriver.START();
   /*   
         }, shooter))).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           shooter.stopMotors();
