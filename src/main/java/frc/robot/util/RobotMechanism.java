@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants.Elevator;
+import frc.robot.commands.ManualCoralHandlerVertical;
 import frc.robot.RobotContainer;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -58,16 +60,25 @@ public class RobotMechanism {
         double elevation = RobotContainer.elevator.getElevation();
         m_elevatorExtension.setLength(elevation);
 
+        Rotation2d coralHandlerAngle = RobotContainer.coralHandler.getHorizontalAngle();
+        Rotation2d coralHandlerVerticalAngle = RobotContainer.coralHandler.getVerticalAngle();
+        Rotation2d clamShellAngle = RobotContainer.climber.getCurrentAngle();
+
+        double leftAlgaeHandlerAngle = RobotContainer.leftAlgaeHandler.isAlgaeIntakeUp() ? 0.0 : Math.PI / 180.0 * 55.0;
+        double rightAlgaeHandlerAngle = RobotContainer.rightAlgaeHandler.isAlgaeIntakeUp() ? 0.0 : Math.PI / 180.0 * 55.0;
+
+        double climberArmAngle = RobotContainer.climber.isClawOpen() ? Math.PI / 4.0 : 0.0;
+
         SmartDashboard.putData("Robot Mechanism", m_mechanism);
         
         Transform3d elevatorTransform = new Transform3d(0.0, 0.0, elevation / 2.0, new Rotation3d());
-        Transform3d coralHandlerStage1 = new Transform3d(0,0,0,new Rotation3d(0.0, 0.0, Math.PI / 2.0));
-        Transform3d coralHandlerStage2 = new Transform3d(0,0,0, new Rotation3d(0, Math.PI / 180.0 * 55.0, 0));
-        Transform3d leftAlgaeHandler = new Transform3d(0,0,0, new Rotation3d(0, Math.PI / 180.0 * 55.0, 0));
-        Transform3d rightAlgaeHandler = new Transform3d(0,0,0, new Rotation3d(0, Math.PI / 180.0 * 55.0, 0));
-        Transform3d climberClamShell = new Transform3d(0,0,0, new Rotation3d(0, Math.PI / 180.0 * 55.0, 0));
-        Transform3d climberClam2LeftArm = new Transform3d(0,0,0, new Rotation3d(0, 0.0, Math.PI / 4.0));
-        Transform3d climberClam2RightArm = new Transform3d(0,0,0, new Rotation3d(0, 0.0, -Math.PI / 4.0));
+        Transform3d coralHandlerStage1 = new Transform3d(0,0,0,new Rotation3d(0.0, 0.0, coralHandlerAngle.getRadians()));
+        Transform3d coralHandlerStage2 = new Transform3d(0,0,0, new Rotation3d(0, coralHandlerVerticalAngle.getRadians(), 0));
+        Transform3d leftAlgaeHandler = new Transform3d(0,0,0, new Rotation3d(0, leftAlgaeHandlerAngle, 0));
+        Transform3d rightAlgaeHandler = new Transform3d(0,0,0, new Rotation3d(0, rightAlgaeHandlerAngle, 0));
+        Transform3d climberClamShell = new Transform3d(0,0,0, new Rotation3d(0, clamShellAngle.getRadians(), 0));
+        Transform3d climberClam2LeftArm = new Transform3d(0,0,0, new Rotation3d(0, 0.0, climberArmAngle));
+        Transform3d climberClam2RightArm = new Transform3d(0,0,0, new Rotation3d(0, 0.0, -climberArmAngle));
 
         poses[0] = k_RobotBaseOffset.plus(k_RobotToElevatorStage2).plus(elevatorTransform);
         poses[1] = poses[0].plus(k_ElevatorStage2ToStage3).plus(elevatorTransform);
