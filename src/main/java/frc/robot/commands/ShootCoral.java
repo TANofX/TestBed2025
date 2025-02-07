@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
@@ -13,7 +11,7 @@ import frc.robot.RobotContainer;
 public class ShootCoral extends Command {
   /** Creates a new ShootCoral. */
   public ShootCoral() {
-    addRequirements(RobotContainer.coralHandler, RobotContainer.elevator);
+    addRequirements(RobotContainer.coralHandler);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -24,9 +22,8 @@ public class ShootCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (elevator.getElevation - elevator.getTargetElevation < 0.5 & RobotContainer.coralHandler.hasCoral() == true) {
-      RobotContainer.coralHandler.runOuttakeMotor(1); //TODO change outtake speed
-    }
+    //TODO change speed amount
+    RobotContainer.coralHandler.runOuttakeMotor(1);
   }
 
   // Called once the command ends or is interrupted.

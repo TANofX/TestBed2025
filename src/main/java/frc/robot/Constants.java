@@ -45,6 +45,11 @@ public final class Constants {
 
     public static final double MAX_ACCELERATION = 10000.0;
     public static final double MAX_VELOCITY = 5000.0;
+
+    public static final double level1Height = 0;
+    public static final double level2Height = 0;
+    public static final double level3Height = 0;
+    public static final double level4Height = 0;
   };
 
   public static final class LEDs {
@@ -110,7 +115,7 @@ public final class Constants {
   }
 
   public static final class CoralHandler {
-    // TODO figure out actual IDs
+    // TODO figure out all actual constants
     public static final double MeterPerMotorRevolution = 0.0;
 
     public static final int outtakeMotorID = 1;
@@ -124,7 +129,7 @@ public final class Constants {
     public static final double coralEndEffectorMass = 0.5;
 
     public static final double outtakeWheelMass = Units.lbsToKilograms(0.5);
-    public static final double outtakeWheelRadius = 0.02; // TODO what is the actual outtake wheel radius
+    public static final double outtakeWheelRadius = 0.02;
     
     public static final double coralIntakeSpeed = 0;
     public static final double coralOuttakeSpeed = 0;
@@ -179,7 +184,6 @@ public final class Constants {
     //Need different name, for manual coral joystick control
     public static final double verticalAngleChangeDegreesPerSecond = verticalMotorMaxVelocity * verticalGearRatio / 60;
     
-    //TODO change degree numbers
     public static final Rotation2d horizontalIntakeAngle = Rotation2d.fromDegrees(0);
     public static final Rotation2d horizontalLevel1AngleRight = Rotation2d.fromDegrees(0);
     public static final Rotation2d horizontalLevel1AngleLeft = Rotation2d.fromDegrees(0);

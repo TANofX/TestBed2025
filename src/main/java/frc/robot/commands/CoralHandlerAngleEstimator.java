@@ -23,19 +23,19 @@ public class CoralHandlerAngleEstimator extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if ((elevator.getElevation() - Constants.elevator. < 0.5) & RobotContainer.coralHandler.hasCoral() == false) {
+    if ((RobotContainer.elevator.getElevation() - Constants.Elevator.level1Height < 0.5) & RobotContainer.coralHandler.hasCoral() == false) {
       RobotContainer.coralHandler.setIntakeAngle();
     }
-    else if ((elevator.getElevation() - Constants.elevator. < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
-      RobotContainer.coralHandler.;
+    else if ((RobotContainer.elevator.getElevation() - Constants.Elevator.level1Height < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
+      // RobotContainer.coralHandler.setLevelOneAngle(); //TODO add setLevelOneAngle back in
     }
-    else if ((elevator.getElevation() - Constants.elevator. < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
+    else if ((RobotContainer.elevator.getElevation() - Constants.Elevator.level2Height < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
       RobotContainer.coralHandler.setLevelTwoAngle();
     }
-    else if ((elevator.getElevation() - Constants.elevator. < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
+    else if ((RobotContainer.elevator.getElevation() - Constants.Elevator.level3Height < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
       RobotContainer.coralHandler.setLevelThreeAngle();
     }
-    else if ((elevator.getElevation() - Constants.elevator. < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
+    else if ((RobotContainer.elevator.getElevation() - Constants.Elevator.level4Height < 0.5) & RobotContainer.coralHandler.hasCoral() == true) {
       RobotContainer.coralHandler.setLevelFourAngle();
     }
   }

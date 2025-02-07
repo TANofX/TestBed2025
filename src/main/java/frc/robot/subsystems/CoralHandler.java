@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase;
@@ -246,7 +244,12 @@ public class CoralHandler extends AdvancedSubsystem {
     horizontalWrist.setAngle(Constants.CoralHandler.horizontalLevel4Angle);
     verticalWrist.setAngle(Constants.CoralHandler.verticallLevel4Angle);
   }
-  
+  // //TODO Change how this works
+  // public void setLevelOneAngle() {
+  //   horizontalWrist.setAngle(Constants.CoralHandler.horizontalLevel1Angle);
+  //   verticalWrist.setAngle(Constants.CoralHandler.verticallLevel1Angle);
+  // }
+
   @Override
   public void periodic() {
     // Values avalible shown on SmartDashboard

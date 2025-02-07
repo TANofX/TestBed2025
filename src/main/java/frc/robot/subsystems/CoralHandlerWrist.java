@@ -14,7 +14,6 @@ import com.revrobotics.spark.config.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import java.util.concurrent.TimeUnit;
 
@@ -231,8 +230,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         return Commands.sequence(
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(10)); // TODO Is this a way to set the target angle, because
-                                                                  // it is a rotation2d?
+                            setAngle(Rotation2d.fromDegrees(10));
                         }, this),
                 Commands.waitSeconds(10.0),
                 Commands.runOnce(
@@ -244,8 +242,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
                         }, this),
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(0)); // TODO Is this a way to set the target angle, because
-                                                                 // it is a rotation2d?
+                            setAngle(Rotation2d.fromDegrees(0));
                         }, this),
                 Commands.waitSeconds(10.0),
                 Commands.runOnce(

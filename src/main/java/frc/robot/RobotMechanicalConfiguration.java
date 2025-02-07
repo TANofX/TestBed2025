@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.awt.Color;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;

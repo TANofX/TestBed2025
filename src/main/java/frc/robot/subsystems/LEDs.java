@@ -125,7 +125,7 @@ public class LEDs extends AdvancedSubsystem {
     @Override
     public void periodic() {
         // Has Coral, Green
-        if(RobotContainer.coralHandler.hasCoral()) changeAnimation(AnimationTypes.OneColorGreen);
+        if(RobotContainer.coralHandler.hasCoral()) changeAnimation(AnimationTypes.GreenBreeze);
         activePattern.applyTo(buffer);
         strip.setData(buffer);
     }
