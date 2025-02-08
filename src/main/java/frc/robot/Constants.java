@@ -11,6 +11,10 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 public final class Constants {
   public static final String canivoreBusName = "rio";
@@ -27,6 +31,13 @@ public final class Constants {
       throw new RuntimeException(e);
     }
   }
+
+  /**
+   * Annotate CAN ID fields with this annotation so we can detect duplicates in a unit test.
+   */
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.FIELD)
+  public @interface CanId {}
 
   public static final class Elevator {
     public static final int motorCanID = 6;
@@ -58,7 +69,7 @@ public final class Constants {
   }
 
   public static final class Swerve {
-    public static final int imuCanID = 3;
+    @CanId public static final int imuCanID = 3;
     public static final double maxVelTele = 4.7;
     public static final double maxAccelTele = 6.0;
     public static final double maxAngularVelTele = Units.degreesToRadians(180);
@@ -82,33 +93,33 @@ public final class Constants {
     }
 
     public static final class FrontLeftModule {
-      public static final int driveMotorCanID = 7;
-      public static final int rotationMotorCanID = 8;
-      public static final int rotationEncoderCanID = 13;
+      @CanId public static final int driveMotorCanID = 7;
+      @CanId public static final int rotationMotorCanID = 8;
+      @CanId public static final int rotationEncoderCanID = 13;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class FrontRightModule {
-      public static final int driveMotorCanID = 10;
-      public static final int rotationMotorCanID = 11;
-      public static final int rotationEncoderCanID = 12;
+      @CanId public static final int driveMotorCanID = 10;
+      @CanId public static final int rotationMotorCanID = 11;
+      @CanId public static final int rotationEncoderCanID = 12;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
 
     public static final class BackLeftModule {
-      public static final int driveMotorCanID = 4;
-      public static final int rotationMotorCanID = 5;
-      public static final int rotationEncoderCanID = 14;
+      @CanId public static final int driveMotorCanID = 4;
+      @CanId public static final int rotationMotorCanID = 5;
+      @CanId public static final int rotationEncoderCanID = 14;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class BackRightModule {
-      public static final int driveMotorCanID = 6;
-      public static final int rotationMotorCanID = 9;
-      public static final int rotationEncoderCanID = 15;
+      @CanId public static final int driveMotorCanID = 6;
+      @CanId public static final int rotationMotorCanID = 9;
+      @CanId public static final int rotationEncoderCanID = 15;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
@@ -118,11 +129,11 @@ public final class Constants {
     // TODO figure out all actual constants
     public static final double MeterPerMotorRevolution = 0.0;
 
-    public static final int outtakeMotorID = 1;
-    public static final int horizontalMotorID = 2;
-    public static final int horizontalEncoderID = 3;
-    public static final int verticalMotorID = 4;
-    public static final int verticalEncoderID = 5;
+    @CanId public static final int outtakeMotorID = 1;
+    @CanId public static final int horizontalMotorID = 2;
+    @CanId public static final int horizontalEncoderID = 3;
+    @CanId public static final int verticalMotorID = 4;
+    @CanId public static final int verticalEncoderID = 5;
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
