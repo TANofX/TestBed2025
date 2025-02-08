@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ConstantsTest {
 
@@ -23,13 +20,16 @@ public class ConstantsTest {
         findCanIds(canIdToFields, Constants.class);
 
         // Verify that there are no duplicates
+        List<String> errors = new ArrayList<>();
         canIdToFields.forEach((canId,fieldNames) -> {
             if (fieldNames.size() > 1) {
                 String message = String.format("%s fields have CAN ID %s: %s", fieldNames.size(), canId, fieldNames);
-                System.err.println(message);
-                Assertions.fail(message);
+                errors.add(message);
             }
         });
+        String message = String.join("\n", errors);
+        System.err.println(message);
+        Assertions.assertEquals(0, errors.size(), message);
     }
 
     /**
