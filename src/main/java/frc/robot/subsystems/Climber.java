@@ -161,6 +161,11 @@ public class Climber extends AdvancedSubsystem {
     return Rotation2d.fromRotations(climberEncoderSignalA.getValueAsDouble()/2.0);
   }   
 
+  //methods to close and open claw, and stop
+  public boolean isClawOpen(){
+    return climberPiston.get() == DoubleSolenoid.Value.kReverse;
+  }
+
   /**
    * This method will open the claw
    */
