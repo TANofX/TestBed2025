@@ -160,7 +160,9 @@ public class Climber extends AdvancedSubsystem {
   }
 
   //methods to close and open claw, and stop
-
+  public boolean isClawOpen(){
+    return climberPiston.get() == DoubleSolenoid.Value.kReverse;
+  }
 
   //close claw
   public void toggleClaw(){
