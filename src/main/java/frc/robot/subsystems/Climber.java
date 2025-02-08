@@ -53,8 +53,8 @@ public class Climber extends AdvancedSubsystem {
   private Rotation2d climberAbsoluteAngle;
 
   /** Creates a new Climber. */
-  public Climber(final int motor_canid, final int pcmid, final int solonoidid, int encoderCanID) {
-    climberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1,2);
+  public Climber(final int motor_canid, final int pcmid, final int FORWARDSOLENOID, int REVERSESOLENOID, int encoderCanID) {
+    climberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, FORWARDSOLENOID, REVERSESOLENOID);
     climberMotor = new SparkFlex(motor_canid, MotorType.kBrushless);
     climbercontroller = climberMotor.getClosedLoopController();
 

@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
@@ -13,6 +15,12 @@ import frc.robot.commands.Notifications;
 import frc.robot.commands.SwerveDriveWithGamepad;
 import frc.robot.subsystems.*;
 import frc.robot.util.RobotMechanism;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+
 
 
 public class RobotContainer {
@@ -34,6 +42,7 @@ public class RobotContainer {
   // Other Hardware
   public static final PowerDistribution powerDistribution = new PowerDistribution();
   public static final CoralHandler coralHandler = new CoralHandler(Constants.CoralHandler.outtakeMotorID, Constants.CoralHandler.horizontalMotorID, Constants.CoralHandler.verticalMotorID, Constants.CoralHandler.horizontalEncoderID, Constants.CoralHandler.verticalEncoderID);
+  public static final Climber climber = new Climber(Constants.Climber.MOTOR_CANID, Constants.Climber.PCMID, Constants.Climber.FORWARDSOLENOID, Constants.Climber.REVERSESOLENOID,Constants.Climber.climberEncoderCanID);
 
   // Vision clients
   // public static final JetsonClient jetson = new JetsonClient();
@@ -45,12 +54,25 @@ public class RobotContainer {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());
+    elevator.setDefaultCommand(new ElevatorJoystickControl(coDriver::getLeftY));
+    SmartDashboard.putData("Left Algae Handler Test", leftAlgaeHandler.getSystemCheckCommand());
+    SmartDashboard.putData("Right Algae Handler Test", rightAlgaeHandler.getSystemCheckCommand());
+   
+  
+  
+  
+    // Register Named Commands for pathplanner
+    //ADD THESE COMMANDS ONCE WE DEVELOP THEM MORE:
+    NamedCommands.registerCommand("ElevatorL4", elevator.getElevatorHeightCommand(0));
+    NamedCommands.registerCommand("ElevatorL1", elevator.getElevatorHeightCommand(0.00000001));
+    NamedCommands.registerCommand("ElevatorIntake", elevator.getElevatorHeightCommand(0.00001));
+    //NamedCommands.registerCommand("Collect", new ______());
+  
+    
+    //Do I need this?
     elevator.setDefaultCommand(new ElevatorJoystickControl(driver::getLeftY));
-=========
-    LEDs.setDefaultCommand(new Notifications());    
-    SmartDashboard.putData("Coral Running Motors Test", coralHandler.getSystemCheckCommand());
->>>>>>>>> Temporary merge branch 2
 
+    coralHandler.setDefaultCommand(new ManualCoralHandlerVertical(coDriver::getLeftY));
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
     //SmartDashboard.putData("Tune Elevation", shooterWrist.getElevationTunerCommand());
@@ -77,7 +99,45 @@ public class RobotContainer {
   }
   
 
-  private void configureButtonBindings() {    
+  private void configureButtonBindings() {
+    coDriver.START();
+    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
+
+
+    
+   //ONCE WE ADD ALGAE TO MAIN THESE COMMANDS SHOULD WORK:
+   // driver.LT().onTrue(new getAlgaeIntakeCommand());
+   // driver.RT().onTrue(new shootAlgaeCommand());
+   // driver.START().onTrue(new ); //callibrate elevator
+
+   
+
+   //_________OLD CODE BELOW____________
+   /*
+     * 
+     *     
+    driver.LT().onTrue(new SafePosition());
+    driver.RB().onTrue(new ClimbPosition());
+    driver.LB().onTrue(new ElevatorToMin());
+    driver.X().whileTrue(new ReverseIntake());          
+    driver.DLeft()
+           .onTrue((new ElevateShooter(Constants.Shooter.SHOOT_IN_SPEAKER_AT_SUBWOOFER).alongWith(Commands.runOnce(() -> {
+          shooter.startMotorsForShooter(fireControl.getVelocity());
+           }, shooter))).andThen(new Shoot(false).andThen(Commands.waitSeconds(.5).andThen(Commands.runOnce(() -> {
+           shooter.stopMotors();
+
+           })))));
+
+    
+    driver.DRight().onTrue((new ElevateShooter(Constants.Shooter.SHOOT_AT_PODIUM).alongWith(Commands.runOnce(() -> {
+      shooter.startMotorsForShooter(fireControl.getVelocity());
+   }, shooter))).andThen(new Shoot(false).andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
+      shooter.stopMotors();
+    })))));
+    driver.RT().whileTrue(new ConditionalCommand(new IntakeNote(), (new IntakeNote().alongWith(new ReadyToPassNote())).andThen(new TransferNote()), shooterWrist::isStowed));
+    
+    
+    
         //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           //shooter.stopMotors();
        // }, shooter))))));
@@ -88,6 +148,28 @@ public class RobotContainer {
 
    
     //coDriver.X().onTrue(new ElevatorToMin());
+    coDriver.RB().onTrue(new ReadyToPassNote().andThen(new TransferNote()));
+    coDriver.LB().onTrue(new CalibrateElevator());
+    coDriver.DUp().whileTrue(new ExtendElevator());
+    coDriver.DDown().whileTrue(new RetractElevator());
+    coDriver.LT().onTrue(shootInAmpCommand());
+    coDriver.RT().onTrue(shootInSpeaker());
+    coDriver.START();
+    coDriver.B().toggleOnTrue(new ManualShooterElevation(coDriver::getRightY));
+    coDriver.X().onTrue(new CancelShooter());
+   
+  /*   
+        }, shooter))).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
+          shooter.stopMotors();
+
+        }))))); */
+
+    //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
+          //shooter.stopMotors();
+       // }, shooter))))));
+   
+    //coDriver.X().onTrue(new ElevatorToMin());
+    coDriver.START();
     SmartDashboard.putData("Calibrate Elevator", elevator.getCalibrationCommand());
     SmartDashboard.putData("Check Elevator", elevator.getSystemCheckCommand());
     SmartDashboard.putData("Elevator 1.25", elevator.getElevatorHeightCommand(1.25));

@@ -28,14 +28,14 @@ public final class Constants {
       apriltagLayout.getFieldWidth();
       apriltagLayout.getFieldLength();
       apriltagLayout.getFieldWidth();
-      fieldSize = new Translation2d(apriltagLayout.getFieldLength(), apriltagLayout.getFieldWidth());
+     
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
   public static final class Elevator {
-    public static final int motorCanID = 41;
+    public static final int motorCanID = 1;
 
     public static final double P = 0.05;
     public static final double I = 0.00;
@@ -88,33 +88,33 @@ public final class Constants {
     
 
     public static final class FrontLeftModule {
-      public static final int driveMotorCanID = 3;
-      public static final int rotationMotorCanID = 4;
-      public static final int rotationEncoderCanID = 5;
+      public static final int driveMotorCanID = 2;
+      public static final int rotationMotorCanID = 3;
+      public static final int rotationEncoderCanID = 4;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class FrontRightModule {
-      public static final int driveMotorCanID = 6;
-      public static final int rotationMotorCanID = 7;
-      public static final int rotationEncoderCanID = 8;
+      public static final int driveMotorCanID = 5;
+      public static final int rotationMotorCanID = 6;
+      public static final int rotationEncoderCanID = 7;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
 
     public static final class BackLeftModule {
-      public static final int driveMotorCanID = 9;
-      public static final int rotationMotorCanID = 10;
-      public static final int rotationEncoderCanID = 11;
+      public static final int driveMotorCanID = 8;
+      public static final int rotationMotorCanID = 9;
+      public static final int rotationEncoderCanID = 10;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class BackRightModule {
-      public static final int driveMotorCanID = 12;
-      public static final int rotationMotorCanID = 13;
-      public static final int rotationEncoderCanID = 14;
+      public static final int driveMotorCanID = 11;
+      public static final int rotationMotorCanID = 12;
+      public static final int rotationEncoderCanID = 13;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
@@ -162,11 +162,11 @@ public final class Constants {
     // TODO figure out all actual constants
     public static final double MeterPerMotorRevolution = 0.0;
 
-    public static final int outtakeMotorID = 71;
-    public static final int horizontalMotorID = 72;
-    public static final int horizontalEncoderID = 73;
-    public static final int verticalMotorID = 74;
-    public static final int verticalEncoderID = 75;
+    public static final int outtakeMotorID = 14;
+    public static final int horizontalMotorID = 15;
+    public static final int horizontalEncoderID = 16;
+    public static final int verticalMotorID = 17;
+    public static final int verticalEncoderID = 18;
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
@@ -262,23 +262,24 @@ public final class Constants {
     public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
     public static final double MIN_ANGLE_RADS = 0;
     public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
-    public static final int MOTOR_CANID =15;
+    public static final int MOTOR_CANID =19;
     public static final int PCMID = 16;
-    public static final int SOLONOIDID = 1;
-    public static final int climberEncoderCanID = 18 ; //TODO
+    public static final int FORWARDSOLENOID = 1;
+    public static final int REVERSESOLENOID = 6;
+    public static final int climberEncoderCanID = 20 ; //TODO
   }
  
 public static final class AlgaeHandler {
   //Creating constants for LEFT Algae Handler :D
   //CANID's
-  public static final int leftAlgaeMotorCANID = 19;
-  public static final int leftAlgaeSolenoidID = 20;
-  public static final int leftAlgaeHallEffectID = 21;
-  public static final int leftAlgaeLimitID = 22;
+  public static final int leftAlgaeMotorCANID = 21;
+  public static final int leftAlgaeSolenoidID = 2;
+  public static final int leftAlgaeHallEffectID = 12;
+  public static final int leftAlgaeLimitID = 23;
 
     //Creating constants for RIGHT Algae Handler :D
-  public static final int rightAlgaeMotorCANID = 23;
-  public static final int rightAlgaeSolenoidID = 2;
+  public static final int rightAlgaeMotorCANID = 24;
+  public static final int rightAlgaeSolenoidID = 3;
   public static final int rightAlgaeHallEffectID = 25;
   public static final int rightAlgaeLimitID = 26;
   

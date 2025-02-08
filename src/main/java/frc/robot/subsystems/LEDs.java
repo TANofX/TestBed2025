@@ -61,6 +61,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.subsystem.AdvancedSubsystem;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class LEDs extends AdvancedSubsystem {
     private AddressableLED strip;
@@ -69,7 +70,7 @@ public class LEDs extends AdvancedSubsystem {
         .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(1 / 120.0));
     private final LEDPattern greenPattern = LEDPattern.solid(Color.kGreen)
         .breathe(Seconds.of(5));
-<<<<<<<<< Temporary merge branch 1
+
     private final LEDPattern orangePattern = LEDPattern.solid(Color.kOrange);
     // TODO Change 0.5 to IMU tilt
     private final LEDPattern imuPattern = LEDPattern.progressMaskLayer(() -> 0.5)
@@ -120,7 +121,7 @@ public class LEDs extends AdvancedSubsystem {
     @Override
     public void periodic() {
         // Has Coral, Green
-        if(RobotContainer.coralHandler.hasCoral()) changeAnimation(AnimationTypes.OneColorGreen);
+        if(RobotContainer.coralHandler.hasCoral()) changeAnimation(AnimationTypes.OrangeSolid);
         activePattern.applyTo(buffer);
         strip.setData(buffer);
     }
