@@ -215,26 +215,26 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         return Commands.sequence(
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(10));
+                            setAngle(Rotation2d.fromDegrees(45));
                         }, this),
-                Commands.waitSeconds(10.0),
+                Commands.waitSeconds(3.0),
                 Commands.runOnce(
                         () -> {
-                            if ((relativeEncoder.getVelocity()) < minVelocity) {
-                                addFault("[System Check] " + name + " Coral Motor too slow (forward direction)", false,
-                                        true);
+                            if (Math.abs(getAngle().getDegrees() - Rotation2d.fromDegrees(45).getDegrees()) < 0.5) {
+                                addFault("[System Check] " + name + " Coral Motor did not get to target angle (45 degrees)",
+                                false, true);
                             }
                         }, this),
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(0));
+                            setAngle(Rotation2d.fromDegrees(-45));
                         }, this),
-                Commands.waitSeconds(10.0),
+                Commands.waitSeconds(3.0),
                 Commands.runOnce(
                         () -> {
-                            if ((relativeEncoder.getVelocity()) < -minVelocity) {
-                                addFault("[System Check] " + name + " Coral Motor too slow (backwards direction)",
-                                        false, true);
+                            if (Math.abs(getAngle().getDegrees() - Rotation2d.fromDegrees(-45).getDegrees()) < 0.5) {
+                                addFault("[System Check] " + name + " Coral Motor did not get to target angle (-45 degrees)",
+                                false, true);
                             }
                             motor.stopMotor();
                         }, this));
