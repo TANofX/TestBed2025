@@ -140,7 +140,7 @@ public class CoralHandler extends AdvancedSubsystem {
     // Creation of the absolute encoder simulations
     
     RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(coralHandlerOuttakeSim.getMotorCurrent(),
-        horizontalWrist.sim.getMotorCurrent(), verticalWrist.sim.getMotorCurrent()));
+        horizontalWrist.motorSim.getMotorCurrent(), verticalWrist.motorSim.getMotorCurrent()));
   }
 
   /**

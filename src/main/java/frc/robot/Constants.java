@@ -130,11 +130,11 @@ public final class Constants {
     // TODO figure out all actual constants
     public static final double MeterPerMotorRevolution = 0.0;
 
-    @CanId public static final int outtakeMotorID = 1;
-    @CanId public static final int horizontalMotorID = 2;
-    @CanId public static final int horizontalEncoderID = 3;
-    @CanId public static final int verticalMotorID = 4;
-    @CanId public static final int verticalEncoderID = 5;
+    @CanId public static final int outtakeMotorID = 71;
+    @CanId public static final int horizontalMotorID = 72;
+    @CanId public static final int horizontalEncoderID = 73;
+    @CanId public static final int verticalMotorID = 74;
+    @CanId public static final int verticalEncoderID = 75;
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
@@ -154,22 +154,22 @@ public final class Constants {
     public static final double outtakeMotorMinVelocity = 0.0;
     // public static final int outtakeEncoderID = 0.0;
     
-    public static final double horizontalMotorP = 0.001;
+    public static final double horizontalMotorP = 0.03;
     public static final double horizontalMotorI = 0.0;
-    public static final double horizontalMotorD = 0.001;
+    public static final double horizontalMotorD = 0.0;
     public static final double horizontalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double horizontalMotorIZone = 0.0;
-    public static final double horizontalMotorMaxAccleration = 1000.0;
-    public static final double horizontalMotorMaxVelocity = 6500.0;
+    public static final double horizontalMotorMaxAccleration = 25000.0; //RPM per Sec
+    public static final double horizontalMotorMaxVelocity = 6500.0; //RPM
     public static final double horizontalMotorClosedLoopError = 1.0;
 
-    public static final double verticalMotorP = 0.001;
+    public static final double verticalMotorP = 0.03;
     public static final double verticalMotorI = 0.0;
-    public static final double verticalMotorD = 0.001;
+    public static final double verticalMotorD = 0.0;
     public static final double verticalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double verticalMotorIZone = 0.0;
-    public static final double verticalMotorMaxAccleration = 1000.0;
-    public static final double verticalMotorMaxVelocity = 6500.0;
+    public static final double verticalMotorMaxAccleration = 25000.0; //RPM per Sec
+    public static final double verticalMotorMaxVelocity = 6500.0; //RPM
     public static final double verticalMotorClosedLoopError = 1.0;
     
     public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
@@ -181,8 +181,8 @@ public final class Constants {
     public static final Rotation2d verticalMinAngle = Rotation2d.fromDegrees(-90);
     public static final Rotation2d verticalMaxAngle = Rotation2d.fromDegrees(90);
     
-    public static final double horizontalStartingAngleInRadians = Rotation2d.fromDegrees(-90).getRadians();
-    public static final double verticalStartingAngleInRadians = Rotation2d.fromDegrees(-100).getRadians();
+    public static final Rotation2d horizontalStartingAngleInRadians = Rotation2d.fromDegrees(-90);
+    public static final Rotation2d verticalStartingAngleInRadians = Rotation2d.fromDegrees(-100);
     
     public static final double horizontalMotorStdDev = 0.0;
     public static final double verticalMotorStdDev = 0.0;
