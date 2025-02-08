@@ -68,6 +68,11 @@ public class RobotContainer {
         //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           //shooter.stopMotors();
        // }, shooter))))));
+    driver.LT().onTrue(leftAlgaeHandler.getAlgaeIntakeCommand());
+    driver.LB().onTrue(leftAlgaeHandler.shootAlgaeCommand());
+    driver.RT().onTrue(rightAlgaeHandler.getAlgaeIntakeCommand());
+    driver.RB().onTrue(rightAlgaeHandler.shootAlgaeCommand());
+
    
     //coDriver.X().onTrue(new ElevatorToMin());
     coDriver.START();
