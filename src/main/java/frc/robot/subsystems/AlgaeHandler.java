@@ -148,8 +148,10 @@ public boolean hasAlgae() {
 
 public boolean isAlgaeIntakeUp() {
   //returns a boolean to tell the robot whether or not algae intake is up
-  return algaeHallEffect.get();
-}
+  return !algaePiston.get();
+  }
+
+
 
 //This command intakes an algae
 public Command getAlgaeIntakeCommand() {
