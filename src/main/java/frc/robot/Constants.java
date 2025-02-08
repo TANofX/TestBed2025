@@ -4,53 +4,73 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.XboxController;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 public final class Constants {
   public static final String canivoreBusName = "rio";
   public static final AprilTagFieldLayout apriltagLayout;
+  public static final Translation2d fieldSize;
 
   static {
     try {
-      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
       apriltagLayout.getFieldLength();
       apriltagLayout.getFieldWidth();
+      apriltagLayout.getFieldLength();
+      apriltagLayout.getFieldWidth();
+      fieldSize = new Translation2d(apriltagLayout.getFieldLength(), apriltagLayout.getFieldWidth());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public static final Translation2d fieldSize = new Translation2d(16.54, 8.02);
-  public static final double noteTransferMetersPerSecond = 0.5;
+  /**
+   * Annotate CAN ID fields with this annotation so we can detect duplicates in a unit test.
+   */
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.FIELD)
+  public @interface CanId {}
 
+  public static final class Elevator {
+    public static final int motorCanID = 41;
 
-   public static final class LEDs {
-   public static final int CANdleID = 4;
-    public static final int JoystickId = 0;
-    public static final int IncrementAnimButton = XboxController.Button.kRightBumper.value;
-    public static final int DecrementAnimButton = XboxController.Button.kLeftBumper.value;
-    public static final int BlockButton = XboxController.Button.kStart.value;
-    public static final int MaxBrightnessAngle = 90;
-    public static final int MidBrightnessAngle = 180;
-    public static final int ZeroBrightnessAngle = 270;
-    public static final int ChangeDirectionAngle = 0;
-    public static final int VbatButton = XboxController.Button.kA.value;
-    public static final int V5Button = XboxController.Button.kB.value;
-    public static final int CurrentButton = XboxController.Button.kX.value;
-    public static final int TemperatureButton = XboxController.Button.kY.value;
-}
+    public static final double P = 0.05;
+    public static final double I = 0.00;
+    public static final double D = 0.00;
+    public static final double FF = 1.0/(565.0*12);
+
+    public static final double METERS_PER_MOTOR_REVOLUTION = 2 * Units.inchesToMeters(1.0 / 8.0);
+    public static final double ELEVATOR_MASS = Units.lbsToKilograms(20.0);
+    public static final double GEAR_RATIO = 1.0;
+    public static final double MIN_HEIGHT_METERS = 0.0;
+    public static final double MAX_HEIGHT_METERS = Units.inchesToMeters(56.0);
+    public static final double STARTING_HEIGHT_METERS = MIN_HEIGHT_METERS + (MIN_HEIGHT_METERS + MAX_HEIGHT_METERS) / 2.0;
+
+    public static final double level1Height = 0;
+    public static final double level2Height = 0;
+    public static final double level3Height = 0;
+    public static final double level4Height = 0;
+    public static final double MAX_ACCELERATION = 24000.0;
+    public static final double MAX_VELOCITY = 6000.0;
+  };
+
+  public static final class LEDs {
+    public static final int stripPwm = 0;
+    public static final int stripLength = 150;
+  }
 
   public static final class Swerve {
-    public static final int imuCanID = 3;
+    @CanId public static final int imuCanID = 3;
     public static final double maxVelTele = 4.7;
     public static final double maxAccelTele = 6.0;
     public static final double maxAngularVelTele = Units.degreesToRadians(180);
@@ -67,98 +87,212 @@ public final class Constants {
     }
 
     public static final class PathFollowing {
-      // public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
-      // public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(2.0, 0.0, 0.0);
+      // public static final PIDConstants TRANSLATION_CONSTANTS = new
+      // PIDConstants(5.0, 0.0, 0.0);
+      // public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(2.0,
+      // 0.0, 0.0);
     }
 
     public static final class FrontLeftModule {
-      public static final int driveMotorCanID = 7;
-      public static final int rotationMotorCanID = 8;
-      public static final int rotationEncoderCanID = 13;
-      public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
+      @CanId public static final int driveMotorCanID = 7;
+      @CanId public static final int rotationMotorCanID = 8;
+      @CanId public static final int rotationEncoderCanID = 13;
+      public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class FrontRightModule {
-      public static final int driveMotorCanID = 10;
-      public static final int rotationMotorCanID = 11;
-      public static final int rotationEncoderCanID = 12;
+      @CanId public static final int driveMotorCanID = 10;
+      @CanId public static final int rotationMotorCanID = 11;
+      @CanId public static final int rotationEncoderCanID = 12;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
-          Units.inchesToMeters(12.25));
-    }
-
-    public static final class BackLeftModule {
-      public static final int driveMotorCanID = 4;
-      public static final int rotationMotorCanID = 5;
-      public static final int rotationEncoderCanID = 14;
-      public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
 
+    public static final class BackLeftModule {
+      @CanId public static final int driveMotorCanID = 4;
+      @CanId public static final int rotationMotorCanID = 5;
+      @CanId public static final int rotationEncoderCanID = 14;
+      public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
+          Units.inchesToMeters(12.25));
+    }
+
     public static final class BackRightModule {
-      public static final int driveMotorCanID = 6;
-      public static final int rotationMotorCanID = 9;
-      public static final int rotationEncoderCanID = 15;
-      public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
+      @CanId public static final int driveMotorCanID = 6;
+      @CanId public static final int rotationMotorCanID = 9;
+      @CanId public static final int rotationEncoderCanID = 15;
+      public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
   }
 
+  public static final class CoralHandler {
+    // TODO figure out all actual constants
+    public static final double MeterPerMotorRevolution = 0.0;
+
+    @CanId public static final int outtakeMotorID = 71;
+    @CanId public static final int horizontalMotorID = 72;
+    @CanId public static final int horizontalEncoderID = 73;
+    @CanId public static final int verticalMotorID = 74;
+    @CanId public static final int verticalEncoderID = 75;
+
+    // !! `coralEndEffectorLength` is IN METERS
+    public static final double coralEndEffectorLength = 0.25;
+    public static final double coralEndEffectorMass = 0.5;
+
+    public static final double outtakeWheelMass = Units.lbsToKilograms(0.5);
+    public static final double outtakeWheelRadius = 0.02;
+    
+    public static final double coralIntakeSpeed = 0;
+    public static final double coralOuttakeSpeed = 0;
+    
+    public static final double outtakeMotorGearing = 1.0;
+    public static final double horizontalGearRatio = 100.0;
+    public static final double verticalGearRatio = 100.0;
+
+    public static final double outtakeJKgMetersSquared = (.5 * outtakeWheelMass * Math.pow(outtakeWheelRadius, 2));
+    public static final double outtakeMotorMinVelocity = 0.0;
+    // public static final int outtakeEncoderID = 0.0;
+    
+    public static final double horizontalMotorP = 0.03;
+    public static final double horizontalMotorI = 0.0;
+    public static final double horizontalMotorD = 0.0;
+    public static final double horizontalMotorFeedForward = 1.0 / (565.0*12.0);
+    public static final double horizontalMotorIZone = 0.0;
+    public static final double horizontalMotorMaxAccleration = 25000.0; //RPM per Sec
+    public static final double horizontalMotorMaxVelocity = 6500.0; //RPM
+    public static final double horizontalMotorClosedLoopError = 1.0;
+
+    public static final double verticalMotorP = 0.03;
+    public static final double verticalMotorI = 0.0;
+    public static final double verticalMotorD = 0.0;
+    public static final double verticalMotorFeedForward = 1.0 / (565.0*12.0);
+    public static final double verticalMotorIZone = 0.0;
+    public static final double verticalMotorMaxAccleration = 25000.0; //RPM per Sec
+    public static final double verticalMotorMaxVelocity = 6500.0; //RPM
+    public static final double verticalMotorClosedLoopError = 1.0;
+    
+    public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
+    public static final double verticalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
+    
+    public static final Rotation2d horizontalMinAngle = Rotation2d.fromDegrees(-100);
+    public static final Rotation2d horizontalMaxAngle = Rotation2d.fromDegrees(100);
+
+    public static final Rotation2d verticalMinAngle = Rotation2d.fromDegrees(-90);
+    public static final Rotation2d verticalMaxAngle = Rotation2d.fromDegrees(90);
+    
+    public static final Rotation2d horizontalStartingAngleInRadians = Rotation2d.fromDegrees(-90);
+    public static final Rotation2d verticalStartingAngleInRadians = Rotation2d.fromDegrees(-100);
+    
+    public static final double horizontalMotorStdDev = 0.0;
+    public static final double verticalMotorStdDev = 0.0;
+    
+    public static final double horizontalMotorMinVelocity = 0.0;
+    public static final double verticalMotorMinVelocity = 0.0;
+
+    public static final double verticalRotationDegreesPerRotation = 360 / verticalGearRatio;
+    public static final double horizontalRotationDegreesPerRotation = 360 / horizontalGearRatio;
+    
+    //Need different name, for manual coral joystick control
+    public static final double verticalAngleChangeDegreesPerSecond = verticalMotorMaxVelocity * verticalGearRatio / 60;
+    
+    public static final Rotation2d horizontalIntakeAngle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel1AngleRight = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel1AngleLeft = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel2Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel3Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d horizontalLevel4Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d vertialIntakeAngle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d vertialLevel1Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d verticallLevel2Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d verticallLevel3Angle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d verticallLevel4Angle = Rotation2d.fromDegrees(0);
+    // ???? what do you do for offset for position (use gear ratio to figure out)
+    // public static final double RotationDegreesPerRotation = 0;
+  }
+
   public static final class AutoBalance {
-    // public static final PIDConstants BALANCE_CONSTANTS = new PIDConstants(0.3, 0.0, 0.1);
+    // public static final PIDConstants BALANCE_CONSTANTS = new PIDConstants(0.3,
+    // 0.0, 0.1);
     public static final double maxVelAuto = 0.4;
     public static final double maxVelTele = 0.3;
   }
 
-  public static final class FireControl {
-    public static final double FINAL_Y_VELOCITY = 3;
-    public static final double ACCELERATION = 9.81;
-    public static final double HEIGHT = Units.inchesToMeters(72);
-    public static final double TARGET_VELOCITY_MPS = 15;
-    // public static final double SHOOTER_HEIGHT = 24;
-    // public static final double HEIGHT = SPEAKER_HEIGHT - SHOOTER_HEIGHT;
-    public static final Pose2d BLUE_SPEAKER_POSITION = new Pose2d(Units.inchesToMeters(-1.5),
-        Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0.0));
-    public static final Pose2d RED_SPEAKER_POSITION = new Pose2d(Units.inchesToMeters(652.73),
-        Units.inchesToMeters(218.42), Rotation2d.fromDegrees(180));
-    public static final Pose2d BLUE_AMP_CORNER_POSITION = Constants.apriltagLayout.getTagPose(6).get().toPose2d();
-    public static final Pose2d RED_AMP_CORNER_POSITION = Constants.apriltagLayout.getTagPose(5).get().toPose2d();
-    // public static final Pose2d RED_SPEAKER_POSITION = new Pose2d(8.3,4.1,
-    // Rotation2d.fromDegrees(0));
-    public static final Transform2d SHOOTER_OFFSET = new Transform2d(Units.inchesToMeters(-6), Units.inchesToMeters(0),
-        Rotation2d.fromDegrees(180));
-    public static final Rotation2d AZMUTH_OFFSET = Rotation2d.fromDegrees(5.0);
-    public static final Translation2d FEEDOFFSET = new Translation2d(0,1.5);
+  public static final class Climber {
+    public static final double firstStageGearRatio = 90 / 60;
+    public static final double secondStageGearRatio = 18 / 58;
+    
+    public static final double MOTOR_KI = 0; // TODO
+    public static final double MOTOR_KP = 0.25;
+    public static final double MOTOR_KD = 0;
+    public static final double GEAR_RATIO = 0.01;
+    public static final double ARM_ANGULAR_MOMENTUM = Units.lbsToKilograms(9.963);
+    public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
+    public static final double MIN_ANGLE_RADS = 0;
+    public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
+    public static final int MOTOR_CANID = 51;
+    public static final int PCMID = 5;
+    public static final int SOLONOIDID = 3;
+    public static final int climberEncoderCanID = 12; //TODO
   }
+ 
+public static final class AlgaeHandler {
+  //Creating constants for LEFT Algae Handler :D
+  //CANID's
+  public static final int leftAlgaeMotorCANID = 21;
+  public static final int leftAlgaeSolenoidID = 3;
+  public static final int leftAlgaeHallEffectID = 23;
+  public static final int leftAlgaeLimitID = 24;
 
-  public static final class Elevator {
-    public static final int ELEVATORMOTOR_ID = 30;
-    public static final double METERS_PER_REV = .180;
-    public static final int MOTOR_REV_PER_ROTATION = 100;
-    public static final double METERS_PER_MOTOR_REV = METERS_PER_REV / MOTOR_REV_PER_ROTATION;
-    public static final double MAX_HEIGHT = -89;
-    public static final double MIN_HEIGHT = 0.15;
-    public static final double elevatorMotorP = 0.00005;
-    public static final double elevatorMotorI = 0.00;
-    public static final double elevatorMotorD = 0.00;
-    public static final double elevatorMotorIZone = 5;
-    public static final double elevatorMotorFeedForward = 0.0001;
-    public static final double elevatorMotorMinVelocity = 0;
-    public static final double elevatorMotorMaxVelocity = 5500;
-    public static final double elevatorMotorMaxAcceleration = 10000;
-    public static final double elevatorMotorClosedLoppError = 2;
-  }
+    //Creating constants for RIGHT Algae Handler :D
+  public static final int rightAlgaeMotorCANID = 25;
+  public static final int rightAlgaeSolenoidID = 4;
+  public static final int rightAlgaeHallEffectID = 27;
+  public static final int rightAlgaeLimitID = 28;
+  
 
-  public static final class LEDStrip {
-    public static final int numLEDs = 45;
+  //all of these ID's are place holders and will need to be edited at a later date
+  public static final int degreesPerRevolution = 360;
+  //These values will need to be changed, just place holders
+  public static final double algaeMotorP = 0.001;
+  public static final double algaeMotorI = 0.00;
+  public static final double algaeMotorD = 0.000;
+  public static final double algaeFF = 1.0/(565.0*12);
+  public static final double algaeIZone = 0.0;
+  public static final double algaeMotorMaxVelocity = 6000.0;
+  public static final double algaeMotorMaxAcceleration = 0.0;
+  public static final double algaeMotorAllowedError = 1;
+  //Calculates moment of inertia for parameter in flywheel sim for bottom wheels 
+  public static final double massOfBottomIntakeWheel = Units.lbsToKilograms(0.076);
+  public static final double radiusOfBottomIntakeWheel = .025;
+  public static final double momentOfInertiaOfTheBottomIntakeWheel = .5 * (massOfBottomIntakeWheel * (radiusOfBottomIntakeWheel*radiusOfBottomIntakeWheel)); 
 
-    public static final int candleID = 4;
-    public static final int swerveLED = 0;
-    public static final int pinkArmLED = 1;
-    public static final int turretLED = 2;
-    public static final int intakeLED = 3;
-    public static final int jawLED = 4;
-    public static final int stealerLED = 5;
-    public static final int manhattanLED = 6;
-  }
+  //Calculates moment of inertia for parameter in flywheel sim for top wheels
+  public static final double massOfTopIntakeWheel = Units.lbsToKilograms(0.035);
+  public static final double radiusOfTopIntakeWheel = 1;
+  public static final double momentOfInertiaOfTheTopIntakeWheel = massOfTopIntakeWheel * (radiusOfTopIntakeWheel*radiusOfTopIntakeWheel);
+
+
+
+    //all of these ID's are place holders and will need to be edited at a later date
+
+    public static final double metersPerMotorRevolution = 0;
+    public static final int amassOfAlgaeHandler = 6;
+    public static final double algaeGearRatio = 1.0/9.0;
+    
+
+
+
+
+//Motor logistics
+
+  
+
+
+
+
+
+  
+}
+  
 }

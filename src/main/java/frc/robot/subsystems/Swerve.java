@@ -23,12 +23,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.lib.pid.TunablePIDSet;
-import frc.lib.pid.TunePIDController;
 import frc.lib.subsystem.AdvancedSubsystem;
 //import frc.lib.subsystem.SubsystemFault;
 import frc.lib.swerve.Mk4SwerveModulePro;
-import frc.lib.swerve.Mk4SwerveModuleProSparkFlex;
 import frc.lib.util.Vector3;
 //import frc.lib.vision.limelight.LimelightHelpers;
 import frc.robot.Constants;
@@ -669,6 +666,7 @@ public class Swerve extends AdvancedSubsystem {
    * }
    * }
    */
+  @SuppressWarnings("removal")
   @Override
   protected Command systemCheckCommand() {
     return Commands.sequence(

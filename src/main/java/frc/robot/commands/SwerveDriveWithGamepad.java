@@ -3,7 +3,6 @@ package frc.robot.commands;
 import java.util.Optional;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -17,17 +16,12 @@ public class SwerveDriveWithGamepad extends Command {
   private final SlewRateLimiter yVelLimiter;
   private final SlewRateLimiter angularVelLimiter;
 
-  private Rotation2d rotationTarget = null;
-  private final double rotationHoldFactor;
   private static double maxSpeedForChild = 1;
-  private final boolean aimAtGamePiece;
 
   public SwerveDriveWithGamepad(boolean aimAtGamePiece) {
     this.xVelLimiter = new SlewRateLimiter(Constants.Swerve.maxAccelTele);
     this.yVelLimiter = new SlewRateLimiter(Constants.Swerve.maxAccelTele);
     this.angularVelLimiter = new SlewRateLimiter(Constants.Swerve.maxAngularAccelTele);
-    this.rotationHoldFactor = Constants.Swerve.teleAngleHoldFactor;
-    this.aimAtGamePiece = aimAtGamePiece;
     addRequirements(RobotContainer.swerve);
   }
 
@@ -47,7 +41,6 @@ public class SwerveDriveWithGamepad extends Command {
     this.yVelLimiter.reset(0);
     this.angularVelLimiter.reset(0);
 
-    rotationTarget = null;
     SmartDashboard.putNumber("Speed Dial", maxSpeedForChild);
   }
 
@@ -78,13 +71,8 @@ public class SwerveDriveWithGamepad extends Command {
     double yVel = this.yVelLimiter.calculate(y * Constants.Swerve.maxVelTele);
     double angularVel = this.angularVelLimiter.calculate(targetAngularVel);
 
-    if (stop) {
-      rotationTarget = null;
-
+    if (stop)
       RobotContainer.swerve.driveFieldRelative(new ChassisSpeeds(xVel, yVel, angularVel));
-    } else {
-        rotationTarget = null;      
-    }
 
     RobotContainer.swerve.driveFieldRelative(new ChassisSpeeds(xVel, yVel, angularVel));
 

@@ -71,14 +71,14 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
   private static final double ROTATION_MAX_ACCELERATION = 10000;
   private static final double ROTATION_ERROR = 0.05;
 
-  private static final double ROTATION_POSITION_KP = 0.9;
-  private static final double ROTATION_POSITION_KI = 0.0;
-  private static final double ROTATION_POSITION_KD = 0.0;
-  private static final double ROTATION_POSITION_I_ZONE = 0;
-  private static final double ROTATION_POSITION_FEED_FORWARD = 0.0;
-  private static final double ROTATION_POSITION_MAX_VELOCITY = 0;
-  private static final double ROTATION_POSITION_MAX_ACCELERATION = 0;
-  private static final double ROTATION_POSITION_ERROR = 0.5;
+  // private static final double ROTATION_POSITION_KP = 0.9;
+  // private static final double ROTATION_POSITION_KI = 0.0;
+  // private static final double ROTATION_POSITION_KD = 0.0;
+  // private static final double ROTATION_POSITION_I_ZONE = 0;
+  // private static final double ROTATION_POSITION_FEED_FORWARD = 0.0;
+  // private static final double ROTATION_POSITION_MAX_VELOCITY = 0;
+  // private static final double ROTATION_POSITION_MAX_ACCELERATION = 0;
+  // private static final double ROTATION_POSITION_ERROR = 0.5;
 
   public final ModuleCode moduleCode;
   // private final LinearSystemSim<N1, N1, N1> driveSim;
@@ -138,8 +138,7 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
     ClosedLoopConfig driveMotorPidConfig = driveMotorConfig.closedLoop;
     driveMotorPidConfig.pid(DRIVE_KP, DRIVE_KI, DRIVE_KD);
     driveMotorPidConfig.iZone(DRIVE_I_ZONE);
-    driveMotorPidConfig.velocityFF(DRIVE_FEED_FORWARD); // ?
-    driveMotorConfig.smartCurrentLimit(100, 80);
+    driveMotorPidConfig.velocityFF(DRIVE_FEED_FORWARD);
     // driveSimState.addSparkMax(driveMotor, 8.0f, 5500.0f);
     driveMotor.configure(driveMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -238,7 +237,8 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
 
     driveMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     driveMotor.configure(driveMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-    this.targetState = SwerveModuleState.optimize(desiredState, getState().angle);
+    desiredState.optimize(getState().angle);
+    this.targetState = desiredState;
 
     // Don't run the motors if the desired speed is less than 5% of the max
     if (Math.abs(desiredState.speedMetersPerSecond) < DRIVE_MAX_VEL * 0.01) {
@@ -382,7 +382,7 @@ public class Mk4SwerveModuleProSparkFlex extends AdvancedSubsystem {
     }
 
     targetState = new SwerveModuleState(0, Rotation2d.fromDegrees(targetAngle));
-    targetState = SwerveModuleState.optimize(targetState, getRotation());
+    targetState.optimize(getRotation());
 
     double deltaRot = targetState.angle.getDegrees() - getAbsoluteRotationDegrees();
     if (deltaRot > 180) {
