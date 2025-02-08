@@ -167,7 +167,7 @@ public final class Constants {
     public static final double verticalMotorD = 0.001;
     public static final double verticalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double verticalMotorIZone = 0.0;
-    public static final double verticalMotorMaxAccleration = 1.0;
+    public static final double verticalMotorMaxAccleration = 1000.0;
     public static final double verticalMotorMaxVelocity = 6500.0;
     public static final double verticalMotorClosedLoopError = 1.0;
     
@@ -180,8 +180,8 @@ public final class Constants {
     public static final Rotation2d verticalMinAngle = Rotation2d.fromDegrees(-90);
     public static final Rotation2d verticalMaxAngle = Rotation2d.fromDegrees(90);
     
-    public static final double horizontalStartingAngleInRadians = 0.0;
-    public static final double verticalStartingAngleInRadians = 0.0;
+    public static final double horizontalStartingAngleInRadians = Rotation2d.fromDegrees(-90).getRadians();
+    public static final double verticalStartingAngleInRadians = Rotation2d.fromDegrees(-100).getRadians();
     
     public static final double horizontalMotorStdDev = 0.0;
     public static final double verticalMotorStdDev = 0.0;
