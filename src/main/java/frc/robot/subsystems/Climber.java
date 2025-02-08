@@ -89,7 +89,6 @@ public class Climber extends AdvancedSubsystem {
 
   @Override
   public void periodic() {
-    // TODO This method will be called once per scheduler run
   }
 
   @Override
