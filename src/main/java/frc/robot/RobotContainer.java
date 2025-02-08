@@ -103,12 +103,16 @@ public class RobotContainer {
     coDriver.START();
     coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
 
-
+    driver.LT().onTrue(leftAlgaeHandler.getAlgaeIntakeCommand());
+    driver.LB().onTrue(leftAlgaeHandler.shootAlgaeCommand());
+    driver.RT().onTrue(rightAlgaeHandler.getAlgaeIntakeCommand());
+    driver.RB().onTrue(rightAlgaeHandler.shootAlgaeCommand());
+//
     
    //ONCE WE ADD ALGAE TO MAIN THESE COMMANDS SHOULD WORK:
-   // driver.LT().onTrue(new getAlgaeIntakeCommand());
-   // driver.RT().onTrue(new shootAlgaeCommand());
-   // driver.START().onTrue(new ); //callibrate elevator
+   //driver.LT().onTrue(new getAlgaeIntakeCommand());
+   //driver.RT().onTrue(new shootAlgaeCommand());
+   //driver.START().onTrue(new ); //callibrate elevator
 
    
 
@@ -140,12 +144,12 @@ public class RobotContainer {
     
         //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           //shooter.stopMotors();
-       // }, shooter))))));
+        }, shooter))))));
     driver.LT().onTrue(leftAlgaeHandler.getAlgaeIntakeCommand());
     driver.LB().onTrue(leftAlgaeHandler.shootAlgaeCommand());
     driver.RT().onTrue(rightAlgaeHandler.getAlgaeIntakeCommand());
     driver.RB().onTrue(rightAlgaeHandler.shootAlgaeCommand());
-
+//
    
     //coDriver.X().onTrue(new ElevatorToMin());
     coDriver.RB().onTrue(new ReadyToPassNote().andThen(new TransferNote()));
