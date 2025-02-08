@@ -199,7 +199,6 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
 
     public Rotation2d getAngle() {
         return Rotation2d.fromRotations(absoluteEncoder.getPosition().getValueAsDouble()).div(gearRatio);
-
     }
     public void stopMotor() {
         motor.stopMotor();
@@ -230,7 +229,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         return Commands.sequence(
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(10));
+                            setAngleCommand(Rotation2d.fromDegrees(10));
                         }, this),
                 Commands.waitSeconds(10.0),
                 Commands.runOnce(
@@ -242,7 +241,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
                         }, this),
                 Commands.runOnce(
                         () -> {
-                            setAngle(Rotation2d.fromDegrees(0));
+                            setAngleCommand(Rotation2d.fromDegrees(0));
                         }, this),
                 Commands.waitSeconds(10.0),
                 Commands.runOnce(
