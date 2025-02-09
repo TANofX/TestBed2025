@@ -191,6 +191,9 @@ public class RobotContainer {
     driver.B().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(20.0)));
     driver.Y().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(40.0)));
     driver.X().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MAX_HEIGHT_METERS));
+    coDriver.A().onTrue(climber.getClimbCommand());
+    coDriver.B().onTrue(climber.getOpenCommand());
+    coDriver.X().onTrue(climber.getStowCommand());
   }
 
 

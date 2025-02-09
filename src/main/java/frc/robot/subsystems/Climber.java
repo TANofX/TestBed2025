@@ -208,7 +208,10 @@ public class Climber extends AdvancedSubsystem {
 
   //stow climber
   public Command getStowCommand(){
-    return Commands.runOnce(()->{toggleClaw();},this);
+    return Commands.runOnce(()->{
+      toggleClaw();
+      setClimberAngle(Rotation2d.fromDegrees(0));},
+      this);
   }
   public Command getPrepareCommandS(){
     return Commands.runOnce(()->{

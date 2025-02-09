@@ -284,13 +284,13 @@ public static final class AlgaeHandler {
   //Creating constants for LEFT Algae Handler :D
   //CANID's
   @CanId  static final int leftAlgaeMotorCANID = 21;
-  public static final int leftAlgaeSolenoidID = 3;
+  public static final int leftAlgaeSolenoidID = 5;
   public static final int leftAlgaeHallEffectID = 23;
   public static final int leftAlgaeLimitID = 24;
 
     //Creating constants for RIGHT Algae Handler :D
     @CanId public static final int rightAlgaeMotorCANID = 25;
-  public static final int rightAlgaeSolenoidID = 4;
+  public static final int rightAlgaeSolenoidID = 6;
   public static final int rightAlgaeHallEffectID = 27;
   public static final int rightAlgaeLimitID = 28;
   
