@@ -13,6 +13,10 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 public final class Constants {
@@ -33,6 +37,13 @@ public final class Constants {
       throw new RuntimeException(e);
     }
   }
+
+  /**
+   * Annotate CAN ID fields with this annotation so we can detect duplicates in a unit test.
+   */
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.FIELD)
+  public @interface CanId {}
 
   public static final class Elevator {
     public static final int motorCanID = 1;
@@ -63,7 +74,7 @@ public final class Constants {
   }
 
   public static final class Swerve {
-    public static final int imuCanID = 2;
+    @CanId public static final int imuCanID = 3;
     public static final double maxVelTele = 4.7;
     public static final double maxAccelTele = 6.0;
     public static final double maxAngularVelTele = Units.degreesToRadians(180);
@@ -88,33 +99,33 @@ public final class Constants {
     
 
     public static final class FrontLeftModule {
-      public static final int driveMotorCanID = 2;
-      public static final int rotationMotorCanID = 3;
-      public static final int rotationEncoderCanID = 4;
+      @CanId public static final int driveMotorCanID = 7;
+      @CanId public static final int rotationMotorCanID = 8;
+      @CanId public static final int rotationEncoderCanID = 13;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class FrontRightModule {
-      public static final int driveMotorCanID = 5;
-      public static final int rotationMotorCanID = 6;
-      public static final int rotationEncoderCanID = 7;
+      @CanId public static final int driveMotorCanID = 10;
+      @CanId public static final int rotationMotorCanID = 11;
+      @CanId public static final int rotationEncoderCanID = 22;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
 
     public static final class BackLeftModule {
-      public static final int driveMotorCanID = 8;
-      public static final int rotationMotorCanID = 9;
-      public static final int rotationEncoderCanID = 10;
+      @CanId public static final int driveMotorCanID = 4;
+      @CanId public static final int rotationMotorCanID = 5;
+      @CanId public static final int rotationEncoderCanID = 14;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class BackRightModule {
-      public static final int driveMotorCanID = 11;
-      public static final int rotationMotorCanID = 12;
-      public static final int rotationEncoderCanID = 13;
+      @CanId public static final int driveMotorCanID = 6;
+      @CanId public static final int rotationMotorCanID = 9;
+      @CanId public static final int rotationEncoderCanID = 15;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
@@ -162,11 +173,11 @@ public final class Constants {
     // TODO figure out all actual constants
     public static final double MeterPerMotorRevolution = 0.0;
 
-    public static final int outtakeMotorID = 14;
-    public static final int horizontalMotorID = 15;
-    public static final int horizontalEncoderID = 16;
-    public static final int verticalMotorID = 17;
-    public static final int verticalEncoderID = 18;
+    @CanId public static final int outtakeMotorID = 71;
+    @CanId public static final int horizontalMotorID = 72;
+    @CanId public static final int horizontalEncoderID = 73;
+    @CanId public static final int verticalMotorID = 74;
+    @CanId public static final int verticalEncoderID = 75;
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
@@ -186,22 +197,22 @@ public final class Constants {
     public static final double outtakeMotorMinVelocity = 0.0;
     // public static final int outtakeEncoderID = 0.0;
     
-    public static final double horizontalMotorP = 0.001;
+    public static final double horizontalMotorP = 0.03;
     public static final double horizontalMotorI = 0.0;
-    public static final double horizontalMotorD = 0.001;
+    public static final double horizontalMotorD = 0.0;
     public static final double horizontalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double horizontalMotorIZone = 0.0;
-    public static final double horizontalMotorMaxAccleration = 1000.0;
-    public static final double horizontalMotorMaxVelocity = 6000.0;
+    public static final double horizontalMotorMaxAccleration = 25000.0; //RPM per Sec
+    public static final double horizontalMotorMaxVelocity = 6500.0; //RPM
     public static final double horizontalMotorClosedLoopError = 1.0;
 
-    public static final double verticalMotorP = 0.001;
+    public static final double verticalMotorP = 0.03;
     public static final double verticalMotorI = 0.0;
-    public static final double verticalMotorD = 0.001;
+    public static final double verticalMotorD = 0.0;
     public static final double verticalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double verticalMotorIZone = 0.0;
-    public static final double verticalMotorMaxAccleration = 1.0;
-    public static final double verticalMotorMaxVelocity = 6000.0;
+    public static final double verticalMotorMaxAccleration = 25000.0; //RPM per Sec
+    public static final double verticalMotorMaxVelocity = 6500.0; //RPM
     public static final double verticalMotorClosedLoopError = 1.0;
     
     public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
@@ -213,8 +224,8 @@ public final class Constants {
     public static final Rotation2d verticalMinAngle = Rotation2d.fromDegrees(-90);
     public static final Rotation2d verticalMaxAngle = Rotation2d.fromDegrees(90);
     
-    public static final double horizontalStartingAngleInRadians = 0.0;
-    public static final double verticalStartingAngleInRadians = 0.0;
+    public static final Rotation2d horizontalStartingAngleInRadians = Rotation2d.fromDegrees(-90);
+    public static final Rotation2d verticalStartingAngleInRadians = Rotation2d.fromDegrees(-100);
     
     public static final double horizontalMotorStdDev = 0.0;
     public static final double verticalMotorStdDev = 0.0;
@@ -262,26 +273,26 @@ public final class Constants {
     public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
     public static final double MIN_ANGLE_RADS = 0;
     public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
-    public static final int MOTOR_CANID =19;
-    public static final int PCMID = 16;
-    public static final int FORWARDSOLENOID = 1;
-    public static final int REVERSESOLENOID = 6;
-    public static final int climberEncoderCanID = 20 ; //TODO
+    @CanId public static final int MOTOR_CANID = 51;
+    public static final int PCMID = 5;
+    public static final int FORWARDSOLENOID = 3;
+    public static final int REVERSESOLENOID = 4;
+    @CanId public static final int climberEncoderCanID = 12; //TODO
   }
  
 public static final class AlgaeHandler {
   //Creating constants for LEFT Algae Handler :D
   //CANID's
-  public static final int leftAlgaeMotorCANID = 21;
-  public static final int leftAlgaeSolenoidID = 2;
-  public static final int leftAlgaeHallEffectID = 12;
-  public static final int leftAlgaeLimitID = 23;
+  @CanId  static final int leftAlgaeMotorCANID = 21;
+  public static final int leftAlgaeSolenoidID = 3;
+  public static final int leftAlgaeHallEffectID = 23;
+  public static final int leftAlgaeLimitID = 24;
 
     //Creating constants for RIGHT Algae Handler :D
-  public static final int rightAlgaeMotorCANID = 24;
-  public static final int rightAlgaeSolenoidID = 3;
-  public static final int rightAlgaeHallEffectID = 25;
-  public static final int rightAlgaeLimitID = 26;
+    @CanId public static final int rightAlgaeMotorCANID = 25;
+  public static final int rightAlgaeSolenoidID = 4;
+  public static final int rightAlgaeHallEffectID = 27;
+  public static final int rightAlgaeLimitID = 28;
   
 
   //all of these ID's are place holders and will need to be edited at a later date
