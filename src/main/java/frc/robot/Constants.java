@@ -204,7 +204,8 @@ public final class Constants {
     public static final double horizontalRotationDegreesPerRotation = 360 / horizontalGearRatio;
     
     //Need different name, for manual coral joystick control
-    public static final double verticalAngleChangeDegreesPerSecond = verticalMotorMaxVelocity * verticalGearRatio / 60;
+    public static final double verticalAngleChangeDegreesPerSecond = (verticalMotorMaxVelocity * verticalGearRatio) / 60;
+    public static final double horizontalAngleChangeDegreesPerSecond = (horizontalMotorMaxVelocity * horizontalGearRatio) / 60;
     
     public static final Rotation2d horizontalIntakeAngle = Rotation2d.fromDegrees(0);
     public static final Rotation2d horizontalLevel1AngleRight = Rotation2d.fromDegrees(0);

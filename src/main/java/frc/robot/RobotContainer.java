@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
 import frc.robot.commands.ElevatorJoystickControl;
+import frc.robot.commands.ManualCoralHandler;
 import frc.robot.commands.CoralHandlerAngleEstimator;
-import frc.robot.commands.ManualCoralHandlerVertical;
 import frc.robot.commands.Notifications;
 import frc.robot.subsystems.*;
 import frc.robot.util.RobotMechanism;
@@ -44,13 +44,12 @@ public class RobotContainer {
     SmartDashboard.putData(swerve.zeroModulesCommand());
     configureButtonBindings();
     LEDs.setDefaultCommand(new Notifications());
-    elevator.setDefaultCommand(new ElevatorJoystickControl(coDriver::getLeftY));
+    //elevator.setDefaultCommand(new ElevatorJoystickControl(coDriver::getLeftY));
     SmartDashboard.putData("Left Algae Handler Test", leftAlgaeHandler.getSystemCheckCommand());
     SmartDashboard.putData("Right Algae Handler Test", rightAlgaeHandler.getSystemCheckCommand());
    
   
-
-    coralHandler.setDefaultCommand(new ManualCoralHandlerVertical(coDriver::getLeftY));
+    coralHandler.setDefaultCommand(new ManualCoralHandler(coDriver::getLeftY, coDriver::getLeftX));
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
     //SmartDashboard.putData("Tune Elevation", shooterWrist.getElevationTunerCommand());
