@@ -36,12 +36,10 @@ public class RobotContainer {
   public static final LEDs LEDs = new LEDs();
   public static final Elevator elevator = new Elevator(Constants.Elevator.motorCanID);
   public static final RobotMechanism robotMechanism = new RobotMechanism();
-
+  public static final CoralHandler coralHandler = new CoralHandler(Constants.CoralHandler.outtakeMotorID, Constants.CoralHandler.horizontalMotorID, Constants.CoralHandler.verticalMotorID, Constants.CoralHandler.horizontalEncoderID, Constants.CoralHandler.verticalEncoderID);
    public static final AlgaeHandler leftAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.leftAlgaeMotorCANID, Constants.AlgaeHandler.leftAlgaeSolenoidID,Constants.AlgaeHandler.leftAlgaeLimitID);
    public static final AlgaeHandler rightAlgaeHandler = new AlgaeHandler(Constants.AlgaeHandler.rightAlgaeMotorCANID, Constants.AlgaeHandler.rightAlgaeSolenoidID, Constants.AlgaeHandler.rightAlgaeLimitID);
-  // Other Hardware
-  public static final PowerDistribution powerDistribution = new PowerDistribution();
-  public static final CoralHandler coralHandler = new CoralHandler(Constants.CoralHandler.outtakeMotorID, Constants.CoralHandler.horizontalMotorID, Constants.CoralHandler.verticalMotorID, Constants.CoralHandler.horizontalEncoderID, Constants.CoralHandler.verticalEncoderID);
+ 
   public static final Climber climber = new Climber(Constants.Climber.MOTOR_CANID, Constants.Climber.PCMID, Constants.Climber.FORWARDSOLENOID, Constants.Climber.REVERSESOLENOID,Constants.Climber.climberEncoderCanID);
 
   // Vision clients
@@ -194,6 +192,9 @@ public class RobotContainer {
     coDriver.A().onTrue(climber.getClimbCommand());
     coDriver.B().onTrue(climber.getOpenCommand());
     coDriver.X().onTrue(climber.getStowCommand());
+    coDriver.START();
+    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
+
   }
 
 
