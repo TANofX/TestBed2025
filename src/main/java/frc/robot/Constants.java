@@ -42,7 +42,7 @@ public final class Constants {
   public @interface CanId {}
 
   public static final class Elevator {
-    public static final int motorCanID = 41;
+    public static final int motorCanID = 31;
 
     public static final double P = 0.05;
     public static final double I = 0.00;

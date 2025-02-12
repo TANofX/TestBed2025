@@ -153,6 +153,13 @@ public class CoralHandler extends AdvancedSubsystem {
         horizontalWrist.motorSim.getMotorCurrent(), verticalWrist.motorSim.getMotorCurrent()));
   }
 
+  public void runHorizontalMotor() {
+    horizontalWrist.runCoralWrist();
+  }
+
+  public void runVerticalMotor() {
+    verticalWrist.runCoralWrist();
+  }
   /**
    * Stops motor for the coral end effector intake/outtake motor. Sets motor speed
    * to zero.

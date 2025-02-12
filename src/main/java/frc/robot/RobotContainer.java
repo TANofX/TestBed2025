@@ -10,6 +10,7 @@ import frc.lib.input.controllers.XboxControllerWrapper;
 import frc.robot.commands.ManualCoralHandler;
 import frc.robot.commands.CoralHandlerAngleEstimator;
 import frc.robot.commands.Notifications;
+import frc.robot.commands.RunCoralHorizontalPositive;
 import frc.robot.subsystems.*;
 import frc.robot.util.RobotMechanism;
 
@@ -48,7 +49,7 @@ public class RobotContainer {
     SmartDashboard.putData("Right Algae Handler Test", rightAlgaeHandler.getSystemCheckCommand());
    
   
-    coralHandler.setDefaultCommand(new ManualCoralHandler(coDriver::getLeftY, coDriver::getLeftX));
+
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());
     //SmartDashboard.putData("Tune Elevation", shooterWrist.getElevationTunerCommand());
@@ -78,6 +79,26 @@ public class RobotContainer {
   private void configureButtonBindings() {
     coDriver.START();
     coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
+    // coralHandler.setDefaultCommand(new ManualCoralHandler(coDriver::getLeftY, coDriver::getLeftX));
+    coralHandler.setDefaultCommand(new ManualCoralHandler(() -> {
+      if (coDriver.DUp().getAsBoolean()) {
+        return 0.5;
+      }
+      if (coDriver.DDown().getAsBoolean()){
+        return -0.5;
+      }
+      return 0.0;
+    }, () -> {
+      if (coDriver.DRight().getAsBoolean()) {
+        return -0.5;
+      }
+      if (coDriver.DLeft().getAsBoolean()) {
+        return 0.5;
+      }
+      return 0.0;
+    }));
+    
+
         //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
           //shooter.stopMotors();
        // }, shooter))))));
@@ -100,6 +121,9 @@ public class RobotContainer {
     driver.B().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(20.0)));
     driver.Y().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(40.0)));
     driver.X().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MAX_HEIGHT_METERS));
+    // TODO Make it field centric? or does that not make sense (it doesnt to me)
+    coDriver.DRight().whileTrue(new RunCoralHorizontalPositive()); 
+    // coDriver.DUp().whileTrue(new RunCoralVerticalPositive());
   }
 
 
