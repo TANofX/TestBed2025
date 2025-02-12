@@ -109,8 +109,8 @@ public class CoralHandler extends AdvancedSubsystem {
     verticalWrist.registerSystemCheckWithSmartDashboard();
 
     outtakeEncoder = outtakeMotor.getEncoder();
-    coralLimitSwitch = outtakeMotor.getForwardLimitSwitch(); // TODO forward or reverse limit switch?
-
+    // TODO forward or reverse limit switch?
+    coralLimitSwitch = outtakeMotor.getForwardLimitSwitch(); 
     // Using SparkFlexConfig to create needed parameters for the outtakeMotor
     SparkFlexConfig outtakeConfig = new SparkFlexConfig();
     outtakeConfig.inverted(false);

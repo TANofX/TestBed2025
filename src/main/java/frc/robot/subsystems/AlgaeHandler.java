@@ -250,7 +250,6 @@ public Command lowerAlgaeIntakeManually() {
 
   @Override
   protected Command systemCheckCommand() {
-    // TODO Auto-generated method stub
     return Commands.sequence(
       Commands.runOnce(
         () -> {

@@ -7,7 +7,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
-import frc.robot.commands.ElevatorJoystickControl;
 import frc.robot.commands.ManualCoralHandler;
 import frc.robot.commands.CoralHandlerAngleEstimator;
 import frc.robot.commands.Notifications;
