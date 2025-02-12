@@ -203,7 +203,7 @@ public final class Constants {
     public static final double horizontalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double horizontalMotorIZone = 0.0;
     public static final double horizontalMotorMaxAccleration = 25000.0; //RPM per Sec
-    public static final double horizontalMotorMaxVelocity = 6500.0; //RPM
+    public static final double horizontalMotorMaxVelocity = 3500.0; //RPM
     public static final double horizontalMotorClosedLoopError = 1.0;
 
     public static final double verticalMotorP = 0.03;
@@ -212,7 +212,7 @@ public final class Constants {
     public static final double verticalMotorFeedForward = 1.0 / (565.0*12.0);
     public static final double verticalMotorIZone = 0.0;
     public static final double verticalMotorMaxAccleration = 25000.0; //RPM per Sec
-    public static final double verticalMotorMaxVelocity = 6500.0; //RPM
+    public static final double verticalMotorMaxVelocity = 3500.0; //RPM
     public static final double verticalMotorClosedLoopError = 1.0;
     
     public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
@@ -253,6 +253,8 @@ public final class Constants {
     public static final Rotation2d verticallLevel4Angle = Rotation2d.fromDegrees(0);
     // ???? what do you do for offset for position (use gear ratio to figure out)
     // public static final double RotationDegreesPerRotation = 0;
+
+    public static double horizontalMotorallowederror;
   }
 
   public static final class AutoBalance {
@@ -272,8 +274,8 @@ public final class Constants {
     public static final double GEAR_RATIO = 0.01;
     public static final double ARM_ANGULAR_MOMENTUM = Units.lbsToKilograms(9.963);
     public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
-    public static final double MIN_ANGLE_RADS = 0;
-    public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
+    public static final double MIN_ANGLE_RADS = -3 * Math.PI / 4;
+    public static final double MAX_ANGLE_RADS =0;
     @CanId public static final int MOTOR_CANID = 51;
     public static final int PCMID = 5;
     public static final int FORWARDSOLENOID = 3;
