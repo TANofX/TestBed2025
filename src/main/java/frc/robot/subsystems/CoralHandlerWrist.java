@@ -240,12 +240,12 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
 
     // Changes where the offset of the absolute encoder is and uses syncWristEncoder to sync relative encoder to it
     public void updateWristOffset() {
-        double currentOffset = encoderConfig.MagnetSensor.MagnetOffset;
-        double offset = (currentOffset - absoluteEncoder.getAbsolutePosition().getValueAsDouble()) % 1.0;
-        Preferences.setDouble(getName() + "RotationOffset", offset * 360.0); //TODO what is this for?
-        encoderConfig.MagnetSensor.MagnetOffset = offset;
-        absoluteEncoder.getConfigurator().apply(encoderConfig);
-        syncWristEncoder();
+        double currentOffset = encoderConfig.MagnetSensor.MagnetOffset; //of absolute encoder
+        double offset = (currentOffset - absoluteEncoder.getAbsolutePosition().getValueAsDouble()) % 1.0; //needed offset for absolute encoder
+        // Preferences.setDouble(getName() + "RotationOffset", offset * 360.0); //TODO what is this for?
+        encoderConfig.MagnetSensor.MagnetOffset = offset; //makes it the new offset
+        absoluteEncoder.getConfigurator().apply(encoderConfig); //applys offset
+        syncWristEncoder(); //syncs absolute offset with relative
     }
 
     /**

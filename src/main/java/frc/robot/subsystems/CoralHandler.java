@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.subsystem.AdvancedSubsystem;
-import frc.lib.swerve.Mk4SwerveModulePro;
 import frc.robot.Constants;
 
 /** Creates a new CoralHandler. */
@@ -124,6 +123,8 @@ public class CoralHandler extends AdvancedSubsystem {
 
     // Register Hardware
     registerHardware("Coral Intake/Outtake Motor", outtakeMotor);
+
+    SmartDashboard.putData("Zero Wrist", zeroWristCommand());
   }
 
   @Override
