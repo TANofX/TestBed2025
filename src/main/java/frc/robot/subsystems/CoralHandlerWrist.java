@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.subsystem.AdvancedSubsystem;
+import frc.robot.Constants;
 
 public class CoralHandlerWrist extends AdvancedSubsystem {
     // Creation of needed variables
@@ -43,6 +44,8 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
     public final DCMotor gearboxSim;
     public final SparkMaxSim motorSim;
     private final SingleJointedArmSim coralHandlerPhysicsSim;
+
+    private final CANcoderConfiguration encoderConfig;
 
     // Creation of needed parameters for the Coral Handler Wrist
     public CoralHandlerWrist(
@@ -81,6 +84,8 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         this.controller = motor.getClosedLoopController();
         this.relativeEncoder = motor.getEncoder();
         this.relativeEncoder.setPosition(startingAngle.getRotations());
+        this.encoderConfig = new CANcoderConfiguration();
+
 
         LimitSwitchConfig limitConfig = new LimitSwitchConfig();
         limitConfig.forwardLimitSwitchType(limitSwitchType);
@@ -118,7 +123,6 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 
         // Configure Encoder
-        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         encoderConfig.MagnetSensor.MagnetOffset = Preferences.getDouble(name.toLowerCase() + "RotationalOffset", 0);
         this.absoluteEncoder = new CANcoder(encoderId);
@@ -228,6 +232,20 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
      */
     public void stopMotor() {
         motor.stopMotor();
+    }
+    // Syncs Absolute encoder and Relative encoder
+    public void syncWristEncoder() {
+        motor.getEncoder().setPosition(absoluteEncoder.getAbsolutePosition().getValueAsDouble() / Constants.CoralHandler.verticalRotationDegreesPerRotation); //TODO Change becuase roationdegreesperrotation is may be different?
+      }
+
+    // Changes where the offset of the absolute encoder is and uses syncWristEncoder to sync relative encoder to it
+    public void updateWristOffset() {
+        double currentOffset = encoderConfig.MagnetSensor.MagnetOffset;
+        double offset = (currentOffset - absoluteEncoder.getAbsolutePosition().getValueAsDouble()) % 1.0;
+        Preferences.setDouble(getName() + "RotationOffset", offset * 360.0); //TODO what is this for?
+        encoderConfig.MagnetSensor.MagnetOffset = offset;
+        absoluteEncoder.getConfigurator().apply(encoderConfig);
+        syncWristEncoder();
     }
 
     /**
