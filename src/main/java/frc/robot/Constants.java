@@ -267,6 +267,8 @@ public final class Constants {
   public static final class Climber {
     public static final double firstStageGearRatio = 90 / 60;
     public static final double secondStageGearRatio = 18 / 58;
+    public static final int climberlimitIDLower = 10;
+    public static final int climberlimitIDUpper = 11;
     
     public static final double MOTOR_KI = 0; // TODO
     public static final double MOTOR_KP = 0.25;
@@ -276,11 +278,12 @@ public final class Constants {
     public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
     public static final double MIN_ANGLE_RADS = -3 * Math.PI / 4;
     public static final double MAX_ANGLE_RADS =0;
-    @CanId public static final int MOTOR_CANID = 51;
+    @CanId public static final int MOTOR_CANID = 65;
     public static final int PCMID = 5;
     public static final int FORWARDSOLENOID = 3;
     public static final int REVERSESOLENOID = 4;
     @CanId public static final int climberEncoderCanID = 12; //TODO
+    public static final double climberRotationDegreesPerRotation = 360 / GEAR_RATIO;
   }
  
 public static final class AlgaeHandler {

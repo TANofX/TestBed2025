@@ -55,6 +55,8 @@ public class RobotContainer {
     //elevator.setDefaultCommand(new ElevatorJoystickControl(coDriver::getLeftY));
     SmartDashboard.putData("Left Algae Handler Test", leftAlgaeHandler.getSystemCheckCommand());
     SmartDashboard.putData("Right Algae Handler Test", rightAlgaeHandler.getSystemCheckCommand());
+    SmartDashboard.putData("Raise claw", climber.runClawMotorUpCommand());
+    SmartDashboard.putData("Raise and then lower claw", climber.runClawMotorOneWayThenOther());
    
   
   
@@ -188,7 +190,7 @@ public class RobotContainer {
     driver.B().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(20.0)));
     driver.Y().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(40.0)));
     driver.X().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MAX_HEIGHT_METERS));
-    coDriver.A().onTrue(climber.getClimbCommand());
+    coDriver.A().onTrue(climber.runClawMotorOneWayThenOther());
     coDriver.B().onTrue(climber.getOpenCommand());
     coDriver.X().onTrue(climber.getStowCommand());
     coDriver.START();
