@@ -30,9 +30,9 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
     // Creation of needed variables
     private final String name;
     private final double gearRatio;
-    private final Rotation2d armMinRotation;
-    private final Rotation2d armMaxRotation;
-    private final double minVelocity;
+    // private final Rotation2d armMinRotation;
+    // private final Rotation2d armMaxRotation;
+    // private final double minVelocity;
 
     private final SparkMax motor;
     private final SparkClosedLoopController controller;
@@ -76,9 +76,9 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         super("CoralHandlerWrist" + name);
         this.name = name;
         this.gearRatio = gearRatio;
-        this.minVelocity = minVelocity;
-        this.armMinRotation = armMinRotation;
-        this.armMaxRotation = armMaxRotation;
+        // this.minVelocity = minVelocity;
+        // this.armMinRotation = armMinRotation;
+        // this.armMaxRotation = armMaxRotation;
 
         this.motor = new SparkMax(motorId, SparkLowLevel.MotorType.kBrushless);
         this.controller = motor.getClosedLoopController();

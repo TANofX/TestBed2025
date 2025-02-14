@@ -133,9 +133,9 @@ public final class Constants {
     //TODO Get actual CANIDS :0
     @CanId public static final int outtakeMotorID = 40;
     @CanId public static final int horizontalMotorID = 41;
-    @CanId public static final int horizontalEncoderID = 41;
+           public static final int horizontalEncoderID = 41;
     @CanId public static final int verticalMotorID = 42;
-    @CanId public static final int verticalEncoderID = 42;
+           public static final int verticalEncoderID = 42;
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
