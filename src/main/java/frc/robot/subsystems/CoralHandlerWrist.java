@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.subsystem.AdvancedSubsystem;
-import frc.robot.Constants;
 
 public class CoralHandlerWrist extends AdvancedSubsystem {
     // Creation of needed variables
@@ -130,6 +129,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         absoluteEncoder.getConfigurator().setPosition(startingAngle.getRotations());
         this.absoluteSignal = absoluteEncoder.getAbsolutePosition();
         absoluteSignal.refresh();
+        syncWristEncoder();
             
         this.gearboxSim = DCMotor.getNeo550(1);
 
@@ -197,6 +197,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
     public void runCoralWrist() {
         motor.set(.15);
     }
+    
     /**
      * Sets the angle of coral handler wrist.
      *
@@ -210,7 +211,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
 
         System.out.printf("[%s] set arm target to %.0f degrees%n", name, targetArmAngle.getDegrees());
         
-        //TODO check if this PID changing method works and change comment after
+        //TODO check if this PID changing method works and change comment after + change angle for when PID controltype changes
         if ((targetMotorAngle.getDegrees() - getAngle().getDegrees()) > Rotation2d.fromDegrees(5).getDegrees())
             controller.setReference(targetMotorAngle.getRotations(), SparkBase.ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
         
@@ -227,22 +228,28 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
     public Rotation2d getAngle() {
         return Rotation2d.fromRotations(relativeEncoder.getPosition()).div(gearRatio);
     }
+    
     /**
      * Stops the motor / Sets the speed of the motor to 0.
      */
     public void stopMotor() {
         motor.stopMotor();
     }
-    // Syncs Absolute encoder and Relative encoder
+    
+    /**
+     * Syncs wrist Absolute encoder and Relative encoder together (based off of absolute encoder)
+     */
     public void syncWristEncoder() {
-        motor.getEncoder().setPosition(absoluteEncoder.getAbsolutePosition().getValueAsDouble() / Constants.CoralHandler.verticalRotationDegreesPerRotation); //TODO Change becuase roationdegreesperrotation is may be different?
-      }
+        motor.getEncoder().setPosition(absoluteEncoder.getAbsolutePosition().getValueAsDouble() * gearRatio);
+    }
 
-    // Changes where the offset of the absolute encoder is and uses syncWristEncoder to sync relative encoder to it
+    /**
+     * Changes where the offset of the absolute encoder is and syncs relative encoder to it
+     */
     public void updateWristOffset() {
         double currentOffset = encoderConfig.MagnetSensor.MagnetOffset; //of absolute encoder
         double offset = (currentOffset - absoluteEncoder.getAbsolutePosition().getValueAsDouble()) % 1.0; //needed offset for absolute encoder
-        // Preferences.setDouble(getName() + "RotationOffset", offset * 360.0); //TODO what is this for?
+        Preferences.setDouble(getName() + "RotationOffset", offset * 360.0); 
         encoderConfig.MagnetSensor.MagnetOffset = offset; //makes it the new offset
         absoluteEncoder.getConfigurator().apply(encoderConfig); //applys offset
         syncWristEncoder(); //syncs absolute offset with relative
