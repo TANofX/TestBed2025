@@ -225,6 +225,7 @@ public class Climber extends AdvancedSubsystem {
   public Command getCalibrateCommand() {
     return Commands.sequence(
         Commands.runOnce(() -> {
+          toggleClaw();
           climberMotor.set(-1.0);
         }, this),
         Commands.waitUntil(() -> hitUpperLimit()),

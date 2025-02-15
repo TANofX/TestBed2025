@@ -100,13 +100,20 @@ public class RobotContainer {
   
 
   private void configureButtonBindings() {
-    coDriver.START();
-    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
-
+   
     driver.LT().onTrue(leftAlgaeHandler.getAlgaeIntakeCommand());
     driver.LB().onTrue(leftAlgaeHandler.shootAlgaeCommand());
     driver.RT().onTrue(rightAlgaeHandler.getAlgaeIntakeCommand());
     driver.RB().onTrue(rightAlgaeHandler.shootAlgaeCommand());
+    coDriver.A().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MIN_HEIGHT_METERS));
+    coDriver.B().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(20.0)));
+    coDriver.Y().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(40.0)));
+    coDriver.X().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MAX_HEIGHT_METERS));
+    driver.Y().onTrue(climber.getPrepareCommand());
+    driver.A().onTrue(climber.getCalibrateCommand());
+    coDriver.START();
+    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
+ 
 //
     
    //ONCE WE ADD ALGAE TO MAIN THESE COMMANDS SHOULD WORK:
@@ -187,15 +194,7 @@ public class RobotContainer {
     //driver.Y().onTrue(climber.getPrepareCommand());
     //driver.X().onTrue(climber.getCloseCommand());
     //driver.A().onTrue(climber.getClimbCommand());
-    driver.A().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MIN_HEIGHT_METERS));
-    driver.B().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(20.0)));
-    driver.Y().onTrue(elevator.getElevatorHeightCommand(Units.inchesToMeters(40.0)));
-    driver.X().onTrue(elevator.getElevatorHeightCommand(Constants.Elevator.MAX_HEIGHT_METERS));
-    coDriver.A().onTrue(climber.runClawMotorOneWayThenOther());
-    coDriver.B().onTrue(climber.getOpenCommand());
-    coDriver.X().onTrue(climber.getStowCommand());
-    coDriver.START();
-    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
+   
 
   }
 
