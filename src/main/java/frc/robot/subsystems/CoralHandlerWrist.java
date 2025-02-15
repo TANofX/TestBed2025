@@ -185,7 +185,7 @@ public class CoralHandlerWrist extends AdvancedSubsystem {
         if ( System.nanoTime() - timeSinceLastLog > TimeUnit.SECONDS.toNanos(1)) {
             System.out.printf("[%s] arm %.0f deg, sim arm %.0f deg, motor %.1f degrees, inputVoltage: %.1f V motorVelocity: %.0f rpm%n",
                     name,
-                    Rotation2d.fromRotations(relativeEncoder.getPosition()).div(gearRatio).getDegrees(),
+                    Rotation2d.fromRotations(relativeEncoder.getPosition()).div(gearRatio).getDegrees(), //sim arm degrees
                     Rotation2d.fromRadians(coralHandlerPhysicsSim.getAngleRads()).getDegrees(), // arm degrees
                     Rotation2d.fromRotations(relativeEncoder.getPosition()).getDegrees(), // motor rotations
                     inputVoltage, motorRpm

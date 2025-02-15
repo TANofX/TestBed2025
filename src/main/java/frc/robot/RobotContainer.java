@@ -75,6 +75,7 @@ public class RobotContainer {
       return 0.0;
     }));
 
+    SmartDashboard.putData("Calibrate/Zero Coral Wrist", coralHandler.zeroWristCommand());
     SmartDashboard.putData("Calibrate Elevator", elevator.getCalibrationCommand());
     SmartDashboard.putData("Check Elevator", elevator.getSystemCheckCommand());
     SmartDashboard.putData("Elevator 1.25", elevator.getElevatorHeightCommand(1.25));
