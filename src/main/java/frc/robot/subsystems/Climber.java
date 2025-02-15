@@ -356,16 +356,7 @@ public class Climber extends AdvancedSubsystem {
             () -> {
               stopClimberMotor();
             }, this));
-
-  /**
-   * A command to set the angle to the desired angle
-   * @param desiredAngle
-   * @return
-   */
-  public Command getRotateCommandS(Rotation2d desiredAngle){
-    return Commands.runOnce(()->{setClimberAngle(desiredAngle);},this);
-  }
-
+          }
 
 }
 
