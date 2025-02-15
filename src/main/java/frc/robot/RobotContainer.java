@@ -8,9 +8,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.input.controllers.XboxControllerWrapper;
-import frc.robot.commands.ElevatorJoystickControl;
 import frc.robot.commands.ManualCoralHandler;
 import frc.robot.commands.CoralHandlerAngleEstimator;
+import frc.robot.commands.ElevatorJoystickControl;
 import frc.robot.commands.Notifications;
 import frc.robot.commands.SwerveDriveWithGamepad;
 import frc.robot.subsystems.*;
@@ -98,8 +98,29 @@ public class RobotContainer {
     //PPHolonomicDriveController.setRotationTargetOverride(this::overrideAngle);
   }
   
-
   private void configureButtonBindings() {
+    coDriver.START();
+    coDriver.RT().onTrue(new CoralHandlerAngleEstimator());
+    // coralHandler.setDefaultCommand(new ManualCoralHandler(coDriver::getLeftY, coDriver::getLeftX));
+    coralHandler.setDefaultCommand(new ManualCoralHandler(() -> {
+      if (coDriver.DUp().getAsBoolean()) {
+        return 0.5;
+      }
+      if (coDriver.DDown().getAsBoolean()){
+        return -0.5;
+      }
+      return 0.0;
+    }, () -> {
+      if (coDriver.DRight().getAsBoolean()) {
+        return -0.5;
+      }
+      if (coDriver.DLeft().getAsBoolean()) {
+        return 0.5;
+      }
+      return 0.0;
+    }));
+
+    SmartDashboard.putData("Calibrate/Zero Coral Wrist", coralHandler.zeroWristCommand());
    
     driver.LT().onTrue(leftAlgaeHandler.getAlgaeIntakeCommand());
     driver.LB().onTrue(leftAlgaeHandler.shootAlgaeCommand());
@@ -120,66 +141,6 @@ public class RobotContainer {
    //driver.LT().onTrue(new getAlgaeIntakeCommand());
    //driver.RT().onTrue(new shootAlgaeCommand());
    //driver.START().onTrue(new ); //callibrate elevator
-
-   
-
-   //_________OLD CODE BELOW____________
-   /*
-     * 
-     *     
-    driver.LT().onTrue(new SafePosition());
-    driver.RB().onTrue(new ClimbPosition());
-    driver.LB().onTrue(new ElevatorToMin());
-    driver.X().whileTrue(new ReverseIntake());          
-    driver.DLeft()
-           .onTrue((new ElevateShooter(Constants.Shooter.SHOOT_IN_SPEAKER_AT_SUBWOOFER).alongWith(Commands.runOnce(() -> {
-          shooter.startMotorsForShooter(fireControl.getVelocity());
-           }, shooter))).andThen(new Shoot(false).andThen(Commands.waitSeconds(.5).andThen(Commands.runOnce(() -> {
-           shooter.stopMotors();
-
-           })))));
-
-    
-    driver.DRight().onTrue((new ElevateShooter(Constants.Shooter.SHOOT_AT_PODIUM).alongWith(Commands.runOnce(() -> {
-      shooter.startMotorsForShooter(fireControl.getVelocity());
-   }, shooter))).andThen(new Shoot(false).andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
-      shooter.stopMotors();
-    })))));
-    driver.RT().whileTrue(new ConditionalCommand(new IntakeNote(), (new IntakeNote().alongWith(new ReadyToPassNote())).andThen(new TransferNote()), shooterWrist::isStowed));
-    
-    
-    
-        //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
-          //shooter.stopMotors();
-        }, shooter))))));
-    driver.LT().onTrue(leftAlgaeHandler.getAlgaeIntakeCommand());
-    driver.LB().onTrue(leftAlgaeHandler.shootAlgaeCommand());
-    driver.RT().onTrue(rightAlgaeHandler.getAlgaeIntakeCommand());
-    driver.RB().onTrue(rightAlgaeHandler.shootAlgaeCommand());
-//
-   
-    //coDriver.X().onTrue(new ElevatorToMin());
-    coDriver.RB().onTrue(new ReadyToPassNote().andThen(new TransferNote()));
-    coDriver.LB().onTrue(new CalibrateElevator());
-    coDriver.DUp().whileTrue(new ExtendElevator());
-    coDriver.DDown().whileTrue(new RetractElevator());
-    coDriver.LT().onTrue(shootInAmpCommand());
-    coDriver.RT().onTrue(shootInSpeaker());
-    coDriver.START();
-    coDriver.B().toggleOnTrue(new ManualShooterElevation(coDriver::getRightY));
-    coDriver.X().onTrue(new CancelShooter());
-   
-  /*   
-        }, shooter))).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
-          shooter.stopMotors();
-
-        }))))); */
-
-    //Commands.waitSeconds(.5).andThen(new Shoot().andThen(Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> {
-          //shooter.stopMotors();
-       // }, shooter))))));
-   
-    //coDriver.X().onTrue(new ElevatorToMin());
     coDriver.START();
     SmartDashboard.putData("Calibrate Elevator", elevator.getCalibrationCommand());
     SmartDashboard.putData("Check Elevator", elevator.getSystemCheckCommand());

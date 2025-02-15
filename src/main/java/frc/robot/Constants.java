@@ -46,7 +46,7 @@ public final class Constants {
   public @interface CanId {}
 
   public static final class Elevator {
-    public static final int motorCanID = 1;
+    public static final int motorCanID = 31;
 
     public static final double P = 0.05;
     public static final double I = 0.00;
@@ -173,11 +173,12 @@ public final class Constants {
     // TODO figure out all actual constants
     public static final double MeterPerMotorRevolution = 0.0;
 
-    @CanId public static final int outtakeMotorID = 71;
-    @CanId public static final int horizontalMotorID = 72;
-    @CanId public static final int horizontalEncoderID = 73;
-    @CanId public static final int verticalMotorID = 74;
-    @CanId public static final int verticalEncoderID = 75;
+    //TODO Get actual CANIDS :0
+    @CanId public static final int outtakeMotorID = 40;
+    @CanId public static final int horizontalMotorID = 41;
+           public static final int horizontalEncoderID = 41;
+    @CanId public static final int verticalMotorID = 42;
+           public static final int verticalEncoderID = 42;
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
@@ -197,20 +198,30 @@ public final class Constants {
     public static final double outtakeMotorMinVelocity = 0.0;
     // public static final int outtakeEncoderID = 0.0;
     
-    public static final double horizontalMotorP = 0.03;
-    public static final double horizontalMotorI = 0.0;
-    public static final double horizontalMotorD = 0.0;
-    public static final double horizontalMotorFeedForward = 1.0 / (565.0*12.0);
-    public static final double horizontalMotorIZone = 0.0;
+    public static final double horizontalMotorPosP = 0.03;
+    public static final double horizontalMotorPosI = 0.0;
+    public static final double horizontalMotorMaxPosD = 0.0;
+    public static final double horizontalMotorMaxPosP = 0.00;
+    public static final double horizontalMotorMaxPosI = 0.0;
+    public static final double horizontalMotorPosD = 0.0;
+    public static final double horizontalMotorPosFeedForward = 1.0 / (565.0*12.0);
+    public static final double horizontalMotorMaxPosFeedForward = 1.0 / (565.0*12.0);
+    public static final double horizontalMotorPosIZone = 0.0;
+    public static final double horizontalMotorMaxPosIZone = 0.0;
     public static final double horizontalMotorMaxAccleration = 25000.0; //RPM per Sec
     public static final double horizontalMotorMaxVelocity = 3500.0; //RPM
     public static final double horizontalMotorClosedLoopError = 1.0;
 
-    public static final double verticalMotorP = 0.03;
-    public static final double verticalMotorI = 0.0;
-    public static final double verticalMotorD = 0.0;
-    public static final double verticalMotorFeedForward = 1.0 / (565.0*12.0);
-    public static final double verticalMotorIZone = 0.0;
+    public static final double verticalMotorPosP = 0.03;
+    public static final double verticalMotorPosI = 0.0;
+    public static final double verticalMotorPosD = 0.0;
+    public static final double verticalMotorMaxPosP = 0.03;
+    public static final double verticalMotorMaxPosI = 0.0;
+    public static final double verticalMotorMaxPosD = 0.0;
+    public static final double verticalMotorPosFeedForward = 1.0 / (565.0*12.0);
+    public static final double verticalMotorMaxPosFeedForward = 1.0 / (565.0*12.0);
+    public static final double verticalMotorPosIZone = 0.0;
+    public static final double verticalMotorMaxPosIZone = 0.0;
     public static final double verticalMotorMaxAccleration = 25000.0; //RPM per Sec
     public static final double verticalMotorMaxVelocity = 3500.0; //RPM
     public static final double verticalMotorClosedLoopError = 1.0;
@@ -322,27 +333,10 @@ public static final class AlgaeHandler {
   public static final double radiusOfTopIntakeWheel = 1;
   public static final double momentOfInertiaOfTheTopIntakeWheel = massOfTopIntakeWheel * (radiusOfTopIntakeWheel*radiusOfTopIntakeWheel);
 
-
-
-    //all of these ID's are place holders and will need to be edited at a later date
-
-    public static final double metersPerMotorRevolution = 0;
-    public static final int amassOfAlgaeHandler = 6;
-    public static final double algaeGearRatio = 1.0/9.0;
-    
-
-
-
-
-//Motor logistics
-
-  
-
-
-
-
-
-  
+  //all of these ID's are place holders and will need to be edited at a later date
+  public static final double metersPerMotorRevolution = 0;
+  public static final int amassOfAlgaeHandler = 6;
+  public static final double algaeGearRatio = 1.0/9.0;
 }
   
 }
