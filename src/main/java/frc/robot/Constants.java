@@ -271,11 +271,11 @@ public final class Constants {
     public static final int climberlimitIDUpper = 11;
     
     public static final double MOTOR_KI = 0; // TODO
-    public static final double MOTOR_KP = 0.25;
+    public static final double MOTOR_KP = 1;
     public static final double MOTOR_KD = 0;
     public static final double GEAR_RATIO = 0.01;
     public static final double ARM_ANGULAR_MOMENTUM = Units.lbsToKilograms(9.963);
-    public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
+    public static final double LENGTH_METERS = Units.inchesToMeters(4.785);
     public static final double MIN_ANGLE_RADS = -3 * Math.PI / 4;
     public static final double MAX_ANGLE_RADS =0;
     @CanId public static final int MOTOR_CANID = 65;

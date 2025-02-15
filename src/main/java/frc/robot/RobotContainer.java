@@ -57,7 +57,8 @@ public class RobotContainer {
     SmartDashboard.putData("Right Algae Handler Test", rightAlgaeHandler.getSystemCheckCommand());
     SmartDashboard.putData("Raise claw", climber.runClawMotorUpCommand());
     SmartDashboard.putData("Raise and then lower claw", climber.runClawMotorOneWayThenOther());
-   
+    SmartDashboard.putData("Calibrate Climber", climber.getCalibrateCommand());
+    SmartDashboard.putData("Prepare Climber", climber.getPrepareCommand());
   
   
   
