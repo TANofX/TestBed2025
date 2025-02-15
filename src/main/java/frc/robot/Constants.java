@@ -35,14 +35,30 @@ public final class Constants {
   }
 
   /**
+   * You can use the same CAN ID for two different devices of different types
+   * (e.g.: a Spark MAX motor and a Spark FLEX motor, or a Spark MAX motor and an encoder).
+   * (This is because the real CAN ID is much larger, but WPILib gives us 6 bytes for ID and uses the device ID
+   * for the other bytes.)
+   * We could be more specific than these types, but for now we expect to want to use the same CAN ID for a motor
+   * and a corresponding encoder, but not for two motors. This could change.
+   */
+  public enum CanType {
+    MOTOR,
+    ENCODER,
+    PIGEON,
+  }
+
+  /**
    * Annotate CAN ID fields with this annotation so we can detect duplicates in a unit test.
    */
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.FIELD)
-  public @interface CanId {}
+  public @interface CanId {
+    CanType value();
+  }
 
   public static final class Elevator {
-    public static final int motorCanID = 41;
+    @CanId(CanType.MOTOR) public static final int motorCanID = 41;
 
     public static final double P = 0.05;
     public static final double I = 0.00;
@@ -70,7 +86,7 @@ public final class Constants {
   }
 
   public static final class Swerve {
-    @CanId public static final int imuCanID = 3;
+    @CanId(CanType.PIGEON) public static final int imuCanID = 3;
     public static final double maxVelTele = 4.7;
     public static final double maxAccelTele = 6.0;
     public static final double maxAngularVelTele = Units.degreesToRadians(180);
@@ -94,33 +110,33 @@ public final class Constants {
     }
 
     public static final class FrontLeftModule {
-      @CanId public static final int driveMotorCanID = 7;
-      @CanId public static final int rotationMotorCanID = 8;
-      @CanId public static final int rotationEncoderCanID = 13;
+      @CanId(CanType.MOTOR) public static final int driveMotorCanID = 7;
+      @CanId(CanType.MOTOR) public static final int rotationMotorCanID = 8;
+      @CanId(CanType.ENCODER) public static final int rotationEncoderCanID = 13;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class FrontRightModule {
-      @CanId public static final int driveMotorCanID = 10;
-      @CanId public static final int rotationMotorCanID = 11;
-      @CanId public static final int rotationEncoderCanID = 22;
+      @CanId(CanType.MOTOR) public static final int driveMotorCanID = 10;
+      @CanId(CanType.MOTOR) public static final int rotationMotorCanID = 11;
+      @CanId(CanType.ENCODER) public static final int rotationEncoderCanID = 22;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
 
     public static final class BackLeftModule {
-      @CanId public static final int driveMotorCanID = 4;
-      @CanId public static final int rotationMotorCanID = 5;
-      @CanId public static final int rotationEncoderCanID = 14;
+      @CanId(CanType.MOTOR) public static final int driveMotorCanID = 4;
+      @CanId(CanType.MOTOR) public static final int rotationMotorCanID = 5;
+      @CanId(CanType.ENCODER) public static final int rotationEncoderCanID = 14;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           Units.inchesToMeters(12.25));
     }
 
     public static final class BackRightModule {
-      @CanId public static final int driveMotorCanID = 6;
-      @CanId public static final int rotationMotorCanID = 9;
-      @CanId public static final int rotationEncoderCanID = 15;
+      @CanId(CanType.MOTOR) public static final int driveMotorCanID = 6;
+      @CanId(CanType.MOTOR) public static final int rotationMotorCanID = 9;
+      @CanId(CanType.ENCODER) public static final int rotationEncoderCanID = 15;
       public static Translation2d moduleOffset = new Translation2d(-Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
@@ -130,11 +146,11 @@ public final class Constants {
     // TODO figure out all actual constants
     public static final double MeterPerMotorRevolution = 0.0;
 
-    @CanId public static final int outtakeMotorID = 71;
-    @CanId public static final int horizontalMotorID = 72;
-    @CanId public static final int horizontalEncoderID = 73;
-    @CanId public static final int verticalMotorID = 74;
-    @CanId public static final int verticalEncoderID = 75;
+    @CanId(CanType.MOTOR) public static final int outtakeMotorID = 71;
+    @CanId(CanType.MOTOR) public static final int horizontalMotorID = 72;
+    @CanId(CanType.ENCODER) public static final int horizontalEncoderID = 73;
+    @CanId(CanType.MOTOR) public static final int verticalMotorID = 74;
+    @CanId(CanType.ENCODER) public static final int verticalEncoderID = 75;
 
     // !! `coralEndEffectorLength` is IN METERS
     public static final double coralEndEffectorLength = 0.25;
@@ -230,22 +246,22 @@ public final class Constants {
     public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
     public static final double MIN_ANGLE_RADS = 0;
     public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
-    @CanId public static final int MOTOR_CANID = 51;
+    @CanId(CanType.MOTOR) public static final int MOTOR_CANID = 51;
     public static final int PCMID = 5;
     public static final int SOLONOIDID = 3;
-    @CanId public static final int climberEncoderCanID = 12; //TODO
+    @CanId(CanType.ENCODER) public static final int climberEncoderCanID = 12; //TODO
   }
  
 public static final class AlgaeHandler {
   //Creating constants for LEFT Algae Handler :D
   //CANID's
-  @CanId  static final int leftAlgaeMotorCANID = 21;
+  @CanId(CanType.MOTOR) static final int leftAlgaeMotorCANID = 21;
   public static final int leftAlgaeSolenoidID = 3;
   public static final int leftAlgaeHallEffectID = 23;
   public static final int leftAlgaeLimitID = 24;
 
     //Creating constants for RIGHT Algae Handler :D
-    @CanId public static final int rightAlgaeMotorCANID = 25;
+  @CanId(CanType.MOTOR) public static final int rightAlgaeMotorCANID = 25;
   public static final int rightAlgaeSolenoidID = 4;
   public static final int rightAlgaeHallEffectID = 27;
   public static final int rightAlgaeLimitID = 28;
