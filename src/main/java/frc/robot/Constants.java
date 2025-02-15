@@ -4,6 +4,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -15,6 +17,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 
 public final class Constants {
   public static final String canivoreBusName = "rio";
@@ -24,11 +27,12 @@ public final class Constants {
   static {
     try {
       apriltagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
-      apriltagLayout.getFieldLength();
-      apriltagLayout.getFieldWidth();
-      apriltagLayout.getFieldLength();
-      apriltagLayout.getFieldWidth();
       fieldSize = new Translation2d(apriltagLayout.getFieldLength(), apriltagLayout.getFieldWidth());
+      apriltagLayout.getFieldLength();
+      apriltagLayout.getFieldWidth();
+      apriltagLayout.getFieldLength();
+      apriltagLayout.getFieldWidth();
+     
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -56,7 +60,7 @@ public final class Constants {
     public static final double MAX_HEIGHT_METERS = Units.inchesToMeters(56.0);
     public static final double STARTING_HEIGHT_METERS = MIN_HEIGHT_METERS + (MIN_HEIGHT_METERS + MAX_HEIGHT_METERS) / 2.0;
 
-    public static final double level1Height = 0;
+    public static final double level1Height = 1.25;
     public static final double level2Height = 0;
     public static final double level3Height = 0;
     public static final double level4Height = 0;
@@ -92,6 +96,7 @@ public final class Constants {
       // public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(2.0,
       // 0.0, 0.0);
     }
+    
 
     public static final class FrontLeftModule {
       @CanId public static final int driveMotorCanID = 7;
@@ -104,7 +109,7 @@ public final class Constants {
     public static final class FrontRightModule {
       @CanId public static final int driveMotorCanID = 10;
       @CanId public static final int rotationMotorCanID = 11;
-      @CanId public static final int rotationEncoderCanID = 12;
+      @CanId public static final int rotationEncoderCanID = 22;
       public static Translation2d moduleOffset = new Translation2d(Units.inchesToMeters(11.25),
           -Units.inchesToMeters(12.25));
     }
@@ -125,6 +130,44 @@ public final class Constants {
           -Units.inchesToMeters(12.25));
     }
   }
+
+  //Class to access the coordinates of the coral on the field.
+  public static final class CoralPlacement {
+    public static ArrayList<Pose2d> cordinatesCoralRed = new ArrayList<Pose2d>();
+    static {
+    //ordered in line from A-L
+    //rotation degree part of Pos2D is the direction the robot has to face to be flush against the reef for that branch
+    cordinatesCoralRed.add(new Pose2d(544.87, 152.03, Rotation2d.fromDegrees(180))); 
+    cordinatesCoralRed.add(new Pose2d(544.87, 164.97,  Rotation2d.fromDegrees(180))); 
+    cordinatesCoralRed.add(new Pose2d(535.08, 181.89,  Rotation2d.fromDegrees(240)));
+    cordinatesCoralRed.add(new Pose2d(523.90, 188.32,  Rotation2d.fromDegrees(240)));
+    cordinatesCoralRed.add(new Pose2d(504.39, 188.32,  Rotation2d.fromDegrees(300))); 
+    cordinatesCoralRed.add(new Pose2d(493.16, 181.89,  Rotation2d.fromDegrees(300)));
+    cordinatesCoralRed.add(new Pose2d(483.44, 164.97,  Rotation2d.fromDegrees(0.0))); 
+    cordinatesCoralRed.add(new Pose2d(483.44, 152.03,  Rotation2d.fromDegrees(0.0))); 
+    cordinatesCoralRed.add(new Pose2d(493.16, 135.15,  Rotation2d.fromDegrees(60))); 
+    cordinatesCoralRed.add(new Pose2d(504.39, 128.65,  Rotation2d.fromDegrees(60))); 
+    cordinatesCoralRed.add(new Pose2d(523.90, 128.65,  Rotation2d.fromDegrees(120))); 
+    cordinatesCoralRed.add(new Pose2d(535.08, 135.15,  Rotation2d.fromDegrees(120)));
+    }
+  
+    public static ArrayList<Pose2d> cordinatesCoralBlue = new ArrayList<Pose2d>();
+    static {
+    //ordered in line from A-L, even though this is "opposite" of blue
+    cordinatesCoralBlue.add(new Pose2d(146.052, 164.97, Rotation2d.fromDegrees(0.0)));
+    cordinatesCoralBlue.add(new Pose2d(146.052, 152.03,  Rotation2d.fromDegrees(0.0))); 
+    cordinatesCoralBlue.add(new Pose2d(155.43, 135.15, Rotation2d.fromDegrees(60))); 
+    cordinatesCoralBlue.add(new Pose2d(166.65, 128.65, Rotation2d.fromDegrees(60))); 
+    cordinatesCoralBlue.add(new Pose2d(136.51, 128.65, Rotation2d.fromDegrees(120))); 
+    cordinatesCoralBlue.add(new Pose2d(197.69, 135.15, Rotation2d.fromDegrees(120))); 
+    cordinatesCoralBlue.add(new Pose2d(207.48, 152.03, Rotation2d.fromDegrees(180)));
+    cordinatesCoralBlue.add(new Pose2d(207.48, 164.97, Rotation2d.fromDegrees(180))); 
+    cordinatesCoralBlue.add(new Pose2d(197.69, 181.89, Rotation2d.fromDegrees(240))); 
+    cordinatesCoralBlue.add(new Pose2d(186.51, 188.32, Rotation2d.fromDegrees(240)));
+    cordinatesCoralBlue.add(new Pose2d(166.65, 188.32, Rotation2d.fromDegrees(300)));
+    cordinatesCoralBlue.add(new Pose2d(155.43, 181.89, Rotation2d.fromDegrees(300))); 
+    }
+    }
 
   public static final class CoralHandler {
     // TODO figure out all actual constants
@@ -166,7 +209,7 @@ public final class Constants {
     public static final double horizontalMotorPosIZone = 0.0;
     public static final double horizontalMotorMaxPosIZone = 0.0;
     public static final double horizontalMotorMaxAccleration = 25000.0; //RPM per Sec
-    public static final double horizontalMotorMaxVelocity = 6500.0; //RPM
+    public static final double horizontalMotorMaxVelocity = 3500.0; //RPM
     public static final double horizontalMotorClosedLoopError = 1.0;
 
     public static final double verticalMotorPosP = 0.03;
@@ -180,7 +223,7 @@ public final class Constants {
     public static final double verticalMotorPosIZone = 0.0;
     public static final double verticalMotorMaxPosIZone = 0.0;
     public static final double verticalMotorMaxAccleration = 25000.0; //RPM per Sec
-    public static final double verticalMotorMaxVelocity = 6500.0; //RPM
+    public static final double verticalMotorMaxVelocity = 3500.0; //RPM
     public static final double verticalMotorClosedLoopError = 1.0;
     
     public static final double horizontalJKgMetersSquared = 1.0/3.0 * coralEndEffectorMass * Math.pow(coralEndEffectorLength, 2.0);
@@ -221,6 +264,8 @@ public final class Constants {
     public static final Rotation2d verticallLevel4Angle = Rotation2d.fromDegrees(0);
     // ???? what do you do for offset for position (use gear ratio to figure out)
     // public static final double RotationDegreesPerRotation = 0;
+
+    public static double horizontalMotorallowederror;
   }
 
   public static final class AutoBalance {
@@ -233,32 +278,36 @@ public final class Constants {
   public static final class Climber {
     public static final double firstStageGearRatio = 90 / 60;
     public static final double secondStageGearRatio = 18 / 58;
+    public static final int climberlimitIDLower = 10;
+    public static final int climberlimitIDUpper = 11;
     
-    public static final double MOTOR_KI = 0; 
-    public static final double MOTOR_KP = 0.25;
+    public static final double MOTOR_KI = 0; // TODO
+    public static final double MOTOR_KP = 1;
     public static final double MOTOR_KD = 0;
     public static final double GEAR_RATIO = 0.01;
     public static final double ARM_ANGULAR_MOMENTUM = Units.lbsToKilograms(9.963);
-    public static final double LENGTH_METERS = Units.inchesToMeters(16.785);
-    public static final double MIN_ANGLE_RADS = 0;
-    public static final double MAX_ANGLE_RADS = 3 * Math.PI / 4;
-    public static final int MOTOR_CANID = 51;
+    public static final double LENGTH_METERS = Units.inchesToMeters(4.785);
+    public static final double MIN_ANGLE_RADS = -3 * Math.PI / 4;
+    public static final double MAX_ANGLE_RADS =0;
+    @CanId public static final int MOTOR_CANID = 65;
     public static final int PCMID = 5;
-    public static final int SOLONOIDID = 3;
-    public static final int climberEncoderCanID = 12;
+    public static final int FORWARDSOLENOID = 3;
+    public static final int REVERSESOLENOID = 4;
+    @CanId public static final int climberEncoderCanID = 12; //TODO
+    public static final double climberRotationDegreesPerRotation = 360 / GEAR_RATIO;
   }
  
 public static final class AlgaeHandler {
   //Creating constants for LEFT Algae Handler :D
   //CANID's
-  public static final int leftAlgaeMotorCANID = 21;
-  public static final int leftAlgaeSolenoidID = 3;
+  @CanId  static final int leftAlgaeMotorCANID = 21;
+  public static final int leftAlgaeSolenoidID = 5;
   public static final int leftAlgaeHallEffectID = 23;
   public static final int leftAlgaeLimitID = 24;
 
     //Creating constants for RIGHT Algae Handler :D
-  public static final int rightAlgaeMotorCANID = 25;
-  public static final int rightAlgaeSolenoidID = 4;
+    @CanId public static final int rightAlgaeMotorCANID = 25;
+  public static final int rightAlgaeSolenoidID = 6;
   public static final int rightAlgaeHallEffectID = 27;
   public static final int rightAlgaeLimitID = 28;
   
