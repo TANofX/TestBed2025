@@ -22,7 +22,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
@@ -53,6 +52,7 @@ public class Climber extends AdvancedSubsystem {
   private final RelativeEncoder climberEncoder;
   private final SparkLimitSwitch climberLimitSwitchLower;
   private final SparkLimitSwitch climberLimitSwitchUpper;
+
   private Rotation2d climberAbsoluteAngle;
 
   /** Creates a new Climber. */
@@ -203,13 +203,17 @@ public class Climber extends AdvancedSubsystem {
     return climberPiston.get() == DoubleSolenoid.Value.kReverse;
   }
 
-  // close claw
-  public void toggleClaw() {
+  /**
+   * This method will open the claw
+   */
+  public void toggleClaw(){
     climberPiston.set(DoubleSolenoid.Value.kForward);
   }
 
-  // open claw
-  public void detoggleClaw() {
+  /**
+   * This method will close the claw
+   */
+  public void detoggleClaw(){
     climberPiston.set(DoubleSolenoid.Value.kReverse);
   }
 
@@ -315,7 +319,7 @@ public class Climber extends AdvancedSubsystem {
         stopClimberMotor();
     }, this);
   }
-
+  
   public Command runClawMotorUpCommand() {
     return Commands.sequence(
         Commands.runOnce(
@@ -353,7 +357,16 @@ public class Climber extends AdvancedSubsystem {
               stopClimberMotor();
             }, this));
 
+  /**
+   * A command to set the angle to the desired angle
+   * @param desiredAngle
+   * @return
+   */
+  public Command getRotateCommandS(Rotation2d desiredAngle){
+    return Commands.runOnce(()->{setClimberAngle(desiredAngle);},this);
   }
+
+
 }
 
 // notes or todo, configure 2 limit switches, double solenoid
