@@ -306,6 +306,9 @@ public class Swerve extends AdvancedSubsystem {
 
     setModuleStates(targetStates);
   }
+  public void stop() {
+    driveRobotRelative(new ChassisSpeeds(0,0,0));
+  }
 
   /** Zeros the IMU yaw */
   public void zeroIMU() {

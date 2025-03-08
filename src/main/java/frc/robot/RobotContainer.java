@@ -31,8 +31,11 @@ public class RobotContainer {
   // Vision clients
   // public static final JetsonClient jetson = new JetsonClient();
 
+  private final CoralVision coralVision;
+
   public RobotContainer() {
     SmartDashboard.putData(swerve.zeroModulesCommand());
+    this.coralVision = new CoralVision(swerve);
     configureButtonBindings();
     // LEDs.setDefaultCommand(new Notifications());
    
