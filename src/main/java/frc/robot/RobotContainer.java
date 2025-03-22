@@ -19,7 +19,7 @@ public class RobotContainer {
   public static final XboxControllerWrapper driver = new XboxControllerWrapper(0, 0.1);
   public static final XboxControllerWrapper coDriver = new XboxControllerWrapper(1, 0.1);
 
-  
+  public static final SwerveLimits swerveLimits = new SwerveLimits();
 
   // Subsystems
   public static final Swerve swerve = new Swerve();// new Swerve();
@@ -53,6 +53,10 @@ public class RobotContainer {
       )));
     }, swerve));
 
+    new SwerveLimitReporter(swerveLimits);
+    new PositionReporter(swerve.odometry);
+    //new ManualSpeedLimiter(swerveLimits);
+    new PositionSpeedLimiter(swerveLimits, swerve.odometry);
 
     // SmartDashboard.putData(intake.getIntakePivotTuner());
     // SmartDashboard.putData(intake.getIntakeTuner());

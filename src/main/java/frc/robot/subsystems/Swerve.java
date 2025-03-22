@@ -35,7 +35,7 @@ import frc.robot.Constants;
 import frc.robot.util.RobotPoseLookup;
 
 public class Swerve extends AdvancedSubsystem {
-  protected final SwerveDrivePoseEstimator odometry;
+  public final SwerveDrivePoseEstimator odometry;
   public final SwerveDriveKinematics kinematics;
 
   protected final Mk4SwerveModulePro[] modules;
@@ -51,9 +51,6 @@ public class Swerve extends AdvancedSubsystem {
 
   private final RobotPoseLookup<Pose2d> poseLookup;
 
-  protected double teleopVelConstraint;
-  protected double teleopAngularVelConstraint;
-
   protected final Field2d field2d = new Field2d();
 
   private StructArrayPublisher<SwerveModuleState> ModuleStatesPublisher = NetworkTableInstance.getDefault()
@@ -62,7 +59,8 @@ public class Swerve extends AdvancedSubsystem {
     .getStructArrayTopic("/Swerve/TargetStates", SwerveModuleState.struct).publish();
     private StructPublisher<Rotation2d> gyroPublisher = NetworkTableInstance.getDefault()
     .getStructTopic("/Swerve/Gyro", Rotation2d.struct).publish();
-    public Swerve() {
+
+  public Swerve() {
     poseLookup = new RobotPoseLookup<Pose2d>();
 
     imu = new Pigeon2(Constants.Swerve.imuCanID, Constants.canivoreBusName);
@@ -71,9 +69,6 @@ public class Swerve extends AdvancedSubsystem {
     zeroIMU();
 
     imuSim = imu.getSimState();
-
-    teleopVelConstraint = Constants.Swerve.maxVelTele;
-    teleopAngularVelConstraint = Constants.Swerve.maxAngularVelTele;
 
     imuRollSignal = imu.getRoll();
     imuPitchSignal = imu.getPitch();
@@ -408,35 +403,6 @@ public class Swerve extends AdvancedSubsystem {
     }
   }
 
-  /**
-   * Set the teleop driving constraints
-   *
-   * @param maxVel        Max robot velocity in m/s
-   * @param maxAngularVel Max robot angular velocity in rad/s
-   */
-  public void setTeleopConstraints(double maxVel, double maxAngularVel) {
-    teleopVelConstraint = maxVel;
-    teleopAngularVelConstraint = maxAngularVel;
-  }
-
-  /**
-   * Get the teleop velocity constraint
-   *
-   * @return Max teleop velocity in m/s
-   */
-  public double getTeleopVelConstraint() {
-    return teleopVelConstraint;
-  }
-
-  /**
-   * Get the teleop angular velocity constraint
-   *
-   * @return Max teleop velocity in rad/s
-   */
-  public double getTeleopAngularVelConstraint() {
-    return teleopAngularVelConstraint;
-  }
-
   public void lockModules() {
     for (Mk4SwerveModulePro module : modules) {
       module.lockModule();
@@ -693,7 +659,8 @@ public class Swerve extends AdvancedSubsystem {
         Commands.runOnce(
             () -> {
               driveFieldRelative(new ChassisSpeeds());
-              if (-imu.getRate() < Units.radiansToDegrees(0.3)) {
+                //noinspection removal
+                if (-imu.getRate() < Units.radiansToDegrees(0.3)) {
                 addFault("[System Check] IMU rate too low", false, true);
               }
             },
@@ -703,7 +670,8 @@ public class Swerve extends AdvancedSubsystem {
         Commands.runOnce(
             () -> {
               driveFieldRelative(new ChassisSpeeds());
-              if (-imu.getRate() > Units.radiansToDegrees(-0.3)) {
+                //noinspection removal
+                if (-imu.getRate() > Units.radiansToDegrees(-0.3)) {
                 addFault("[System Check] IMU rate too low", false, true);
               }
             },

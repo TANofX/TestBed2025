@@ -11,8 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.SwerveLimits;
 
 public class SwerveDriveWithGamepad extends Command {
+  private final Swerve swerve;
+  private final SwerveLimits limits;
+
   private final SlewRateLimiter xVelLimiter;
   private final SlewRateLimiter yVelLimiter;
   private final SlewRateLimiter angularVelLimiter;
@@ -22,17 +27,19 @@ public class SwerveDriveWithGamepad extends Command {
   private static double maxSpeedForChild = 1;
   private final boolean aimAtGamePiece;
 
-  public SwerveDriveWithGamepad(boolean aimAtGamePiece) {
-    this.xVelLimiter = new SlewRateLimiter(Constants.Swerve.maxAccelTele);
-    this.yVelLimiter = new SlewRateLimiter(Constants.Swerve.maxAccelTele);
-    this.angularVelLimiter = new SlewRateLimiter(Constants.Swerve.maxAngularAccelTele);
+  public SwerveDriveWithGamepad(Swerve swerve, SwerveLimits limits, boolean aimAtGamePiece) {
+    this.swerve = swerve;
+    this.limits = limits;
+    this.xVelLimiter = new SlewRateLimiter(limits.getMaxAccelTele());
+    this.yVelLimiter = new SlewRateLimiter(limits.getMaxAccelTele());
+    this.angularVelLimiter = new SlewRateLimiter(limits.getMaxAngularAccelTele());
     this.rotationHoldFactor = Constants.Swerve.teleAngleHoldFactor;
     this.aimAtGamePiece = aimAtGamePiece;
     addRequirements(RobotContainer.swerve);
   }
 
-  public SwerveDriveWithGamepad() {
-    this(false);
+  public SwerveDriveWithGamepad(Swerve swerve, SwerveLimits limits) {
+    this(swerve, limits, false);
   }
 
   @Override
@@ -67,15 +74,15 @@ public class SwerveDriveWithGamepad extends Command {
       rot = -RobotContainer.driver.getRightX() * maxSpeedForChild;
       rot = Math.copySign(rot * rot, rot);
 
-    double targetAngularVel = rot * Constants.Swerve.maxAngularVelTele;
+    double targetAngularVel = rot * limits.getMaxAngularVelTele();
     boolean stop = x == 0 && y == 0 && rot == 0;
 
     // Only take over game piece aim if driver is not rotating and intake is
     // spinning (we don't have
     // a game piece in intake)
 
-    double xVel = this.xVelLimiter.calculate(x * Constants.Swerve.maxVelTele);
-    double yVel = this.yVelLimiter.calculate(y * Constants.Swerve.maxVelTele);
+    double xVel = this.xVelLimiter.calculate(x * limits.getMaxVelTele());
+    double yVel = this.yVelLimiter.calculate(y * limits.getMaxVelTele());
     double angularVel = this.angularVelLimiter.calculate(targetAngularVel);
 
     if (stop) {

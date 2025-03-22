@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    RobotContainer.swerve.setDefaultCommand(new SwerveDriveWithGamepad());
+    RobotContainer.swerve.setDefaultCommand(new SwerveDriveWithGamepad(RobotContainer.swerve, RobotContainer.swerveLimits));
   }
 
   @Override
